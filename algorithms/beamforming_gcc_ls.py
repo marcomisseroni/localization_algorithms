@@ -43,7 +43,12 @@ class SourceLocalizer:
         return x
 
     def corr_matrix_upd(self):
-        pass
+        K = self.Nw - self.L + 1
+        D = np.zeros((self.L * self.N, K))
+        for i in range(K):
+            X = self.build_X_mat(i)
+            D[:, i] = X
+        self.C = D @ D.T / K
 
     def push_meas(self):
         # Push the new meas for each sensor
@@ -55,7 +60,9 @@ def main():
     SL.M = np.zeros((2, 5))
     SL.M[0, :] = np.array([1, 2, 3, 4, 5])
     SL.M[1, :] = np.array([6, 7, 8, 9, 10])
+    SL.corr_matrix_upd()
     print(SL.build_X_mat(1))
+    print(SL.C)
 
 if __name__ == "__main__":
     main()
