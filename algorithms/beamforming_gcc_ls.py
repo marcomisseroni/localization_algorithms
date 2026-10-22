@@ -24,8 +24,13 @@ class BeamformingGccLs(Localizer):
         self.C = np.zeros((self.L * self.N, self.L * self.N))
         self.n_received = 0
         self.full = False
-        self.tau_m = self.tau_max()
-
+        self.tau_m = int(self.tau_max())
+        if(self.tau_m > self.L - 1):
+            raise ValueError("The current sub-window is not large enough to capture the same event accross all sensor pairs")
+        if(self.L > self.Nw):
+            raise ValueError("The sub-window must be smaller than the data window")
+        if(self.N < 4):
+            raise ValueError("For the solution of least squares at least 4 sensors are required")
 
     @override
     def push(self, block: np.ndarray) -> np.ndarray | None:
@@ -34,9 +39,15 @@ class BeamformingGccLs(Localizer):
         if(not self.full):
             return None
 
-        self.beamforming()
-        # GCC
-        # LS
+        y = self.beamforming()
+        cc = np.zeros((self.N, self.L))
+        tau = np.zeros(self.N)
+        for i in range(self.N):
+            cc[i, :] = self.cross_correlation(y, self.M[i, :])
+            tau[i] = np.argmax(cc[i, :])
+        dtau = (tau - tau[0]) / self.fs
+        theta = self.least_squares(dtau)
+        return theta[:2].ravel()
 
     @override
     def reset(self) -> None:
@@ -49,9 +60,9 @@ class BeamformingGccLs(Localizer):
         self.full = False
 
     def tau_max(self) -> int:
-        if(self.N <= 2):
-            print("Error: not enough sebsors")
-            return
+        """
+        Find the distance between any sensor pair to compute the max physical delay between 2 sensors.
+        """
         max_dist = 0
         for i in range(self.N - 1):
             for j in range(i + 1, self.N):
@@ -113,17 +124,81 @@ class BeamformingGccLs(Localizer):
         self.corr_matrix_upd()
         w, v = np.linalg.eigh(self.C)
         v_max = v[:, -1]
+        k = np.argmax(np.abs(v_max))
+        if(v_max[k] < 0):
+            v_max = -v_max
         y = v_max.T @ self.D
         return y
 
-    def generalized_cross_correlation(self, y: np.ndarray) -> None:
+    def cross_correlation(self, y: np.ndarray, x:np.ndarray) -> np.ndarray:
         """
-        Use zero padding to expand the anchor sensor, then compute the cross correlation.
+        Use zero padding to expand x signal, then compute the cross correlation.
+        To have x and y aligned with tau = 0 we have to overlap the first element of x with the first 
+        element of y.
         """
-        y = np.append(y, np.zeros(self.Nw - 1))
-        y = np.concatenate([np.zeros(self.Nw - 1), y])
-        for i in range(2 * self.tau_m + 1):
-            pass
+        x = x - x.mean()
+        cc = np.zeros((1, self.L))
+        for i in range(self.L):
+            cc[0, i] = y @ x[i:i+y.shape[0]]
+        return cc
 
-    def least_squares(self) -> np.ndarray:
-        pass
+    def least_squares(self, tau: np.ndarray) -> np.ndarray:
+        """
+        Solve the system A@theta = b.
+        Where: 
+        A = [[2*dx2, 2*dy2, 2*d21], [2*dx3, 2*dy3, 2*d31], ..., [2*dxn, 2*dyn, 2*dn1]]
+        b = [K2 - K1 - d12^2, K3 - K1 - d31^2, ..., Kn - K1 - dn1^2].T
+        theta = [Px, Py, r1].T
+        dxi = xi - x1
+        dyi = yi - y1
+        di1 = c * taui1
+        Ki = ||Si||**2
+        P = [Px, Py] is the source position
+        Si = [xi, yi] is the i-th sensor's position
+        r1 = ||P - S1||
+        So we can calculate the least squares with: theta = (A.T @ A).inv @ A.T @ b
+        """
+        A = np.zeros((self.N - 1, 3))
+        b = np.zeros((self.N - 1, 1))
+        x1 = self.sensor_pos[0, 0]
+        y1 = self.sensor_pos[0, 1]
+        for i in range(self.N - 1):
+            xi = self.sensor_pos[i + 1, 0]
+            yi = self.sensor_pos[i + 1, 1]
+            di1 = self.c * tau[i + 1]
+            A[i, 0] = 2 * (xi - x1)
+            A[i, 1] = 2 * (yi - y1)
+            A[i, 2] = 2 * di1
+            b[i] = xi**2 + yi**2 - x1**2 - y1**2 - di1**2
+        return np.linalg.lstsq(A, b, rcond=None)[0]
+
+if __name__ == "__main__":
+    # Footstep-like test: 3 sensors on the floor ~1 m apart, slow floor wave
+    fs = 1000                                           # [Hz]
+    c = 300                                             # [m/s]
+    sensor_pos = np.array([[0, 0, 0], [1, 0, 0], [0, 1, 0]])
+    source_pos = np.array([0.7, 0.4, 0])
+
+    # tau_max = sqrt(2) * fs / c ~ 4.7 samples -> L - 1 = 7 is enough
+    # K = Nw - L + 1 = 505 columns to estimate a (N*L x N*L) = 24 x 24 matrix
+    loc = BeamformingGccLs(8, 512, sensor_pos, fs, c)
+
+    # Broadband low-frequency burst (low-passed noise under a Hann window), like a footstep
+    rng = np.random.default_rng(0)
+    T = 1024
+    t = np.arange(T)
+    noise = np.convolve(rng.standard_normal(T), np.ones(9) / 9, mode="same")
+    burst = np.zeros(T)
+    burst[400:600] = noise[400:600] * np.hanning(200)
+
+    # Fractional delays from the geometry, relative to the first sensor reached
+    delays = np.linalg.norm(sensor_pos - source_pos, axis=1) / c * fs
+    delays -= delays.min()
+    print("true delays [samples]:", np.round(delays, 2))
+    signals = np.stack([np.interp(t - d, t, burst) for d in delays])
+    signals += 0.01 * rng.standard_normal(signals.shape)
+
+    # Simulate the real-time stream
+    hop = 64
+    for k in range(0, T, hop):
+        loc.push(signals[:, k:k + hop])
