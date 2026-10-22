@@ -1,28 +1,42 @@
 import argparse
 import numpy as np
+import tomllib
 
 from pathlib import Path
 from core.data import Sample
-from algorithms.beamforming_gcc_ls import BeamformingGccLs 
+from localization.base import Localizer
+from localization.beamforming_gcc_ls import BeamformingGccLs 
+from detection.base import Detector
+from detection.amp_thr import AmpThr
+
+LOCALIZERS = {
+    "bf_gcc_ls": BeamformingGccLs,
+}
+
+DETECTORS= {
+    "amp_thr": AmpThr,
+}
 
 def parse_arguments() -> Path:
     parser = argparse.ArgumentParser(description="Test the implemented algorithms to localize a source having N sensors")
     parser.add_argument('signal_path')
-    args = parser.parse_args()
-    return Path(args.signal_path)
+    parser.add_argument("--loc", choices=LOCALIZERS.keys(), default="bf_gcc_ls")
+    parser.add_argument("--det", choices=DETECTORS.keys(), default="amp_thr")
+    return parser.parse_args()
 
-def run_sample(sample: Sample) -> np.ndarray:
-    L = 64
-    Nw = 4096
-    hop = 512
+def load_config(path: Path) -> dict:
+    with open(path, "rb") as f:
+        data = tomllib.load(f)
+    return data
+
+def run_sample(sample: Sample, loc: Localizer, det: Detector, hop: int) -> np.ndarray:
     sensor_pos = sample.sensors_pos
     fs = sample.fs
     c = sample.c
-    algo = BeamformingGccLs(L, Nw, sensor_pos, fs, c)
     est_pos = []
     block = sample.read(hop)
     while(block is not None):
-        curr_est = algo.push(block)
+        curr_est = loc.push(block)
         if(curr_est is not None):
             est_pos.append(curr_est)
         block = sample.read(hop)
@@ -58,9 +72,32 @@ def print_report(err: np.ndarray) -> None:
     print("=" * 40)
 
 def main():
-    path = parse_arguments()
-    sample = Sample(path)
-    est_pos = run_sample(sample)
+    args = parse_arguments()
+    signal_path = args.signal_path
+
+    LocClass = LOCALIZERS[args.loc]
+    DetClass = DETECTORS[args.det]
+
+    conf_path = Path(__file__).parent 
+    conf = load_config(conf_path / "configs/default.toml")
+    hop = conf["stream"]["hop"]
+
+    sample = Sample(Path(signal_path))
+    
+    loc = LocClass(
+        sensor_pos=sample.sensors_pos,
+        fs=sample.fs,
+        c=sample.c,
+        **conf["localization"][args.loc]    
+    )
+
+    det = DetClass(
+        fs=sample.fs,
+        N=sample.N,
+        **conf["detection"][args.det]
+    )
+    
+    est_pos = run_sample(sample, loc, det, hop)
     err = compute_error(est_pos, sample)
     print_report(err)
 

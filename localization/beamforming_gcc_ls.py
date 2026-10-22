@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-from core.base import Localizer
+from localization.base import Localizer
 from typing import override
 
 class BeamformingGccLs(Localizer):
@@ -14,12 +14,15 @@ class BeamformingGccLs(Localizer):
     X: Matrix containing L samples for each sensor, X(t) contains L samples and the last one is collected now. DIM = (NL * 1)
     C: Correlation matrix DIM = (NL * NL)
     M: Measurement matrix, last Nw samples of each sensor, each row is a different sensor, samples on cols
+    
+    Warning: before using this algorithm on measurements of vibration of the ground a band pass filter should be applied 
+    in order to extract a small frequency interval and the speed is almost constant.
     """
 
-    def __init__(self, sub_w_size: int, w_size: int, sensor_pos: np.ndarray, fs: int, c: float) -> None:
+    def __init__(self, L: int, Nw: int, sensor_pos: np.ndarray, fs: int, c: float) -> None:
         super().__init__(sensor_pos, fs, c)
-        self.Nw = w_size
-        self.L = sub_w_size
+        self.Nw = Nw
+        self.L = L
         self.M = np.zeros((self.N, self.Nw))
         self.C = np.zeros((self.L * self.N, self.L * self.N))
         self.n_received = 0
