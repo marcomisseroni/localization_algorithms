@@ -45,7 +45,7 @@ class BeamformingGccLs(Localizer):
         for i in range(self.N):
             cc[i, :] = self.cross_correlation(y, self.M[i, :])
             tau[i] = np.argmax(cc[i, :])
-        dtau = (tau - tau[0]) / self.fs
+        dtau = (tau[0] - tau) / self.fs
         theta = self.least_squares(dtau)
         return theta[:2].ravel()
 

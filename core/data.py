@@ -5,8 +5,8 @@ from scipy.io import wavfile
 from pathlib import Path
 
 class Sample:
-    def __init__(self, file_path: str) -> None:
-        self.data_path = Path(file_path).parent
+    def __init__(self, file_path: Path) -> None:
+        self.data_path = file_path.parent
         self.cursor = 0
 
         with open(file_path, "r") as file:
@@ -17,6 +17,7 @@ class Sample:
         self.N = data["microphone_count"]
         self.wav_files = data["mono_wav_files"]
         self.sensors_pos = np.array(data["microphones_xyz_m"])
+        self.c = data["simulation"]["speed_of_sound"]
         self.signals = []
 
         for i in range(self.N):
@@ -32,6 +33,9 @@ class Sample:
         self.cursor = 0
 
     def read(self, hop: int) -> np.ndarray | None:
+        """
+        Load some data.
+        """
         if(self.cursor + hop > self.signals.shape[1]):
             return None
         block = self.signals[:, self.cursor:self.cursor + hop].copy()
