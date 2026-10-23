@@ -9,3 +9,7 @@ test_signals/
 
 # Datasets
 data/
+
+# Images and csv 
+*.png
+*.csv
