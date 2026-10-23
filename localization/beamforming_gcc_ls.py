@@ -161,6 +161,12 @@ class BeamformingGccLs(Localizer):
             cc[0, i] = y @ x[i:i+y.shape[0]]
         return cc
 
+    def generalized_cross_correlation(self, y: np.ndarray, x: np.ndarray) -> np.ndarray:
+        """
+        Alternative to simple cross-correlation, should exhibit more narrow peak.
+        """
+        pass
+
     def least_squares(self, tau: np.ndarray) -> np.ndarray | None:
         """
         Solve the system A@theta = b.

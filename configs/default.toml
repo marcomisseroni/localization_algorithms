@@ -1,10 +1,10 @@
 # Parameters of the real-time stream simulation
 [stream]
-hop = 4096
+hop = 16384
 
 # Localization
 [localization.bf_gcc_ls]
-L = 96
+L = 144
 Nw = 4096
 
 # Detection
@@ -12,5 +12,5 @@ Nw = 4096
 pre_margin = 320
 post_margin = 320
 max_duration = 7000
-thr = 0.5
+thr = 0.05
 window = 30
