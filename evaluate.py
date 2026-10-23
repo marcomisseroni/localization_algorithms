@@ -36,13 +36,17 @@ def run_sample(sample: Sample, loc: Localizer, det: Detector, hop: int) -> np.nd
     est_pos = []
     block = sample.read(hop)
     while(block is not None):
-        curr_est = loc.push(block)
-        if(curr_est is not None):
-            est_pos.append(curr_est)
+        block_det = det.detect(block)
+        if(block_det is not None):
+            curr_est = loc.load_block_from_det(block_det)
+            if(curr_est is not None):
+                est_pos.append(curr_est)
         block = sample.read(hop)
     return np.array(est_pos)
 
-def compute_error(est_pos: np.ndarray, sample: Sample) -> np.ndarray:
+def compute_error(est_pos: np.ndarray, sample: Sample) -> np.ndarray | None:
+    if(est_pos.shape[0] == 0):
+        return None
     true_pos = sample.source_pos[:2]
     return np.linalg.norm(est_pos - true_pos, axis=1)
 
@@ -99,7 +103,10 @@ def main():
     
     est_pos = run_sample(sample, loc, det, hop)
     err = compute_error(est_pos, sample)
-    print_report(err)
+    if(err is not None):
+        print_report(err)
+    else:
+        print("No estimate has been produced")
 
 if __name__ == "__main__":
     main()

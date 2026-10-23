@@ -38,19 +38,7 @@ class BeamformingGccLs(Localizer):
     @override
     def push(self, block: np.ndarray) -> np.ndarray | None:
         self.push_meas(block)
-
-        if(not self.full):
-            return None
-
-        y = self.beamforming()
-        cc = np.zeros((self.N, self.L))
-        tau = np.zeros(self.N)
-        for i in range(self.N):
-            cc[i, :] = self.cross_correlation(y, self.M[i, :])
-            tau[i] = np.argmax(cc[i, :])
-        dtau = (tau[0] - tau) / self.fs
-        theta = self.least_squares(dtau)
-        return theta[:2].ravel()
+        return self.estimate()
 
     @override
     def reset(self) -> None:
@@ -61,6 +49,32 @@ class BeamformingGccLs(Localizer):
         self.C = np.zeros((self.L * self.N, self.L * self.N))
         self.n_received = 0
         self.full = False
+
+    @override
+    def load_block_from_det(self, block: np.ndarray) -> np.ndarray | None:
+        n_rows = block.shape[0]
+        n_cols = block.shape[1]
+        if((self.L > n_cols) or (self.N != n_rows)):
+            print("Wrong dimension of the block")
+            return None
+        self.Nw = n_cols
+        self.M = block[:, ::-1].copy()
+        self.full = True
+        return self.estimate()
+
+    @override
+    def estimate(self) -> np.ndarray | None:
+        if(not self.full):
+            return None
+        y = self.beamforming()
+        cc = np.zeros((self.N, self.L))
+        tau = np.zeros(self.N)
+        for i in range(self.N):
+            cc[i, :] = self.cross_correlation(y, self.M[i, :])
+            tau[i] = np.argmax(cc[i, :])
+        dtau = (tau[0] - tau) / self.fs
+        theta = self.least_squares(dtau)
+        return theta[:2].ravel()
 
     def tau_max(self) -> int:
         """

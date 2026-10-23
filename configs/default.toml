@@ -11,5 +11,5 @@ Nw = 4096
 [detection.amp_thr]
 pre_margin = 320
 post_margin = 320
-max_duration = 3000
+max_duration = 7000
 thr = 0.5

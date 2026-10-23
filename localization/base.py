@@ -19,10 +19,22 @@ class Localizer(ABC):
     def push(self, block: np.ndarray) -> np.ndarray | None:
         """
         block: (N, hop) new samples in chronological order (last column = most recent).
-        Returns the estimated source position (3,) or None if no estimate is available yet.
+        Calls estimate and return the result.
         """
     @abstractmethod
     def reset(self) -> None:
         """"
         Clear the internal state (buffers and matricies) to start a new recording.
+        """
+
+    @abstractmethod
+    def load_block_from_det(self, block: np.ndarray) -> np.ndarray | None:
+        """
+        Loads a block in which an event is detected, adapt the required parmeters and perform some check.
+        """
+
+    @abstractmethod
+    def estimate(self) -> np.ndarray | None:
+        """
+        Compute the estimated position of the soource.
         """
