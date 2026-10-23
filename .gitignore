@@ -4,4 +4,8 @@ venv/
 # Cache
 __pycache__/
 
+# Dir to generate .wav for the simulator
 test_signals/
+
+# Datasets
+data/
