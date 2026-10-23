@@ -74,6 +74,8 @@ class BeamformingGccLs(Localizer):
             tau[i] = np.argmax(cc[i, :])
         dtau = (tau[0] - tau) / self.fs
         theta = self.least_squares(dtau)
+        if(theta is None):
+            return None
         return theta[:2].ravel()
 
     def tau_max(self) -> int:
@@ -159,7 +161,7 @@ class BeamformingGccLs(Localizer):
             cc[0, i] = y @ x[i:i+y.shape[0]]
         return cc
 
-    def least_squares(self, tau: np.ndarray) -> np.ndarray:
+    def least_squares(self, tau: np.ndarray) -> np.ndarray | None:
         """
         Solve the system A@theta = b.
         Where: 
@@ -187,7 +189,11 @@ class BeamformingGccLs(Localizer):
             A[i, 1] = 2 * (yi - y1)
             A[i, 2] = 2 * di1
             b[i] = xi**2 + yi**2 - x1**2 - y1**2 - di1**2
-        return np.linalg.lstsq(A, b, rcond=None)[0]
+        theta_opt = np.linalg.lstsq(A, b, rcond=None)[0]
+        d1s = np.linalg.norm(self.sensor_pos[0, :2] - np.array([theta_opt[0, 0], theta_opt[1, 0]]))
+        if(theta_opt[2] < 0 or np.abs(d1s - theta_opt[2, 0]) > 0.1 * theta_opt[2, 0]):
+            theta_opt = None
+        return theta_opt
 
 if __name__ == "__main__":
     # Footstep-like test: 3 sensors on the floor ~1 m apart, slow floor wave
