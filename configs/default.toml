@@ -4,13 +4,12 @@ hop = 16384
 
 # Localization
 [localization.bf_gcc_ls]
-L = 144
+L = 176                   # L - 1 must exceed tau_max (161 samples for the 2 m Y)
 Nw = 4096
 
 # Detection
 [detection.amp_thr]
 pre_margin = 320
 post_margin = 320
-max_duration = 7000
-thr = 0.05
-window = 30
+thr = 0.02
+window = 1600

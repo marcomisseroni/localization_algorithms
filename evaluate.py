@@ -34,17 +34,15 @@ def load_config(path: Path) -> dict:
     return data
 
 def run_sample(sample: Sample, loc: Localizer, det: Detector, hop: int) -> np.ndarray:
-    sensor_pos = sample.sensors_pos
-    fs = sample.fs
-    c = sample.c
     est_pos = []
     block = sample.read(hop)
     while(block is not None):
-        block_det = det.detect(block)
-        if(block_det is not None):
-            curr_est = loc.load_block_from_det(block_det)
-            if(curr_est is not None):
-                est_pos.append(curr_est)
+        blocks_list = det.detect(block)
+        while(blocks_list):
+                curr_est = loc.load_block_from_det(blocks_list[0])
+                blocks_list.pop(0)
+                if(curr_est is not None):
+                    est_pos.append(curr_est)
         block = sample.read(hop)
     return np.array(est_pos)
 

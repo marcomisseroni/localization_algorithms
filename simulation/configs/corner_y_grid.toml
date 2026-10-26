@@ -1,0 +1,30 @@
+# 10 x 10 m room, 4 sensors in a "Y" near a corner (same centre as corner_square_grid),
+# one simulation for every node of a 1 m grid covering the whole room
+
+[simulation]
+fs = 16000                      # [Hz]
+c = 343.42                      # propagation speed [m/s]
+model = "free_field"            # "free_field" or "shoebox"
+room = [10.0, 10.0, 3.0]        # [m]
+
+[sensors]
+layout = "manual"
+# "Y": one sensor in the centre (2, 2) and three at 2 m, at 90, 210 and 330 deg
+# (aperture 3.46 m -> tau_max ~161 samples at 16 kHz, so L >= 163 in the evaluation config)
+positions = [
+    [2.000, 2.000, 1.0],
+    [2.000, 4.000, 1.0],
+    [0.268, 1.000, 1.0],
+    [3.732, 1.000, 1.0],
+]
+
+[source]
+signal = "test_signals/footstep_walk.wav"     # 4 steps, one every 0.55 s
+z = 1.0                         # same plane as the sensors (the least squares is 2D)
+# Grid nodes at 0.5, 1.5, ..., 9.5 m: 10 x 10 = 100 positions, half a metre from the walls;
+# the closest node to a sensor is ~0.5 m away
+grid_x = [0.5, 9.5, 1.0]        # [start, stop, step] [m]
+grid_y = [0.5, 9.5, 1.0]
+
+[noise]
+# snr_db = 20

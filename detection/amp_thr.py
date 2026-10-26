@@ -9,38 +9,65 @@ class AmpThr(Detector):
     Simple threshold detector.
     """
 
-    def __init__(self, pre_margin: int, post_margin: int, fs: int, N: int, max_duration: int, thr: float, window: int) -> None:
-        super().__init__(pre_margin, post_margin, fs, N, max_duration)
+    def __init__(self, pre_margin: int, post_margin: int, fs: int, N: int, thr: float, window: int) -> None:
+        super().__init__(pre_margin, post_margin, fs, N)
         self.thr = thr
         self.window = window
         self.pre_buffer = np.zeros((self.N, self.pre_margin))
         self.block = None
+        self.rec = False
+        self.event_buffer = np.zeros((self.N, 0))
+        self.prev_mask_end = 0
 
     @override
-    def detect(self, block: np.ndarray) -> np.ndarray | None:
+    def detect(self, block: np.ndarray) -> list:
         if(self.block is not None):
-            self.pre_buffer = self.block[:, self.pre_margin:]
+            self.pre_buffer = self.block[:, -self.pre_margin:]
         self.block = block
+        events = []
         block_zm = block - np.mean(block, axis=1, keepdims=True)
         mov_avg = uniform_filter1d(np.abs(block_zm), size=self.window, axis = 1) # Compute the moving average on each row
         mask = mov_avg > self.thr   # Apply the threshold
-        event_mask = mask.any(axis=0)   # Compute the and col-wise
-        d = np.diff(event_mask.astype(np.int8), prepend=0, append=0)    # Compute the difference between consecutive elements (converts bool -> int and add a 0 at the beginning and at the end)
+        event_mask = mask.any(axis=0)   # Compute the or col-wise
+        d = np.diff(event_mask.astype(np.int8), prepend=self.prev_mask_end)    # Compute the difference between consecutive elements (converts bool -> int and add a 0 at the beginning and at the end)
         starts = np.nonzero(d == 1)[0]  # Extract the indexes of the 1 -> in diff 1-0 = 1 (beginning of the event)
         ends = np.nonzero(d == -1)[0]   # Extract the indexes of the -1 -> in diff 0-1=1 (end of the event)
-        if(len(starts) > 0):
-            k = np.argmax(ends- starts) # Find the index of the event with max duration
-            a = starts[k] - self.pre_margin # Take the max between 0 and the index at the beginning of the longest event - pre margin
-            b = min(ends[k] + self.post_margin, block.shape[1]) # Take min between the end of the longest event + post margin and length of the block
-            if(a < 0):
-                block = np.concatenate((self.pre_buffer[:, a:], block[:, :b]), axis=1)
-            else:
-                block = block[:, a:b]
-        else:
-            block = None
-        return block
+        self.prev_mask_end = event_mask[-1]
+        if(self.rec and len(ends) > 0):
+            self.event_buffer = np.concatenate((self.event_buffer, block[:, 0:ends[0]]), axis=1)
+            events.append(self.event_buffer) 
+            ends = ends[1:]
+            self.rec = False
+            self.event_buffer = np.zeros((self.N, 0))
+        elif(self.rec and len(ends) == 0):
+            self.rec = True
+            self.event_buffer = np.concatenate((self.event_buffer, block), axis=1)
+            return events
+        if(event_mask[-1] == True and len(starts) > 0):
+            self.rec = True
+            self.event_buffer = np.concatenate((self.add_pre_margin(starts[-1]), block[:, starts[-1]:]), axis=1)
+            starts = starts[:-1]
+        while(len(ends) > 0):
+            events.append(np.concatenate((self.add_pre_margin(starts[0]), block[:, starts[0]:ends[0]]), axis=1))
+            starts = starts[1:]
+            ends = ends[1:]
+        return events
 
     @override
     def reset(self) -> None:
         self.pre_buffer = np.zeros((self.N, self.pre_margin))
-        self.post_buffer = np.zeros((self.N, self.post_margin))
+        self.rec = False
+        self.event_buffer = np.zeros((self.N, 0))
+        self.prev_mask_end = 0
+        self.block = None
+
+    def add_pre_margin(self, start_index: int) -> np.ndarray:
+        """
+        Return the part of the pre margin to stack in front of current block.
+        Empty if it's not needed.
+        """
+        if(start_index < self.pre_margin):
+            event = np.concatenate((self.pre_buffer[:, start_index-self.pre_margin:], self.block[:, 0: start_index]), axis=1)
+        else:
+            event = self.block[:, start_index-self.pre_margin:start_index]
+        return event

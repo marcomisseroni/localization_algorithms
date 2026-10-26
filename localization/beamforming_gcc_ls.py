@@ -3,6 +3,7 @@ import math
 
 from localization.base import Localizer
 from typing import override
+from scipy.signal import correlate
 
 class BeamformingGccLs(Localizer):
     """
@@ -67,11 +68,11 @@ class BeamformingGccLs(Localizer):
         if(not self.full):
             return None
         y = self.beamforming()
-        cc = np.zeros((self.N, self.L))
+        cc = np.zeros((self.N, len(y) + self.Nw - 1))
         tau = np.zeros(self.N)
         for i in range(self.N):
             cc[i, :] = self.cross_correlation(y, self.M[i, :])
-            tau[i] = np.argmax(cc[i, :])
+            tau[i] = np.argmax(cc[i, :]) - (len(y) - 1)
         dtau = (tau[0] - tau) / self.fs
         theta = self.least_squares(dtau)
         if(theta is None):
@@ -135,7 +136,7 @@ class BeamformingGccLs(Localizer):
         self.D = self.build_D_mat()
         self.C = self.D @ self.D.T / K
 
-    def beamforming(self) -> np.ndarray:
+    def beamforming(self) -> np.ndarray:    # Check SNR for x and y
         """
         Beamforming is a method used to increase the SNR by giving a different weight to
         each sensor.
@@ -151,14 +152,9 @@ class BeamformingGccLs(Localizer):
 
     def cross_correlation(self, y: np.ndarray, x:np.ndarray) -> np.ndarray:
         """
-        Use zero padding to expand x signal, then compute the cross correlation.
-        To have x and y aligned with tau = 0 we have to overlap the first element of x with the first 
-        element of y.
+        Compute the cross correlation via simple multiplication.
         """
-        x = x - x.mean()
-        cc = np.zeros((1, self.L))
-        for i in range(self.L):
-            cc[0, i] = y @ x[i:i+y.shape[0]]
+        cc = correlate(x - x.mean(), y, mode="full")
         return cc
 
     def generalized_cross_correlation(self, y: np.ndarray, x: np.ndarray) -> np.ndarray:
