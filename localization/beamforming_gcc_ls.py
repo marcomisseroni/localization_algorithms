@@ -4,6 +4,7 @@ import math
 from localization.base import Localizer
 from typing import override
 from scipy.signal import correlate
+from numpy.fft import fft, ifft
 
 class BeamformingGccLs(Localizer):
     """
@@ -20,7 +21,7 @@ class BeamformingGccLs(Localizer):
     in order to extract a small frequency interval and the speed is almost constant.
     """
 
-    def __init__(self, L: int, Nw: int, sensor_pos: np.ndarray, fs: int, c: float) -> None:
+    def __init__(self, L: int, Nw: int, sensor_pos: np.ndarray, fs: int, c: float, cc_type: str) -> None:
         super().__init__(sensor_pos, fs, c)
         self.Nw = Nw
         self.L = L
@@ -29,6 +30,7 @@ class BeamformingGccLs(Localizer):
         self.n_received = 0
         self.full = False
         self.tau_m = int(self.tau_max())
+        self.cc_type = cc_type  # possible options: cc, roth, scot, phat
         if(self.tau_m > self.L - 1):
             raise ValueError("The current sub-window is not large enough to capture the same event accross all sensor pairs")
         if(self.L > self.Nw):
@@ -71,7 +73,7 @@ class BeamformingGccLs(Localizer):
         cc = np.zeros((self.N, len(y) + self.Nw - 1))
         tau = np.zeros(self.N)
         for i in range(self.N):
-            cc[i, :] = self.cross_correlation(y, self.M[i, :])
+            cc[i, :] = self.generalized_cross_correlation(y, self.M[i, :])
             tau[i] = np.argmax(cc[i, :]) - (len(y) - 1)
         dtau = (tau[0] - tau) / self.fs
         theta = self.least_squares(dtau)
@@ -150,7 +152,7 @@ class BeamformingGccLs(Localizer):
         y = v_max.T @ self.D
         return y
 
-    def cross_correlation(self, y: np.ndarray, x:np.ndarray) -> np.ndarray:
+    def cross_correlation(self, y: np.ndarray, x: np.ndarray) -> np.ndarray:
         """
         Compute the cross correlation via simple multiplication.
         """
@@ -159,9 +161,34 @@ class BeamformingGccLs(Localizer):
 
     def generalized_cross_correlation(self, y: np.ndarray, x: np.ndarray) -> np.ndarray:
         """
-        Alternative to simple cross-correlation, should exhibit more narrow peak.
+        Compute the generalized cross-correlation, steeper peak so more precise time lag estimation.
         """
-        pass
+        cc = correlate(x - x.mean(), y, mode="full")
+        window = None
+        match self.cc_type:
+            case "cc":
+                return cc
+            case "roth":
+                Ry = correlate(y, y, mode="full")
+                n = max(len(cc), len(Ry))
+                Py = np.abs(fft(Ry, n=n))
+                epsilon = max(1e-3 * np.max(np.abs(Py)), 1e-12)
+                window = (Py + epsilon)**-1
+            case "scot":
+                Rx = correlate(x - x.mean(), x - x.mean(), mode="full")
+                Ry = correlate(y, y, mode="full")
+                n = max(len(cc), len(Ry), len(Rx))
+                Px = np.abs(fft(Rx, n=n))
+                Py = np.abs(fft(Ry, n=n))
+                epsilon = max(1e-3 * np.sqrt(Px * Py).max(), 1e-12) 
+                window = 1 / (np.sqrt(Px * Py) + epsilon)
+            case "phat":
+                n = len(cc)
+                Pyx = np.abs(fft(cc, n=n))
+                epsilon = max(1e-3 * np.max(np.abs(Pyx)), 1e-12)
+                window = (Pyx + epsilon)**-1
+        csd = fft(cc, n=n)
+        return ifft(csd * window).real[:len(cc)]
 
     def least_squares(self, tau: np.ndarray) -> np.ndarray | None:
         """

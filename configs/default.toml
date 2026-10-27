@@ -6,6 +6,7 @@ hop = 16384
 [localization.bf_gcc_ls]
 L = 176                   # L - 1 must exceed tau_max (161 samples for the 2 m Y)
 Nw = 4096
+cc_type = "phat"                # cc -> simple cross-correlation, roth, scot, phat are the possible windows for gcc
 
 # Detection
 [detection.amp_thr]
