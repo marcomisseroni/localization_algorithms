@@ -8,9 +8,23 @@ L = 176                   # L - 1 must exceed tau_max (161 samples for the 2 m Y
 Nw = 4096
 cc_type = "phat"                # cc -> simple cross-correlation, roth, scot, phat are the possible windows for gcc
 
+[localization.wv_tdoa_mlt]
+low_cutoff = 50
+high_cutoff = 500
+n_scales = 50
+v_min = 340
+v_max = 345
+v_count = 50
+h_range = 5
+h_steps = 100
+k = 0.2
+
 # Detection
 [detection.amp_thr]
-pre_margin = 320
 post_margin = 320
 thr = 0.02
 window = 1600
+
+# Event: common for detection and localization
+[event]
+pre_margin = 600

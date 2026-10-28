@@ -9,18 +9,14 @@ class Localizer(ABC):
     after some detection algorithm.
     """
 
-    def __init__(self, sensor_pos: np.ndarray, fs: int, c: float) -> None:
+    def __init__(self, sensor_pos: np.ndarray, fs: int, c: float | None, pre_margin: int, room_dim: list[float]) -> None:
         self.sensor_pos = sensor_pos            # Position of the sensors
         self.N = self.sensor_pos.shape[0]       # Number of sensors
         self.fs = fs                            # Sampling frequency
         self.c = c
+        self.pre_margin = pre_margin
+        self.room_dim = room_dim
 
-    @abstractmethod
-    def push(self, block: np.ndarray) -> np.ndarray | None:
-        """
-        block: (N, hop) new samples in chronological order (last column = most recent).
-        Calls estimate and return the result.
-        """
     @abstractmethod
     def reset(self) -> None:
         """"

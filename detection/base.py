@@ -13,7 +13,7 @@ class Detector(ABC):
         self.N = N
 
     @abstractmethod
-    def detect(self, block: np.ndarray) -> list:
+    def detect(self, block: np.ndarray) -> list[np.ndarray]:
         """
         Method that returns a list of sub-blocks containing events.
         """

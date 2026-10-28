@@ -57,7 +57,7 @@ def load_results(path: Path) -> list[dict]:
         for r in csv.DictReader(f):
             has_est = r["error_m"] != ""
             step = count.get(r["sample"], 0)
-            if has_est:
+            if(has_est):
                 count[r["sample"]] = step + 1
             rows.append({
                 "sample": r["sample"],
@@ -72,7 +72,7 @@ def load_results(path: Path) -> list[dict]:
 def load_sensors(dataset_path: Path) -> np.ndarray:
     with open(dataset_path / "manifest.json") as f:
         manifest = json.load(f)
-    if "microphones_xyz_m" in manifest:
+    if("microphones_xyz_m" in manifest):
         return np.array(manifest["microphones_xyz_m"])[:, :2]
     # Datasets exported by the simulator GUI: geometry only in the per-sample JSON
     with open(dataset_path / manifest["samples"][0]["metadata_file"]) as f:
@@ -90,7 +90,7 @@ def plot_map(rows: list[dict], sensors: np.ndarray, out: Path) -> None:
     missed = []
     for (x, y), errs in per_pos.items():
         errs = [e for e in errs if e is not None]
-        if errs:
+        if(errs):
             med[np.searchsorted(ys, y), np.searchsorted(xs, x)] = np.median(errs)
         else:
             missed.append((x, y))
@@ -108,7 +108,7 @@ def plot_map(rows: list[dict], sensors: np.ndarray, out: Path) -> None:
         ax.plot(x, y, marker="x", color=INK2, markersize=8, markeredgewidth=1.5)
     for i in range(ys.size):
         for j in range(xs.size):
-            if not np.isnan(med[i, j]):
+            if(not np.isnan(med[i, j])):
                 dark = med[i, j] > 0.6 * vmax
                 ax.text(xs[j], ys[i], f"{med[i, j]:.2f}", ha="center", va="center", fontsize=7,
                         color=BG if dark else INK)
@@ -142,7 +142,7 @@ def plot_distance(rows: list[dict], sensors: np.ndarray, out: Path) -> None:
     centres, medians = [], []
     for lo, hi in zip(bins[:-1], bins[1:]):
         k = (d >= lo) & (d < hi)
-        if k.any():
+        if(k.any()):
             centres.append((lo + hi) / 2)
             medians.append(np.median(e[k]))
     ax.plot(centres, medians, color=INK, lw=2, marker="o", markersize=5, label="median per 1 m bin")
@@ -172,7 +172,7 @@ def plot_cdf(rows: list[dict], out: Path) -> None:
 def plot_all(csv_path: Path, dataset_path: Path, out_dir: Path) -> None:
     """Make every figure for one CSV. Called by evaluate.py after writing the results."""
     rows = load_results(csv_path)
-    if all(r["error"] is None for r in rows):
+    if(all(r["error"] is None for r in rows)):
         print("No estimates: figures not generated")
         return
     sensors = load_sensors(dataset_path)
@@ -189,5 +189,5 @@ def main() -> None:
     plot_all(args.csv_path, args.dataset_path, args.out)
 
 
-if __name__ == "__main__":
+if(__name__ == "__main__"):
     main()

@@ -18,14 +18,15 @@ class Sample:
         self.wav_files = data["mono_wav_files"]
         self.sensors_pos = np.array(data["microphones_xyz_m"])
         self.c = data["simulation"]["speed_of_sound"]
-        self.signals = []
-
+        self.room_dim = data["simulation"]["room_dimensions"]
+        signals = []
         for i in range(self.N):
             path = self.data_path / self.wav_files[i]
             _, x = wavfile.read(str(path))
-            self.signals.append(x)
+            signals.append(x)
+        self.signals: np.ndarray = np.stack(signals).astype(float)     # (N, T)
         if(x.dtype == np.int16):
-            self.signals = np.stack(self.signals).astype(float) / 32768
+            self.signals /= 32768
         else:
             print("Error: data type is not int16")
 
@@ -42,9 +43,9 @@ class Sample:
         self.cursor += hop
         return block
 
-def main():
+def main() -> None:
     file_path = "/home/m4rch0/marco/master/master_thesis/acustic-array-simulator/outputs/selkd_batch_20261021_094456_763978/rep0001_file001_test_chirp.json"
-    sample = Sample(file_path)
+    sample = Sample(Path(file_path))
 
-if __name__ == "__main__":
+if(__name__ == "__main__"):
     main()

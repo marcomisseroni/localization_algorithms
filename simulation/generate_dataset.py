@@ -68,15 +68,15 @@ def build_sensors(conf: dict) -> np.ndarray:
     """Sensor positions (N, 3) from the [sensors] section."""
     sen = conf["sensors"]
     layout = sen["layout"]
-    if layout == "manual":
+    if(layout == "manual"):
         return np.asarray(sen["positions"], dtype=float)
     center = tuple(sen["center"])
     count = sen["count"]
-    if layout == "square":
+    if(layout == "square"):
         return square_perimeter_array(center, sen["side"] / 2, count)
-    if layout == "circle":
+    if(layout == "circle"):
         return circular_array(center, sen["diameter"] / 2, count)
-    if layout == "linear":
+    if(layout == "linear"):
         return linear_array(center, sen["spacing"], count)
     raise ValueError(f"Unknown sensor layout: {layout}")
 
@@ -89,16 +89,16 @@ def build_sources(conf: dict, room: tuple[float, float, float]) -> np.ndarray:
     otherwise in the whole room (minus a margin from the walls).
     """
     src = conf["source"]
-    if "grid_x" in src:
+    if("grid_x" in src):
         xs = np.arange(src["grid_x"][0], src["grid_x"][1] + src["grid_x"][2] / 2, src["grid_x"][2])
         ys = np.arange(src["grid_y"][0], src["grid_y"][1] + src["grid_y"][2] / 2, src["grid_y"][2])
         gx, gy = np.meshgrid(xs, ys, indexing="ij")
         return np.column_stack((gx.ravel(), gy.ravel(), np.full(gx.size, src["z"])))
     n = src["n_positions"]
     seed = src.get("seed", 1)
-    if "position" in src:
+    if("position" in src):
         return generate_source_positions(np.asarray(src["position"], dtype=float), room, n, randomize_xy=False)
-    if "area" in src:
+    if("area" in src):
         (x0, x1), (y0, y1) = src["area"]
         rng = np.random.default_rng(seed)
         return np.column_stack((rng.uniform(x0, x1, n), rng.uniform(y0, y1, n), np.full(n, src["z"])))
@@ -109,7 +109,7 @@ def build_sources(conf: dict, room: tuple[float, float, float]) -> np.ndarray:
 def load_signal(conf: dict, fs: int) -> tuple[np.ndarray, str]:
     """Source waveform resampled to fs, and its name. 'chirp' uses the simulator test chirp."""
     name = conf["source"]["signal"]
-    if name == "chirp":
+    if(name == "chirp"):
         return make_test_signal(fs), "test_chirp"
     path = Path(name) if Path(name).is_absolute() else ROOT / name
     return load_mono_wav(path, fs), path.stem
@@ -129,7 +129,7 @@ def add_noise(result: SimulationResult, snr_db: float, rng: np.random.Generator)
     noise_std = np.sqrt(max(powers) / 10 ** (snr_db / 10))
     noisy = x + noise_std * rng.standard_normal(x.shape)
     peak = np.max(np.abs(noisy))
-    if peak > 0.99:                                         # keep it inside the int16 range
+    if(peak > 0.99):                                         # keep it inside the int16 range
         noisy *= 0.99 / peak
     return replace(result, signals=noisy)
 
@@ -138,8 +138,8 @@ def main() -> None:
     args = parse_arguments()
     conf = load_config(args.config)
     out_dir = args.out or ROOT / "data" / args.config.stem
-    if out_dir.exists():
-        if not args.overwrite:
+    if(out_dir.exists()):
+        if(not args.overwrite):
             sys.exit(f"{out_dir} already exists, use --overwrite to replace it")
         shutil.rmtree(out_dir)
     out_dir.mkdir(parents=True)
@@ -168,7 +168,7 @@ def main() -> None:
 
     for i, position in enumerate(sources):
         result = simulate(signal, sensors, position, sim_config)
-        if snr_db is not None:
+        if(snr_db is not None):
             result = add_noise(result, snr_db, noise_rng)
         stem = f"rep{i + 1:04d}_file001_{signal_name}"
         wav_paths, json_path = export_result(
@@ -191,5 +191,5 @@ def main() -> None:
     print(f"Dataset written to {out_dir}")
 
 
-if __name__ == "__main__":
+if(__name__ == "__main__"):
     main()

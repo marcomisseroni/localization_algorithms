@@ -8,22 +8,24 @@ from pathlib import Path
 from core.data import Sample
 from localization.base import Localizer
 from localization.beamforming_gcc_ls import BeamformingGccLs 
+from localization.wavelet_tdoa import WaveletTdoaMult
 from detection.base import Detector
 from detection.amp_thr import AmpThr
 from analysis.plot_results import plot_all
 
 LOCALIZERS = {
     "bf_gcc_ls": BeamformingGccLs,
+    "wv_tdoa_mlt": WaveletTdoaMult,
 }
 
 DETECTORS= {
     "amp_thr": AmpThr,
 }
 
-def parse_arguments() -> Path:
+def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Test the implemented algorithms to localize a source having N sensors")
     parser.add_argument('dataset_path')
-    parser.add_argument("--loc", choices=LOCALIZERS.keys(), default="bf_gcc_ls")
+    parser.add_argument("--loc", choices=LOCALIZERS.keys(), default="wv_tdoa_mlt")
     parser.add_argument("--det", choices=DETECTORS.keys(), default="amp_thr")
     parser.add_argument("--out", default="results/batch0.csv")
     return parser.parse_args()
@@ -53,7 +55,7 @@ def compute_error(est_pos: np.ndarray, sample: Sample) -> np.ndarray | None:
     return np.linalg.norm(est_pos - true_pos, axis=1)
 
 def print_report(err: np.ndarray) -> None:
-    if err.size == 0:
+    if(err.size == 0):
         print("No estimates produced")
         return
 
@@ -77,7 +79,7 @@ def print_report(err: np.ndarray) -> None:
         print(f" {f'Error < {th * 100:.0f} cm':<20}{frac:>10.1f} %")
     print("=" * 40)
 
-def main():
+def main() -> None:
     args = parse_arguments()
     dataset_path = Path(args.dataset_path)
 
@@ -108,11 +110,14 @@ def main():
             sensor_pos=sample.sensors_pos,
             fs=sample.fs,
             c=sample.c,
+            room_dim=sample.room_dim,
+            pre_margin=conf["event"]["pre_margin"],
             **conf["localization"][args.loc]
         )
         det = DetClass(
             fs=sample.fs,
             N=sample.N,
+            pre_margin=conf["event"]["pre_margin"],
             **conf["detection"][args.det]
         )
 
@@ -141,5 +146,5 @@ def main():
 
     plot_all(out_path, dataset_path, out_path.parent)
 
-if __name__ == "__main__":
+if(__name__ == "__main__"):
     main()

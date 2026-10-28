@@ -10,7 +10,7 @@ class AmpThr(Detector):
     """
 
     def __init__(self, pre_margin: int, post_margin: int, fs: int, N: int, thr: float, window: int) -> None:
-        super().__init__(pre_margin, post_margin, fs, N)
+        super().__init__(pre_margin=pre_margin, post_margin=post_margin, fs=fs, N=N)
         self.thr = thr
         self.window = window
         self.pre_buffer = np.zeros((self.N, self.pre_margin))
@@ -20,7 +20,7 @@ class AmpThr(Detector):
         self.prev_mask_end = 0
 
     @override
-    def detect(self, block: np.ndarray) -> list:
+    def detect(self, block: np.ndarray) -> list[np.ndarray]:
         if(self.block is not None):
             self.pre_buffer = self.block[:, -self.pre_margin:]
         self.block = block

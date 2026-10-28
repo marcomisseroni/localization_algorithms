@@ -9,7 +9,7 @@ from numpy.fft import fft, ifft
 class BeamformingGccLs(Localizer):
     """
     Implementation of a localization algorithm, beamforming to increare SNR + 
-    generalized cross-correlation + least squares
+    generalized cross-correlation + least squares.
     Nw: Number of samples (the windows must be greater than the max possible delay)
     N: Number of sensors
     L: Length of the sub window
@@ -21,12 +21,13 @@ class BeamformingGccLs(Localizer):
     in order to extract a small frequency interval and the speed is almost constant.
     """
 
-    def __init__(self, L: int, Nw: int, sensor_pos: np.ndarray, fs: int, c: float, cc_type: str) -> None:
-        super().__init__(sensor_pos, fs, c)
+    def __init__(self, L: int, Nw: int, sensor_pos: np.ndarray, fs: int, c: float, room_dim: list[float], cc_type: str, pre_margin: int) -> None:
+        super().__init__(sensor_pos=sensor_pos, fs=fs, c=c, pre_margin=pre_margin, room_dim=room_dim)
         self.Nw = Nw
         self.L = L
         self.M = np.zeros((self.N, self.Nw))
         self.C = np.zeros((self.L * self.N, self.L * self.N))
+        self.D = None
         self.n_received = 0
         self.full = False
         self.tau_m = int(self.tau_max())
@@ -39,17 +40,13 @@ class BeamformingGccLs(Localizer):
             raise ValueError("For the solution of least squares at least 4 sensors are required")
 
     @override
-    def push(self, block: np.ndarray) -> np.ndarray | None:
-        self.push_meas(block)
-        return self.estimate()
-
-    @override
     def reset(self) -> None:
         """
         Reset all the used matricies
         """
         self.M = np.zeros((self.N, self.Nw))
         self.C = np.zeros((self.L * self.N, self.L * self.N))
+        self.D = None
         self.n_received = 0
         self.full = False
 
@@ -81,7 +78,7 @@ class BeamformingGccLs(Localizer):
             return None
         return theta[:2].ravel()
 
-    def tau_max(self) -> int:
+    def tau_max(self) -> float:
         """
         Find the distance between any sensor pair to compute the max physical delay between 2 sensors.
         """
@@ -113,21 +110,6 @@ class BeamformingGccLs(Localizer):
             X = self.build_X_mat(i, Mcp)
             D[:, i] = X
         return D
-        
-
-    def push_meas(self, block: np.ndarray) -> None:
-        """
-        Push the new measurement.
-        """
-        j = block.shape[1]
-        self.n_received = min(self.n_received + j, self.Nw)
-        self.full = self.n_received == self.Nw
-        if(j >= self.Nw):
-            block = block[:, j-self.Nw:]
-            self.M = block[:, ::-1].copy()
-            return
-        self.M[:, j:] = self.M[:, 0:self.Nw-j]
-        self.M[:, 0:j] = block[:, ::-1] # Invert the block since it arrives with new samples on the right 
 
     def corr_matrix_upd(self) -> None:
         """
@@ -223,34 +205,3 @@ class BeamformingGccLs(Localizer):
         if(theta_opt[2] < 0 or np.abs(d1s - theta_opt[2, 0]) > 0.1 * theta_opt[2, 0]):
             theta_opt = None
         return theta_opt
-
-if __name__ == "__main__":
-    # Footstep-like test: 3 sensors on the floor ~1 m apart, slow floor wave
-    fs = 1000                                           # [Hz]
-    c = 300                                             # [m/s]
-    sensor_pos = np.array([[0, 0, 0], [1, 0, 0], [0, 1, 0]])
-    source_pos = np.array([0.7, 0.4, 0])
-
-    # tau_max = sqrt(2) * fs / c ~ 4.7 samples -> L - 1 = 7 is enough
-    # K = Nw - L + 1 = 505 columns to estimate a (N*L x N*L) = 24 x 24 matrix
-    loc = BeamformingGccLs(8, 512, sensor_pos, fs, c)
-
-    # Broadband low-frequency burst (low-passed noise under a Hann window), like a footstep
-    rng = np.random.default_rng(0)
-    T = 1024
-    t = np.arange(T)
-    noise = np.convolve(rng.standard_normal(T), np.ones(9) / 9, mode="same")
-    burst = np.zeros(T)
-    burst[400:600] = noise[400:600] * np.hanning(200)
-
-    # Fractional delays from the geometry, relative to the first sensor reached
-    delays = np.linalg.norm(sensor_pos - source_pos, axis=1) / c * fs
-    delays -= delays.min()
-    print("true delays [samples]:", np.round(delays, 2))
-    signals = np.stack([np.interp(t - d, t, burst) for d in delays])
-    signals += 0.01 * rng.standard_normal(signals.shape)
-
-    # Simulate the real-time stream
-    hop = 64
-    for k in range(0, T, hop):
-        loc.push(signals[:, k:k + hop])
