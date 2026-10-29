@@ -13,3 +13,6 @@ data/
 # Images and csv 
 *.png
 *.csv
+
+# Log files
+*.log
