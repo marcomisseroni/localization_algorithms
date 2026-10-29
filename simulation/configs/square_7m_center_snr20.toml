@@ -1,0 +1,28 @@
+# Group A: square, aperture 7 m, array centred in (25, 25) (center), SNR 20 dB
+# 50 x 50 m room, one simulation for every node of a 5 m grid (10 x 10 = 100 source positions)
+# The array is rotated by 10 deg so that no sensor is closer than 0.6 m to a grid node
+
+[simulation]
+fs = 16000                      # [Hz]
+c = 343.42                      # propagation speed [m/s]
+model = "free_field"
+room = [50.0, 50.0, 3.0]        # [m]
+
+[sensors]
+layout = "manual"
+# aperture (max distance between two sensors) = 7.00 m
+positions = [
+    [22.992, 22.133, 1.0],
+    [27.867, 22.992, 1.0],
+    [27.008, 27.867, 1.0],
+    [22.133, 27.008, 1.0],
+]
+
+[source]
+signal = "test_signals/footstep_walk.wav"     # 4 steps, one every 0.55 s
+z = 1.0                         # same plane as the sensors (the localization is 2D)
+grid_x = [2.5, 47.5, 5.0]       # [start, stop, step] [m]
+grid_y = [2.5, 47.5, 5.0]
+
+[noise]
+snr_db = 20
