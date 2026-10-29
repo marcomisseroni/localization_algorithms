@@ -1,13 +1,13 @@
 """
 Plot the results written by evaluate.py.
 
-Reads the CSV of the estimates and the manifest of the dataset (for the sensor positions) and saves in results/:
+Reads the CSV of the estimates and the manifest of the dataset (for the sensor positions) and saves in results/figures/:
     <csv name>_map.png        median error for every source position, with the sensors
     <csv name>_distance.png   error of every estimate vs. distance from the centre of the array
     <csv name>_cdf.png        cumulative distribution of the error
 
 evaluate.py calls plot_all() automatically; to redo the figures from an existing CSV, from the project root:
-    venv/bin/python -m analysis.plot_results results/corner_square_grid_walk.csv data/corner_square_grid
+    venv/bin/python -m analysis.plot_results results/y_7m_center_snr20_bf_gcc_ls.csv data/y_7m_center_snr20
 """
 
 import argparse
@@ -24,6 +24,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 BLUE = "#2a78d6"        # estimates of complete steps
 GREY = "#8f8e89"        # estimates of the first step of each recording
+MAP_VMAX = 5.0         # [m] fixed top of the error map colour scale, so maps of different runs are comparable
 INK = "#0b0b0b"
 INK2 = "#52514e"
 GRID = "#e4e3df"
@@ -42,7 +43,7 @@ def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Plot the localization results of evaluate.py")
     parser.add_argument("csv_path", type=Path, help="CSV written by evaluate.py")
     parser.add_argument("dataset_path", type=Path, help="dataset folder (with manifest.json) used for the CSV")
-    parser.add_argument("--out", type=Path, default=Path("results"), help="folder for the PNGs")
+    parser.add_argument("--out", type=Path, default=Path("results"), help="results folder; the PNGs are saved in its figures/ subfolder")
     return parser.parse_args()
 
 
@@ -100,7 +101,7 @@ def plot_map(rows: list[dict], sensors: np.ndarray, out: Path) -> None:
         step = np.diff(v).mean() if v.size > 1 else 1.0
         return np.concatenate(([v[0] - step / 2], v + step / 2))
 
-    vmax = np.nanpercentile(med, 95)
+    vmax = MAP_VMAX
     fig, ax = plt.subplots(figsize=(7.5, 6.5), constrained_layout=True)
     mesh = ax.pcolormesh(edges(xs), edges(ys), med, cmap="Blues", vmin=0, vmax=vmax,
                          edgecolors=BG, linewidth=2)
@@ -116,8 +117,8 @@ def plot_map(rows: list[dict], sensors: np.ndarray, out: Path) -> None:
     ax.plot(sensors[:, 0], sensors[:, 1], "o", color=INK, markersize=9, markeredgecolor=BG, markeredgewidth=2)
     ax.set(title="Median localization error per source position", xlabel="x [m]", ylabel="y [m]", aspect="equal")
     ax.grid(False)
-    cbar = fig.colorbar(mesh, ax=ax, shrink=0.85)
-    cbar.set_label(f"Median error [m] (colour clipped at P95 = {vmax:.2f} m)", color=INK2)
+    cbar = fig.colorbar(mesh, ax=ax, shrink=0.85, extend="max")    # the arrow marks errors above vmax
+    cbar.set_label(f"Median error [m] (fixed scale, darkest = {vmax:.1f} m or more)", color=INK2)
     cbar.outline.set_visible(False)
     ax.text(0, -0.08, "● sensors   × no estimate", transform=ax.transAxes, color=INK2, fontsize=9)
     fig.savefig(out, dpi=150)
@@ -170,12 +171,16 @@ def plot_cdf(rows: list[dict], out: Path) -> None:
 
 
 def plot_all(csv_path: Path, dataset_path: Path, out_dir: Path) -> None:
-    """Make every figure for one CSV. Called by evaluate.py after writing the results."""
+    """
+    Make every figure for one CSV and save them in the figures/ subfolder of out_dir.
+    Called by evaluate.py after writing the results.
+    """
     rows = load_results(csv_path)
     if(all(r["error"] is None for r in rows)):
         print("No estimates: figures not generated")
         return
     sensors = load_sensors(dataset_path)
+    out_dir = out_dir / "figures"
     out_dir.mkdir(parents=True, exist_ok=True)
     stem = csv_path.stem
     plot_map(rows, sensors, out_dir / f"{stem}_map.png")

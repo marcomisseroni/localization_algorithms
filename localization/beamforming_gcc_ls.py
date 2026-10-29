@@ -18,8 +18,12 @@ class BeamformingGccLs(Localizer):
     C: Correlation matrix DIM = (NL * NL)
     M: Measurement matrix, last Nw samples of each sensor, each row is a different sensor, samples on cols
     
-    Warning: before using this algorithm on measurements of vibration of the ground a band pass filter should be applied 
+    Warning: before using this algorithm on measurements of vibration of the ground a band pass filter should be applied
     in order to extract a small frequency interval and the speed is almost constant.
+
+    TODO: the GCC weights (roth, scot, phat) whiten the spectrum over all the frequencies. Even with band-pass filtered
+    data, the attenuated out-of-band noise is brought back to the same weight as the signal. Setting the weight to 0
+    outside [low_cutoff, high_cutoff] would whiten only the band of the event.
     """
 
     def __init__(self, L: int | Literal["auto"], Nw: int, sensor_pos: np.ndarray, fs: int, c: float, 
