@@ -25,7 +25,8 @@ class WaveletTdoaMult(Localizer):
     def __init__(self, sensor_pos: np.ndarray, fs: int, c: float | None, room_dim: list[float], 
                  pre_margin: int, low_cutoff: float, high_cutoff: float, n_scales: int,
                  v_min: float, v_max: float, v_count: int, h_range: float, h_steps: int, k: float) -> None:
-        super().__init__(sensor_pos=sensor_pos, fs=fs, c=c, pre_margin=pre_margin, room_dim=room_dim)
+        super().__init__(sensor_pos=sensor_pos, fs=fs, c=c, pre_margin=pre_margin, room_dim=room_dim, 
+                         low_cutoff=low_cutoff, high_cutoff=high_cutoff)
         self.M: np.ndarray | None = None
         self.freq = np.geomspace(low_cutoff, high_cutoff, n_scales)
         self.scales = pywt.central_frequency('mexh') * self.fs / self.freq

@@ -99,7 +99,8 @@ def main() -> None:
     n_missed = 0
 
     for i, entry in enumerate(manifest["samples"]):
-        sample = Sample(dataset_path / entry["metadata_file"])
+        sample = Sample(dataset_path / entry["metadata_file"], filter_order=conf["band"]["filter_order"], 
+                        low_cutoff=conf["band"]["low_cutoff"], high_cutoff=conf["band"]["high_cutoff"])
         name = Path(entry["metadata_file"]).stem
         true_x, true_y = sample.source_pos[:2]
         # Distance between the source and the centre of the sensor array (mean of the sensor positions)
@@ -112,6 +113,8 @@ def main() -> None:
             c=sample.c,
             room_dim=sample.room_dim,
             pre_margin=conf["event"]["pre_margin"],
+            low_cutoff = conf["band"]["low_cutoff"],
+            high_cutoff = conf["band"]["high_cutoff"],
             **conf["localization"][args.loc]
         )
         det = DetClass(

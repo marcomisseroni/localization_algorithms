@@ -3,11 +3,15 @@ import json
 
 from scipy.io import wavfile
 from pathlib import Path
+from scipy import signal
 
 class Sample:
-    def __init__(self, file_path: Path) -> None:
+    def __init__(self, file_path: Path, low_cutoff: float, high_cutoff: float, filter_order: int) -> None:
         self.data_path = file_path.parent
         self.cursor = 0
+        self.low_cutoff = low_cutoff
+        self.high_cutoff = high_cutoff
+        self.filter_order = filter_order
 
         with open(file_path, "r") as file:
             data = json.load(file)
@@ -19,6 +23,9 @@ class Sample:
         self.sensors_pos = np.array(data["microphones_xyz_m"])
         self.c = data["simulation"]["speed_of_sound"]
         self.room_dim = data["simulation"]["room_dimensions"]
+        self.filt_params = signal.butter(self.filter_order, [self.low_cutoff, self.high_cutoff], btype="bandpass", fs=self.fs, output="sos")
+        self.zi = np.zeros((self.filt_params.shape[0], self.N, 2))
+        
         signals = []
         for i in range(self.N):
             path = self.data_path / self.wav_files[i]
@@ -32,6 +39,7 @@ class Sample:
 
     def rewind(self) -> None:
         self.cursor = 0
+        self.zi = np.zeros((self.filt_params.shape[0], self.N, 2))
 
     def read(self, hop: int) -> np.ndarray | None:
         """
@@ -41,11 +49,12 @@ class Sample:
             return None
         block = self.signals[:, self.cursor:self.cursor + hop].copy()
         self.cursor += hop
-        return block
+        return self.band_pass_filter(block)
 
-def main() -> None:
-    file_path = "/home/m4rch0/marco/master/master_thesis/acustic-array-simulator/outputs/selkd_batch_20261021_094456_763978/rep0001_file001_test_chirp.json"
-    sample = Sample(Path(file_path))
-
-if(__name__ == "__main__"):
-    main()
+    def band_pass_filter(self, block: np.ndarray) -> np.ndarray:
+        """
+        Band pass filter to select the part of the spectrum in which the event is localized.
+        """
+        y, zf = signal.sosfilt(self.filt_params, block, axis=1, zi=self.zi)
+        self.zi = zf
+        return y

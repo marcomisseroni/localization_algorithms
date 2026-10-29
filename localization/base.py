@@ -9,13 +9,16 @@ class Localizer(ABC):
     after some detection algorithm.
     """
 
-    def __init__(self, sensor_pos: np.ndarray, fs: int, c: float | None, pre_margin: int, room_dim: list[float]) -> None:
+    def __init__(self, sensor_pos: np.ndarray, fs: int, c: float | None, pre_margin: int, 
+                 room_dim: list[float], low_cutoff: float, high_cutoff: float) -> None:
         self.sensor_pos = sensor_pos            # Position of the sensors
         self.N = self.sensor_pos.shape[0]       # Number of sensors
         self.fs = fs                            # Sampling frequency
         self.c = c
         self.pre_margin = pre_margin
         self.room_dim = room_dim
+        self.low_cutoff = low_cutoff
+        self.high_cutoff = high_cutoff
 
     @abstractmethod
     def reset(self) -> None:
