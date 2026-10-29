@@ -41,7 +41,6 @@ for file in "${configs[@]}"; do
         csv=results/${name}_${loc}.csv
         log=results/logs/${name}_${loc}.log
         echo "[$(date +%H:%M:%S)] start  $i/$total: $name $loc"
-        # The subshell runs in background and prints when its own evaluation ends
         (
             if python3 evaluate.py "data/$name" --loc "$loc" --out "$csv" > "$log" 2>&1; then
                 echo "[$(date +%H:%M:%S)] done   $i/$total: $name $loc"
@@ -49,7 +48,7 @@ for file in "${configs[@]}"; do
                 echo "[$(date +%H:%M:%S)] FAILED $i/$total: $name $loc (see $log)"
             fi
         ) &
-        if (( $(jobs -r | wc -l) >= $(nproc --all) )); then
+        if (( $(jobs -rp | wc -l) >= $(nproc --all) )); then
             wait -n || true
         fi
     done
