@@ -3,6 +3,7 @@ import math
 
 from localization.base import Localizer
 from typing import override
+from typing import Literal
 from scipy.signal import correlate
 from numpy.fft import fft, ifft
 
@@ -21,21 +22,28 @@ class BeamformingGccLs(Localizer):
     in order to extract a small frequency interval and the speed is almost constant.
     """
 
-    def __init__(self, L: int, Nw: int, sensor_pos: np.ndarray, fs: int, c: float, room_dim: list[float], cc_type: str, pre_margin: int) -> None:
-        super().__init__(sensor_pos=sensor_pos, fs=fs, c=c, pre_margin=pre_margin, room_dim=room_dim)
+    def __init__(self, L: int | Literal["auto"], Nw: int, sensor_pos: np.ndarray, fs: int, c: float, 
+                 room_dim: list[float], cc_type: str, pre_margin: int, low_cutoff: float, high_cutoff: float) -> None:
+        super().__init__(sensor_pos=sensor_pos, fs=fs, c=c, pre_margin=pre_margin, 
+                         room_dim=room_dim, low_cutoff=low_cutoff, high_cutoff=high_cutoff)
+        self.tau_m = int(self.tau_max())
+        if(L == "auto"):
+            self.L = math.ceil(1.1 * self.tau_m) + 1
+        elif(isinstance(L, int)):
+            self.L = L
+        else:
+            raise ValueError("Incompatible type for parameter L")
         self.Nw = Nw
-        self.L = L
+        if(self.L > self.Nw):
+            raise ValueError("The sub-window must be smaller than the data window")
         self.M = np.zeros((self.N, self.Nw))
         self.C = np.zeros((self.L * self.N, self.L * self.N))
         self.D = None
         self.n_received = 0
         self.full = False
-        self.tau_m = int(self.tau_max())
         self.cc_type = cc_type  # possible options: cc, roth, scot, phat
         if(self.tau_m > self.L - 1):
             raise ValueError("The current sub-window is not large enough to capture the same event accross all sensor pairs")
-        if(self.L > self.Nw):
-            raise ValueError("The sub-window must be smaller than the data window")
         if(self.N < 4):
             raise ValueError("For the solution of least squares at least 4 sensors are required")
 
