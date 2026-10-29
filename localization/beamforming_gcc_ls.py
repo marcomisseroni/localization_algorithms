@@ -216,4 +216,7 @@ class BeamformingGccLs(Localizer):
         d1s = np.linalg.norm(self.sensor_pos[0, :2] - np.array([theta_opt[0, 0], theta_opt[1, 0]]))
         if(theta_opt[2] < 0 or np.abs(d1s - theta_opt[2, 0]) > 0.1 * theta_opt[2, 0]):
             theta_opt = None
+        elif(theta_opt[0] < 0 or theta_opt[0] > self.room_dim[0] or
+           theta_opt[1] < 0 or theta_opt[1] > self.room_dim[1]):
+            theta_opt = None
         return theta_opt
