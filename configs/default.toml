@@ -25,6 +25,10 @@ learning_rate = 0.1
 k = 1.5
 min_thr = 0.02
 
+[detection.raw]
+input_size = 1500
+stride = 100
+
 # Event: common for detection and localization
 [event]
 pre_margin = 1500
