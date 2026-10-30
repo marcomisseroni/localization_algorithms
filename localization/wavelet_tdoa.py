@@ -59,7 +59,7 @@ class WaveletTdoaMult(Localizer):
         if(self.M is None):
             return None
         coefs, f = self.wavelet(self.M)
-        sigmas = np.std(coefs[:, :, 0:self.pre_margin], axis=-1)
+        sigmas = np.std(coefs[:, :, self.edge_margin:self.pre_margin], axis=-1)
         start = max(self.pre_margin, self.edge_margin)
         stop = coefs.shape[-1] - self.edge_margin
         if(start > stop):
@@ -68,7 +68,7 @@ class WaveletTdoaMult(Localizer):
         win = np.abs(coefs[:, :, start:stop])
         peak = win.max(axis=-1)
         thr = np.maximum(3 * sigmas, self.k * peak)
-        mask = np.abs(coefs[:, :, start:stop]) > 3 * thr[:, :, None]
+        mask = np.abs(coefs[:, :, start:stop]) > thr[:, :, None]
         toa_mat = np.full((len(self.freq), self.N), np.inf)
         for i in range(len(self.freq)):
             for j in range(self.N):

@@ -113,7 +113,7 @@ def plot_map(rows: list[dict], sensors: np.ndarray, out: Path) -> None:
                 dark = med[i, j] > 0.6 * vmax
                 ax.text(xs[j], ys[i], f"{med[i, j]:.2f}", ha="center", va="center", fontsize=7,
                         color=BG if dark else INK)
-    ax.plot(*np.vstack((sensors, sensors[:1])).T, color=INK, lw=1, ls="--")
+    # Only the sensor points: joining them in list order draws a wrong shape for non-polygonal layouts (e.g. Y)
     ax.plot(sensors[:, 0], sensors[:, 1], "o", color=INK, markersize=9, markeredgecolor=BG, markeredgewidth=2)
     ax.set(title="Median localization error per source position", xlabel="x [m]", ylabel="y [m]", aspect="equal")
     ax.grid(False)

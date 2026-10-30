@@ -10,18 +10,25 @@ def error_stats(err: np.ndarray) -> dict[str, float]:
     Summary statistics of the localization errors [m] of one run.
     Returns NaN for every statistic if there are no errors.
     """
+    keys = ["mean", "median", "rmse", "std", "min", "max", "p25", "p75", "p90", "p95",
+            "below_5cm", "below_10cm", "below_25cm", "below_50cm"]
     if(err.size == 0):
-        return {"n": 0, "mean": np.nan, "median": np.nan, "rmse": np.nan, "p90": np.nan, "p95": np.nan,
-                "max": np.nan, "below_10cm": np.nan, "below_50cm": np.nan}
+        return {"n": 0, **{k: np.nan for k in keys}}
     return {
         "n": int(err.size),
         "mean": float(err.mean()),
         "median": float(np.median(err)),
         "rmse": float(np.sqrt(np.mean(err**2))),
+        "std": float(err.std()),
+        "min": float(err.min()),
+        "max": float(err.max()),
+        "p25": float(np.percentile(err, 25)),
+        "p75": float(np.percentile(err, 75)),
         "p90": float(np.percentile(err, 90)),
         "p95": float(np.percentile(err, 95)),
-        "max": float(err.max()),
+        "below_5cm": float(np.mean(err < 0.05) * 100),      # [%]
         "below_10cm": float(np.mean(err < 0.10) * 100),     # [%]
+        "below_25cm": float(np.mean(err < 0.25) * 100),     # [%]
         "below_50cm": float(np.mean(err < 0.50) * 100),     # [%]
     }
 

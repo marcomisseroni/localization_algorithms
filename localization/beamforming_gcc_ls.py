@@ -43,7 +43,6 @@ class BeamformingGccLs(Localizer):
         self.M = np.zeros((self.N, self.Nw))
         self.C = np.zeros((self.L * self.N, self.L * self.N))
         self.D = None
-        self.n_received = 0
         self.full = False
         self.cc_type = cc_type  # possible options: cc, roth, scot, phat
         if(self.tau_m > self.L - 1):
@@ -59,7 +58,6 @@ class BeamformingGccLs(Localizer):
         self.M = np.zeros((self.N, self.Nw))
         self.C = np.zeros((self.L * self.N, self.L * self.N))
         self.D = None
-        self.n_received = 0
         self.full = False
 
     @override

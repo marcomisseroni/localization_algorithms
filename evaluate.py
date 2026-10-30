@@ -12,6 +12,7 @@ from localization.wavelet_tdoa import WaveletTdoaMult
 from detection.base import Detector
 from detection.amp_thr import AmpThr
 from analysis.plot_results import plot_all
+from core.metrics import error_stats
 
 LOCALIZERS = {
     "bf_gcc_ls": BeamformingGccLs,
@@ -27,7 +28,9 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument('dataset_path')
     parser.add_argument("--loc", choices=LOCALIZERS.keys(), default="wv_tdoa_mlt")
     parser.add_argument("--det", choices=DETECTORS.keys(), default="amp_thr")
-    parser.add_argument("--out", default="results/batch0.csv")
+    parser.add_argument("--out", default=None, help="CSV of the results (default: results/<dataset>_<loc>.csv)")
+    parser.add_argument("--config", default=Path(__file__).parent / "configs" / "default.toml",
+                        help="parameters of the algorithms (default: configs/default.toml)")
     return parser.parse_args()
 
 def load_config(path: Path) -> dict:
@@ -58,25 +61,22 @@ def print_report(err: np.ndarray) -> None:
     if(err.size == 0):
         print("No estimates produced")
         return
+    s = error_stats(err)
 
     print("=" * 40)
     print(" Localization error report")
     print("=" * 40)
-    print(f" {'Estimates':<20}{err.size:>12d}")
+    print(f" {'Estimates':<20}{s['n']:>12d}")
     print("-" * 40)
-    print(f" {'Mean':<20}{err.mean():>10.3f} m")
-    print(f" {'Median':<20}{np.median(err):>10.3f} m")
-    print(f" {'RMSE':<20}{np.sqrt(np.mean(err**2)):>10.3f} m")
-    print(f" {'Std':<20}{err.std():>10.3f} m")
-    print(f" {'Min':<20}{err.min():>10.3f} m")
-    print(f" {'Max':<20}{err.max():>10.3f} m")
+    for label, key in (("Mean", "mean"), ("Median", "median"), ("RMSE", "rmse"),
+                       ("Std", "std"), ("Min", "min"), ("Max", "max")):
+        print(f" {label:<20}{s[key]:>10.3f} m")
     print("-" * 40)
     for p in (25, 75, 90, 95):
-        print(f" {f'P{p}':<20}{np.percentile(err, p):>10.3f} m")
+        print(f" {f'P{p}':<20}{s[f'p{p}']:>10.3f} m")
     print("-" * 40)
-    for th in (0.05, 0.10, 0.25, 0.50):
-        frac = np.mean(err < th) * 100
-        print(f" {f'Error < {th * 100:.0f} cm':<20}{frac:>10.1f} %")
+    for cm in (5, 10, 25, 50):
+        print(f" {f'Error < {cm} cm':<20}{s[f'below_{cm}cm']:>10.1f} %")
     print("=" * 40)
 
 def main() -> None:
@@ -86,8 +86,7 @@ def main() -> None:
     LocClass = LOCALIZERS[args.loc]
     DetClass = DETECTORS[args.det]
 
-    conf_path = Path(__file__).parent 
-    conf = load_config(conf_path / "configs/default.toml")
+    conf = load_config(Path(args.config))
     hop = conf["stream"]["hop"]
 
     with open(dataset_path / "manifest.json") as f:
@@ -136,7 +135,7 @@ def main() -> None:
         all_err.extend(err)
         print(f"[{i + 1}/{n_samples}] {name} (distance {dist:.2f} m): {len(err)} estimates, median error {np.median(err):.3f} m")
 
-    out_path = Path(args.out)
+    out_path = Path(args.out) if args.out is not None else Path("results") / f"{dataset_path.name}_{args.loc}.csv"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     with open(out_path, "w", newline="") as f:
         writer = csv.writer(f)
