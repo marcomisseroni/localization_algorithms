@@ -9,25 +9,29 @@ from core.data import Sample
 from localization.base import Localizer
 from localization.beamforming_gcc_ls import BeamformingGccLs 
 from localization.wavelet_tdoa import WaveletTdoaMult
+from localization.cnn_attention import CNNAttention
 from detection.base import Detector
 from detection.amp_thr import AmpThr
+from detection.raw import Raw
 from analysis.plot_results import plot_all
 from core.metrics import error_stats
 
 LOCALIZERS = {
     "bf_gcc_ls": BeamformingGccLs,
     "wv_tdoa_mlt": WaveletTdoaMult,
+    "cnn_attention": CNNAttention,
 }
 
 DETECTORS= {
     "amp_thr": AmpThr,
+    "raw": Raw,
 }
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Test the implemented algorithms to localize a source having N sensors")
     parser.add_argument('dataset_path')
-    parser.add_argument("--loc", choices=LOCALIZERS.keys(), default="wv_tdoa_mlt")
-    parser.add_argument("--det", choices=DETECTORS.keys(), default="amp_thr")
+    parser.add_argument("--loc", choices=LOCALIZERS.keys(), default="cnn_attention")
+    parser.add_argument("--det", choices=DETECTORS.keys(), default="raw")
     parser.add_argument("--out", default=None, help="CSV of the results (default: results/<dataset>_<loc>.csv)")
     parser.add_argument("--config", default=Path(__file__).parent / "configs" / "default.toml",
                         help="parameters of the algorithms (default: configs/default.toml)")

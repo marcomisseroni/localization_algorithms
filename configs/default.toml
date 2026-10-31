@@ -17,6 +17,8 @@ h_range = 5
 h_steps = 100
 k = 0.2
 
+[localization.cnn_attention]
+
 # Detection
 [detection.amp_thr]
 post_margin = 320
