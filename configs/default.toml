@@ -28,7 +28,7 @@ k = 1.5
 min_thr = 0.02
 
 [detection.raw]
-input_size = 1500
+input_size = 120000
 stride = 100
 
 # Event: common for detection and localization
