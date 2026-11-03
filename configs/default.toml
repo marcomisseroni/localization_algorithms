@@ -18,6 +18,7 @@ h_steps = 100
 k = 0.2
 
 [localization.cnn_attention]
+det_thr = 0.5
 
 # Detection
 [detection.amp_thr]
@@ -28,7 +29,7 @@ k = 1.5
 min_thr = 0.02
 
 [detection.raw]
-input_size = 120000
+input_size = 2400
 stride = 100
 
 # Event: common for detection and localization

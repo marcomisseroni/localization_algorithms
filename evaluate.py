@@ -51,7 +51,7 @@ def run_sample(sample: Sample, loc: Localizer, det: Detector, hop: int) -> np.nd
                 curr_est = loc.load_block_from_det(blocks_list[0])
                 blocks_list.pop(0)
                 if(curr_est is not None):
-                    est_pos.append(curr_est)
+                    est_pos.extend(np.atleast_2d(curr_est))     # (2,) or (K, 2) -> K rows of (x, y)
         block = sample.read(hop)
     return np.array(est_pos)
 
