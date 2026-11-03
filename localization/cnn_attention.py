@@ -138,10 +138,29 @@ class CNNAttention(Localizer):
             for t in range(y.shape[1]):
                 norm = math.sqrt(y[b, t, 0]**2 + y[b, t, 1]**2)
                 if(norm > self.det_thr):
-                    unit_vec = np.array([y[b, t, 0], y[b, t, 1]]) / norm
-                    estimates.append(unit_vec * y[b, t, 2] + self.arr_center)
+                    estimates.append(decode_pos(y[b, t, :], self.arr_center))
 
         est = np.array(estimates)
         if(len(est) == 0):
             est = None
         return est
+
+def encode_pos(pos: np.ndarray, event_det: bool, arr_center: np.ndarray) -> np.ndarray:
+    """
+    Converts (x, y) -> (dx, dy, d)
+    """
+    pos_vec = pos - arr_center
+    dist = np.linalg.norm(pos_vec)
+    if(dist != 0):
+        pos_vec = pos_vec / dist
+    else:
+        pos_vec = np.array([1, 0])
+    res = np.append(pos_vec, dist)
+    return res * event_det
+
+def decode_pos(pos_vec: np.ndarray, arr_center: np.ndarray) -> np.ndarray:
+    """
+    Converts (dx, dy, d) -> (x, y)
+    """
+    unit_vec = np.array([pos_vec[0], pos_vec[1]]) / np.linalg.norm(pos_vec[0:2])
+    return np.array(unit_vec * pos_vec[2] + arr_center)
