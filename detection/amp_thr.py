@@ -29,12 +29,8 @@ class AmpThr(Detector):
         if(self.block is not None):
             self.pre_buffer = self.block[:, -self.pre_margin:]
         self.block = block
+        event_mask = self.compute_mask(self.block)
         events = []
-        block_zm = block - np.mean(block, axis=1, keepdims=True)
-        mov_avg = uniform_filter1d(np.abs(block_zm), size=self.window, axis = 1) # Compute the moving average on each row
-        self.thr_update(mov_avg)
-        mask = mov_avg > self.thr[:, None]   # Apply the threshold
-        event_mask = mask.any(axis=0)   # Compute the or col-wise
         d = np.diff(event_mask.astype(np.int8), prepend=self.prev_mask_end)    # Compute the difference between consecutive elements (converts bool -> int and add a 0 at the beginning and at the end)
         starts = np.nonzero(d == 1)[0]  # Extract the indexes of the 1 -> in diff 1-0 = 1 (beginning of the event)
         ends = np.nonzero(d == -1)[0]   # Extract the indexes of the -1 -> in diff 0-1=1 (end of the event)
@@ -89,3 +85,14 @@ class AmpThr(Detector):
             self.thr = np.maximum(self.k * np.median(mov_avg, axis=1), self.min_thr)
         noise = np.maximum(np.median(mov_avg, axis=1) * self.k, self.min_thr)
         self.thr = (1 - self.learning_rate) * self.thr + self.learning_rate * noise 
+
+    def compute_mask(self, block: np.ndarray) -> np.ndarray:
+        """
+        Computes the mask to find where an event occurs.
+        """
+        block_zm = block - np.mean(block, axis=1, keepdims=True)
+        mov_avg = uniform_filter1d(np.abs(block_zm), size=self.window, axis = 1) # Compute the moving average on each row
+        self.thr_update(mov_avg)
+        mask = mov_avg > self.thr[:, None]   # Apply the threshold
+        event_mask = mask.any(axis=0)   # Compute the or col-wise
+        return event_mask
