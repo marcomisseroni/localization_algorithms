@@ -1,0 +1,14 @@
+# Array y_7m_mid: Y: one sensor in the centre and three at 120 deg, aperture 7 m, array centred in (15, 15) (mid)
+# Rotated by 10 deg so that no sensor is closer than 0.6 m to a node of the 5 m test grid
+# [sensors] copied from simulation/configs/general/y_7m_mid_snr20.toml
+# Geometry only: no dataset is generated from this file
+
+[sensors]
+layout = "manual"
+# aperture (max distance between two sensors) = 7.00 m
+positions = [
+    [15.000, 15.000, 1.0],
+    [14.298, 18.980, 1.0],
+    [11.904, 12.402, 1.0],
+    [18.798, 13.618, 1.0],
+]

@@ -1,0 +1,14 @@
+# Array square_7m_corner: square, aperture 7 m, array centred in (5, 5) (corner)
+# Rotated by 10 deg so that no sensor is closer than 0.6 m to a node of the 5 m test grid
+# [sensors] copied from simulation/configs/general/square_7m_corner_snr20.toml
+# Geometry only: no dataset is generated from this file
+
+[sensors]
+layout = "manual"
+# aperture (max distance between two sensors) = 7.00 m
+positions = [
+    [2.992, 2.133, 1.0],
+    [7.867, 2.992, 1.0],
+    [7.008, 7.867, 1.0],
+    [2.133, 7.008, 1.0],
+]

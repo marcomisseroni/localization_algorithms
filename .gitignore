@@ -19,3 +19,7 @@ data/
 
 # Weights of the neural network
 checkpoints/
+
+# Configs for training and validation that can be generated from a script
+simulation/configs/training/
+simulation/configs/validation/

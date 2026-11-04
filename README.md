@@ -24,7 +24,7 @@ Everything at once: generates the missing datasets of `simulation/configs/genera
 every localizer in parallel and writes the comparison in `results/summary/`.
 
 ```bash
-./run_experiments.sh
+./eval_classic_alg.sh
 ```
 
 The same steps one by one:
@@ -47,9 +47,19 @@ venv/bin/python -m analysis.compare_runs
 
 ### 3. Neural network localizer
 
+Everything at once: for every array of `simulation/arrays/` with a test config in `simulation/configs/general/`,
+generates its training data, trains one network (skipped if `checkpoints/cnn_attention_<array>.pt` exists) and tests
+it on the datasets of the campaign with the same array, then writes the comparison with the classic localizers.
+
 ```bash
-# configs of the training and validation datasets (array chosen with ARRAY in the script)
-venv/bin/python simulation/generate_nn_configs.py
+./eval_nn.sh
+```
+
+The same steps one by one, for one array:
+
+```bash
+# configs of the training and validation datasets: simulation/configs/{training,validation}/<array>_*.toml
+venv/bin/python simulation/generate_nn_configs.py [--array y_7m_center]
 
 # datasets: data/training/<name>/ and data/validation/<name>/
 for f in simulation/configs/training/*.toml simulation/configs/validation/*.toml; do
@@ -60,10 +70,13 @@ done
 venv/bin/python -m training.dataset --data data/training --out training/data/training
 venv/bin/python -m training.dataset --data data/validation --out training/data/validation
 
-# training (to be written)
-venv/bin/python -m training.train
+# check of the targets built for the network (shapes, fraction of active frames)
+venv/bin/python -m training.loader
 
-# test on the datasets of the campaign with the same array
+# training: weights and loss of every epoch in the checkpoint of configs/train.toml
+venv/bin/python -m training.train [--conf configs/train.toml]
+
+# test on a dataset of the campaign with the same array (weights_path of configs/default.toml)
 venv/bin/python evaluate.py data/general/y_7m_center_snr20 --loc cnn_attention --det raw
 ```
 
@@ -75,17 +88,20 @@ venv/bin/python evaluate.py data/general/y_7m_center_snr20 --loc cnn_attention -
 │   ├── plot_results.py         # figures of one run (error map, error vs. distance, CDF)
 │   └── compare_runs.py         # summary table and comparison figures of a whole campaign
 ├── configs/
-│   └── default.toml            # parameters of the algorithms, the stream, the event and the frequency band
+│   ├── default.toml            # parameters of the algorithms, the stream, the event and the frequency band
+│   └── train.toml              # parameters of the training of the neural network
 ├── core/
 │   ├── data.py                 # Sample: loads a simulated recording, band-pass filters it, streams it in blocks
 │   └── metrics.py              # error statistics shared by evaluate.py and the analysis scripts
 ├── detection/
 │   ├── base.py                 # Detector: abstract base class
-│   └── amp_thr.py              # AmpThr: envelope detector with adaptive threshold
+│   ├── amp_thr.py              # AmpThr: envelope detector with adaptive threshold
+│   └── raw.py                  # Raw: fixed-length overlapping blocks, input of the neural network
 ├── localization/
 │   ├── base.py                 # Localizer: abstract base class
 │   ├── beamforming_gcc_ls.py   # BeamformingGccLs: beamforming + (generalized) cross-correlation + least squares
-│   └── wavelet_tdoa.py         # WaveletTdoaMult: wavelet arrival times + adaptive multilateration (unknown speed)
+│   ├── wavelet_tdoa.py         # WaveletTdoaMult: wavelet arrival times + adaptive multilateration (unknown speed)
+│   └── cnn_attention.py        # CNNAttention: neural network (CNN + self-attention) and encoding of the targets
 ├── simulation/
 │   ├── arrays/                 # one TOML per array geometry ([sensors] only, no dataset is generated from them)
 │   ├── configs/
@@ -100,17 +116,21 @@ venv/bin/python evaluate.py data/general/y_7m_center_snr20 --loc cnn_attention -
 ├── tests/                      # unit tests (to be written)
 ├── training/
 │   ├── dataset.py              # converts the simulated datasets into .npz files for the neural network
-│   ├── train.py                # training of the neural network (to be written)
+│   ├── loader.py               # FootstepDataset: windows and per-frame targets for the training
+│   ├── train.py                # training of the neural network
 │   └── data/                   # generated training data, training/ and validation/ (git-ignored)
+├── checkpoints/                # weights of the networks, loss of every epoch, configs/ of eval_nn.sh (git-ignored)
 ├── data/                       # generated datasets, general/, training/ and validation/ (git-ignored)
 ├── results/                    # CSVs, logs/, figures/ and summary/ (CSVs and figures git-ignored)
 ├── evaluate.py                 # runs a detector + localizer on one dataset
-├── run_experiments.sh          # generates the missing datasets, evaluates every dataset in parallel, compares
+├── eval_classic_alg.sh         # generates the missing datasets, evaluates every dataset in parallel, compares
+├── eval_nn.sh                  # for every array: training data, training and test of the network, compares
 └── requirements.txt
 ```
 
 Dependencies only go one way: `evaluate.py` uses `core`, `detection`, `localization` and `analysis`;
-`detection` and `localization` may use `core`; `core` uses neither.
+`detection` and `localization` may use `core`; `core` uses neither. `training` uses `core`, `detection` and
+`localization/cnn_attention.py`.
 
 ## Workflow
 
@@ -123,7 +143,7 @@ Neural network:
 ```
 simulation/arrays/<array>.toml ─generate_nn_configs.py─► simulation/configs/{training,validation}/*.toml
     ─generate_dataset.py─► data/{training,validation}/<name>/ ─training.dataset─► training/data/{training,validation}/<name>/*.npz
-    ─training.train─► weights ─evaluate.py --loc cnn_attention─► results/
+    ─training.train─► checkpoints/cnn_attention_<array>.pt ─evaluate.py --loc cnn_attention --det raw─► results/
 ```
 
 The commands of every step are in [Quick start](#quick-start).
@@ -136,7 +156,7 @@ as modules from the project root: `python -m training.dataset`, with dots and wi
 with `ModuleNotFoundError: No module named 'core'`. In VS Code use a `launch.json` configuration with
 `"module": "training.dataset"` and `"cwd": "${workspaceFolder}"`.
 
-### `run_experiments.sh`
+### `eval_classic_alg.sh`
 
 1. Creates the venv if missing, then generates every dataset of `simulation/configs/general/` that has no `manifest.json`.
 2. Runs `evaluate.py` for every dataset and localizer, up to `nproc --all` processes at a time, with numpy limited to
@@ -146,13 +166,34 @@ with `ModuleNotFoundError: No module named 'core'`. In VS Code use a `launch.jso
 
 The whole campaign (13 datasets x 2 localizers) takes about 15 minutes on 8 cores.
 
+### `eval_nn.sh`
+
+For every array of `simulation/arrays/` with at least one test config `simulation/configs/general/<array>_snr*.toml`:
+
+1. Generates the missing test datasets of the array.
+2. If `checkpoints/cnn_attention_<array>.pt` does not exist: empties the training folders
+   (`simulation/configs/{training,validation}`, `data/{training,validation}`, `training/data/{training,validation}`,
+   about 4 GB per array), runs `generate_nn_configs.py --array <array>`, `generate_dataset.py` on every config,
+   `training.dataset` and `training.train` with a copy of `train.toml` (`checkpoints/configs/train_<array>.toml`).
+   The weights are written in a `.tmp.pt` file renamed at the end, so an interrupted training is redone at the next
+   call. Output in `results/logs/train_<array>.log`.
+3. Runs `evaluate.py --loc cnn_attention --det raw` on every test dataset of the array, with a copy of `default.toml`
+   whose `weights_path` is the checkpoint of the array (`checkpoints/configs/default_<array>.toml`); CSV in
+   `results/<dataset>_cnn_attention.csv`, output in `results/logs/`.
+
+A failed training or test prints `FAILED` and goes on with the next array. At the end the training folders are
+emptied, the number of checkpoints and CSVs is printed and `analysis.compare_runs` compares all the localizers.
+11 networks (one per array) are trained and tested on the 13 datasets of the campaign: `y_7m_center` is tested on
+SNR 10, 20 and 30 dB. One training takes 5-25 minutes on a GPU.
+
 ## Simulation
 
 `simulation/generate_dataset.py` calls the engine of the simulator (`simulator/selkd_simulator/engine.py`, only numpy
 and scipy) and writes, for every source position, one JSON (geometry and ground truth) and one WAV per sensor, plus
 `manifest.json` and a copy of the config. Options: `--out <folder>` (default `data/<config folder>/<config name>`, e.g. `data/general/y_7m_center_snr20`),
 `--overwrite`. The configs are grouped by use: `general/` (test datasets of the campaign, used by
-`run_experiments.sh`), `training/` and `validation/` (data of the neural network, not part of the campaign).
+`eval_classic_alg.sh` and `eval_nn.sh`), `training/` and `validation/` (data of the neural network, written by
+`generate_nn_configs.py`, not part of the campaign).
 
 | Section | Keys |
 |---|---|
@@ -176,6 +217,24 @@ The aperture is the maximum distance between two sensors. Dataset names: `<layou
 | C | SNR 30 / 10 dB | Y, 7 m, centre | 2 |
 
 Reference configuration: **Y, 7 m, centre, 20 dB** (`y_7m_center_snr20`).
+
+### Arrays and neural network datasets
+
+`simulation/arrays/<array>.toml` contains only the `[sensors]` of one geometry of the campaign (11 arrays, the 3 SNR
+of `y_7m_center` share one), copied from the configs of `general/`. No dataset is generated from them.
+
+`simulation/generate_nn_configs.py [--array <array>]` (default `y_7m_center`) reads the sensors of the array and
+writes, for every SNR of `SNRS` (10, 20, 30 dB):
+
+- `training/<array>_random_snr<SNR>.toml`: `TRAINING_POSITIONS` (1000) random source positions in `AREA`
+  (`[1, 49] x [1, 49]` m);
+- `validation/<array>_grid_snr<SNR>.toml`: grid `VALIDATION_GRID` (1.25 to 46.25 m, step 5 m, 100 nodes), shifted
+  w.r.t. the 5 m test grid so that no validation position is a test position.
+
+Every file has its own seed (from `SEED_START`), so positions and noise are different in every dataset; with a grid
+the seed only sets the noise. `fs`, `c`, `model`, `room`, `signal` and `z` are constants of the script, equal to the
+test configs. The script stops if the sensors differ from the test configs `general/<array>_snr*.toml` or if a
+validation node is closer than `MIN_SENSOR_DIST` (0.6 m) to a sensor.
 
 ## Components
 
@@ -233,6 +292,28 @@ the speed is not needed.
    the one with minimum cost (sum of the distances between the 3 points) is kept. The best speed of every scale gives a
    position (mean of the intersections); the final estimate is the mean of the 8 scales with lowest cost.
 
+### `detection/raw.py` - `Raw`
+
+Accumulates the stream and returns every block of `input_size` samples, one every `stride` samples (overlapping if
+`stride < input_size`), without any detection: the input of the neural network, which detects the steps itself.
+
+### `localization/cnn_attention.py` - `CNNAttention`
+
+Network `SELDNet`, from the SELD branch of *Multi-Task Learning for Sound Source Localization and Keyword Spotting on
+Nano-Drones* (ETH): 4 convolutional blocks (Conv1d, batch norm, ReLU, max pooling, dropout, squeeze-and-excitation),
+4 self-attention blocks (8 heads, residual + layer norm), 2 linear layers. Input `(B, N, L)`, output `(B, T, 3)` with
+one frame every ~2400 samples (~150 ms at 16 kHz): `(dx, dy)` with tanh and `d` with ReLU.
+
+- **Targets** (ACCDOA-like, one class, one source): `encode_pos` gives `(dx, dy, d / scale)`, with `(dx, dy)` the unit
+  vector from the centroid of the sensors to the source and `d` their distance, multiplied by the activity of the
+  frame, so an inactive frame is `(0, 0, 0)`; `decode_pos` is the inverse. A source in the centroid is `(1, 0, 0)`.
+- **Detection**: a frame is an event if `‖(dx, dy)‖ > det_thr`; every such frame gives one estimate, so one block
+  can give several estimates.
+- **Weights**: `weights_path` (from the project root) is a checkpoint of `training/train.py`. The constructor stops
+  if its number of sensors, `fs` or band differ from the current ones, and takes `input_size` and `dist_scale` from
+  it; `load_block_from_det` accepts only blocks of `input_size` samples, so `[detection.raw] input_size` must be the
+  same.
+
 ### `evaluate.py`
 
 For every sample of `manifest.json`: builds the `Sample`, a new localizer and a new detector (chosen by name through
@@ -266,6 +347,28 @@ not with `AmpThr.compute_mask`, block by block as in streaming. In `<out>/<datas
 
 Windows and per-frame targets are built at training time, so they can change without regenerating the files.
 
+### `training/loader.py` - `FootstepDataset`
+
+PyTorch `Dataset` on the folders written by `training/dataset.py` (every subfolder with an `index.csv`). All the
+recordings are loaded in memory (about 2.6 GB for 3300 recordings) and cut in windows of `input_size` samples, one
+every `window_stride` samples. Element `k`: `x` `(N, input_size)`, the filtered signal, and `y` `(T, 3)`: the
+`active` mask of the window is split in `T` frames of `input_size // T` samples, a frame is active if more than
+`frame_thr` of its samples are active, and its target is `encode_pos(source, active, centroid, dist_scale)`.
+`output_frames(N, input_size)` gives `T` with a forward pass of the network. `python -m training.loader` checks the
+validation set (shapes, one target, fraction of active frames).
+
+### `training/train.py`
+
+`--conf` (default `configs/train.toml`). Builds the training and validation `FootstepDataset`s (`shuffle` only for
+training), `SELDNet` and Adam, and for every epoch trains and computes the validation loss without gradients.
+
+- **Loss**: MSE on `(dx, dy)` of all the frames (direction and detection) + MSE on `d` of the active frames only.
+- **Early stopping**: the checkpoint is written when the validation loss improves; the training stops after
+  `patience` epochs without improvement.
+- **Checkpoint**: `model_state` and the conditions of the training, used by `CNNAttention`: `N`, `fs`, `input_size`,
+  `T`, `frame_thr`, `dist_scale`, `data_params` (the `params.json` of the data: band, `hop`, `amp_thr`), the data
+  folders, epoch and validation loss. The loss of every epoch is written next to it (`.csv`).
+
 ## Configuration (`configs/default.toml`)
 
 All lengths are **in samples**, so they depend on `fs`. Every key must match a constructor argument.
@@ -275,16 +378,27 @@ All lengths are **in samples**, so they depend on `fs`. Every key must match a c
 | `[stream]` | `hop`: samples per block |
 | `[localization.bf_gcc_ls]` | `L` (`"auto"` or integer), `Nw`, `cc_type` (`cc`, `roth`, `scot`, `phat`) |
 | `[localization.wv_tdoa_mlt]` | `n_scales`, `v_min`, `v_max`, `v_count`, `h_range`, `h_steps`, `k` |
+| `[localization.cnn_attention]` | `det_thr` (threshold on `‖(dx, dy)‖`), `weights_path` (checkpoint of `training/train.py`) |
 | `[detection.amp_thr]` | `post_margin`, `window`, `learning_rate`, `k`, `min_thr` |
+| `[detection.raw]` | `input_size` (must be the `input_size` of the training), `stride` |
 | `[event]` | `pre_margin`: noise samples before every event, shared by detector and localizers |
 | `[band]` | `low_cutoff`, `high_cutoff` [Hz], `filter_order`: band-pass filter and band of the localizers |
+
+### Training (`configs/train.toml`)
+
+| Section | Keys |
+|---|---|
+| `[data]` | `train_dir`, `val_dir`: folders written by `training/dataset.py` |
+| `[window]` | `input_size` (multiple of 2400), `window_stride`, `frame_thr`, `dist_scale` [m] |
+| `[training]` | `batch_size`, `lr` (Adam), `max_epochs`, `patience` (early stopping), `seed` |
+| `[output]` | `checkpoint`: weights and metadata, the loss of every epoch is written with the `.csv` extension |
 
 ## Adding an algorithm
 
 1. Create a file in `localization/` (or `detection/`) with a class derived from `Localizer` (or `Detector`).
 2. Add it to `LOCALIZERS` (or `DETECTORS`) in `evaluate.py` with a short name.
 3. Add a section `[localization.<name>]` (or `[detection.<name>]`) to the config with its parameters.
-4. To include it in the campaign, add the name to `locs` in `run_experiments.sh`.
+4. To include it in the campaign, add the name to `locs` in `eval_classic_alg.sh`.
 
 ## Test signals
 
@@ -308,4 +422,6 @@ The default chirp of the simulator is narrowband inside every analysis window an
 - In `WaveletTdoaMult` the noise σ is computed on `[0, pre_margin]`, edge region included, the threshold mask uses
   `3 * thr` and the speed range of the config is narrow around the true speed of the simulator.
 - The noise of the simulations is white; reflections (`shoebox`) and real data are still to be tested.
+- The neural network needs one training per array, since it does not receive the sensor positions; it is trained
+  only on simulated data, with one footstep signal and one propagation speed.
 - No unit tests yet.

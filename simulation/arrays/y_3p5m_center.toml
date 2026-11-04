@@ -1,0 +1,14 @@
+# Array y_3p5m_center: Y: one sensor in the centre and three at 120 deg, aperture 3.5 m, array centred in (25, 25) (center)
+# Rotated by 10 deg so that no sensor is closer than 0.6 m to a node of the 5 m test grid
+# [sensors] copied from simulation/configs/general/y_3p5m_center_snr20.toml
+# Geometry only: no dataset is generated from this file
+
+[sensors]
+layout = "manual"
+# aperture (max distance between two sensors) = 3.50 m
+positions = [
+    [25.000, 25.000, 1.0],
+    [24.649, 26.990, 1.0],
+    [23.452, 23.701, 1.0],
+    [26.899, 24.309, 1.0],
+]
