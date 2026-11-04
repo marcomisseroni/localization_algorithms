@@ -19,6 +19,7 @@ k = 0.2
 
 [localization.cnn_attention]
 det_thr = 0.5
+weights_path = "checkpoints/cnn_attention_y_7m_center.pt"     # checkpoint written by training/train.py
 
 # Detection
 [detection.amp_thr]
@@ -29,8 +30,8 @@ k = 1.5
 min_thr = 0.02
 
 [detection.raw]
-input_size = 2400
-stride = 100
+input_size = 24000
+stride = 2400
 
 # Event: common for detection and localization
 [event]

@@ -1,12 +1,13 @@
 """
 Generate a dataset with the acoustic array simulator (git submodule in ./simulator), without its GUI.
 
-Every experiment is described by a TOML file in simulation/configs/. The output folder has the same
+Every experiment is described by a TOML file in simulation/configs/<group>/, where the group is general (test and
+comparison of the methods), training or validation (neural network). The output folder has the same
 layout as a batch exported by the GUI (one JSON + one WAV per sensor for each source position, plus
 manifest.json), so it can be read by core.data.Sample. A copy of the config is saved next to it.
 
 Usage, from the project root:
-    venv/bin/python simulation/generate_dataset.py simulation/configs/footstep_square.toml
+    venv/bin/python simulation/generate_dataset.py simulation/configs/general/y_7m_center_snr20.toml
 """
 
 import argparse
@@ -40,8 +41,9 @@ from selkd_simulator.engine import (  # noqa: E402
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate a simulated dataset from a TOML experiment file")
-    parser.add_argument("config", type=Path, help="experiment file, e.g. simulation/configs/footstep_square.toml")
-    parser.add_argument("--out", type=Path, default=None, help="output folder (default: data/<config name>)")
+    parser.add_argument("config", type=Path, help="experiment file, e.g. simulation/configs/general/y_7m_center_snr20.toml")
+    parser.add_argument("--out", type=Path, default=None,
+                        help="output folder (default: data/<config folder>/<config name>, e.g. data/general/y_7m_center_snr20)")
     parser.add_argument("--overwrite", action="store_true", help="replace the output folder if it exists")
     return parser.parse_args()
 
@@ -137,7 +139,8 @@ def add_noise(result: SimulationResult, snr_db: float, rng: np.random.Generator)
 def main() -> None:
     args = parse_arguments()
     conf = load_config(args.config)
-    out_dir = args.out or ROOT / "data" / args.config.stem
+    # simulation/configs/<group>/<name>.toml -> data/<group>/<name>
+    out_dir = args.out or ROOT / "data" / args.config.parent.name / args.config.stem
     if(out_dir.exists()):
         if(not args.overwrite):
             sys.exit(f"{out_dir} already exists, use --overwrite to replace it")

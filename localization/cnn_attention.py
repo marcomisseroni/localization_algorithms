@@ -5,6 +5,9 @@ import math
 from localization.base import Localizer
 from typing import override
 from torch import nn
+from pathlib import Path
+
+ROOT = Path(__file__).parent.parent
 
 class ConvBlock(nn.Module):
     """
@@ -99,13 +102,28 @@ class CNNAttention(Localizer):
     3 is the estimate: (dx, dy, d), in particular (dx, dy) is the direction of the source and it
     is also used as detector: if sqrt(dx**2 + dy**2) > thr an event is detected. Instead d is the distance
     between source and the center of mass of the array.
+    weights_path: checkpoint written by training/train.py, relative to the project root. It contains the weights
+    and the conditions of the training (number of sensors, fs, filter, input_size, dist_scale), that must be
+    the same used here.
     """
-    def __init__(self, sensor_pos: np.ndarray, fs: int, c: float | None, pre_margin: int, 
-                 room_dim: list[float], low_cutoff: float, high_cutoff: float, det_thr: float):
+    def __init__(self, sensor_pos: np.ndarray, fs: int, c: float | None, pre_margin: int,
+                 room_dim: list[float], low_cutoff: float, high_cutoff: float, det_thr: float, weights_path: str):
         super().__init__(sensor_pos, fs, c, pre_margin, room_dim, low_cutoff, high_cutoff)
         self.device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
         print(f"Using {self.device} device")
+        checkpoint = torch.load(ROOT / weights_path, map_location=self.device, weights_only=True)
+        band = checkpoint["data_params"]["band"]
+        if(checkpoint["N"] != self.N):
+            raise ValueError(f"The network is trained with {checkpoint['N']} sensors, the array has {self.N}")
+        if(checkpoint["fs"] != self.fs):
+            raise ValueError(f"The network is trained with fs = {checkpoint['fs']} Hz, the data has fs = {self.fs} Hz")
+        if(band["low_cutoff"] != low_cutoff or band["high_cutoff"] != high_cutoff):
+            raise ValueError(f"The network is trained with the band [{band['low_cutoff']}, {band['high_cutoff']}] Hz, "
+                             f"the data is filtered in [{low_cutoff}, {high_cutoff}] Hz")
+        self.input_size = checkpoint["input_size"]
+        self.dist_scale = checkpoint["dist_scale"]
         self.model = SELDNet(self.N).to(self.device)
+        self.model.load_state_dict(checkpoint["model_state"])
         self.model.eval()
         self.block = None
         self.det_thr = det_thr
@@ -113,9 +131,9 @@ class CNNAttention(Localizer):
 
     @override 
     def load_block_from_det(self, block: np.ndarray) -> np.ndarray | None:
-        # block: (N, L)
-        if(block.shape[0] != self.N or block.shape[1] < 2400):
-            print("Error: wrong dimension of the block")
+        # block: (N, L), L must be the input_size used in the training
+        if(block.shape[0] != self.N or block.shape[1] != self.input_size):
+            print(f"Error: wrong dimension of the block {block.shape}, expected ({self.N}, {self.input_size})")
             return None
         block = torch.from_numpy(block).float().unsqueeze(0)    # (1, N, L)
         block = block.to(self.device)
@@ -138,16 +156,18 @@ class CNNAttention(Localizer):
             for t in range(y.shape[1]):
                 norm = math.sqrt(y[b, t, 0]**2 + y[b, t, 1]**2)
                 if(norm > self.det_thr):
-                    estimates.append(decode_pos(y[b, t, :], self.arr_center))
+                    estimates.append(decode_pos(y[b, t, :], self.arr_center, self.dist_scale))
 
         est = np.array(estimates)
         if(len(est) == 0):
             est = None
         return est
 
-def encode_pos(pos: np.ndarray, event_det: bool, arr_center: np.ndarray) -> np.ndarray:
+def encode_pos(pos: np.ndarray, event_det: bool, arr_center: np.ndarray, scale: float) -> np.ndarray:
     """
     Converts (x, y) -> (dx, dy, d)
+    Scale is used for the training in order to have similar contribution to the error from both
+    direction and distance.
     """
     pos_vec = pos - arr_center
     dist = np.linalg.norm(pos_vec)
@@ -155,12 +175,14 @@ def encode_pos(pos: np.ndarray, event_det: bool, arr_center: np.ndarray) -> np.n
         pos_vec = pos_vec / dist
     else:
         pos_vec = np.array([1, 0])
-    res = np.append(pos_vec, dist)
+    res = np.append(pos_vec, dist / scale)
     return res * event_det
 
-def decode_pos(pos_vec: np.ndarray, arr_center: np.ndarray) -> np.ndarray:
+def decode_pos(pos_vec: np.ndarray, arr_center: np.ndarray, scale: float) -> np.ndarray:
     """
     Converts (dx, dy, d) -> (x, y)
+    Scale is used for the training in order to have similar contribution to the error from both
+    direction and distance.
     """
     unit_vec = np.array([pos_vec[0], pos_vec[1]]) / np.linalg.norm(pos_vec[0:2])
-    return np.array(unit_vec * pos_vec[2] + arr_center)
+    return np.array(unit_vec * pos_vec[2] * scale + arr_center)

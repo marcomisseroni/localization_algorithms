@@ -5,6 +5,68 @@ The goal is to localize people walking from the floor vibrations produced by the
 During development the algorithms are tested on data from an acoustic array simulator (git submodule), fed to
 them block by block as if it were arriving in real time, and evaluated over campaigns of simulated datasets.
 
+## Quick start
+
+All the commands are run from the project root.
+
+### 1. Setup (once)
+
+```bash
+git submodule update --init                 # simulator, if the repo was cloned without --recursive
+python -m venv venv
+venv/bin/pip install -r requirements.txt
+venv/bin/python test_signals/make_footstep.py   # footstep WAVs used as simulator input
+```
+
+### 2. Test campaign of the classic localizers
+
+Everything at once: generates the missing datasets of `simulation/configs/general/`, evaluates every dataset with
+every localizer in parallel and writes the comparison in `results/summary/`.
+
+```bash
+./run_experiments.sh
+```
+
+The same steps one by one:
+
+```bash
+# one dataset: simulation/configs/general/<name>.toml -> data/general/<name>/
+venv/bin/python simulation/generate_dataset.py simulation/configs/general/y_7m_center_snr20.toml [--overwrite]
+
+# one localizer on one dataset: CSV in results/, figures in results/figures/
+venv/bin/python evaluate.py data/general/y_7m_center_snr20 --loc bf_gcc_ls [--det amp_thr] [--out results/x.csv] [--config configs/default.toml]
+
+# figures of an existing CSV again
+venv/bin/python -m analysis.plot_results results/y_7m_center_snr20_bf_gcc_ls.csv data/general/y_7m_center_snr20
+
+# summary table and comparison figures of all the CSVs of the campaign
+venv/bin/python -m analysis.compare_runs
+```
+
+`evaluate.py --help` lists the available localizers (`--loc`) and detectors (`--det`).
+
+### 3. Neural network localizer
+
+```bash
+# configs of the training and validation datasets (array chosen with ARRAY in the script)
+venv/bin/python simulation/generate_nn_configs.py
+
+# datasets: data/training/<name>/ and data/validation/<name>/
+for f in simulation/configs/training/*.toml simulation/configs/validation/*.toml; do
+    venv/bin/python simulation/generate_dataset.py "$f"
+done
+
+# .npz files for the network: training/data/training/ and training/data/validation/
+venv/bin/python -m training.dataset --data data/training --out training/data/training
+venv/bin/python -m training.dataset --data data/validation --out training/data/validation
+
+# training (to be written)
+venv/bin/python -m training.train
+
+# test on the datasets of the campaign with the same array
+venv/bin/python evaluate.py data/general/y_7m_center_snr20 --loc cnn_attention --det raw
+```
+
 ## Project structure
 
 ```
@@ -25,13 +87,22 @@ them block by block as if it were arriving in real time, and evaluated over camp
 │   ├── beamforming_gcc_ls.py   # BeamformingGccLs: beamforming + (generalized) cross-correlation + least squares
 │   └── wavelet_tdoa.py         # WaveletTdoaMult: wavelet arrival times + adaptive multilateration (unknown speed)
 ├── simulation/
-│   ├── configs/                # one TOML per simulated dataset (the experiment campaign)
-│   └── generate_dataset.py     # runs the simulator engine without its GUI
+│   ├── arrays/                 # one TOML per array geometry ([sensors] only, no dataset is generated from them)
+│   ├── configs/
+│   │   ├── general/            # one TOML per test dataset (the experiment campaign, comparison of the methods)
+│   │   ├── training/           # datasets used to train the neural network
+│   │   └── validation/         # datasets used to validate the neural network
+│   ├── generate_dataset.py     # runs the simulator engine without its GUI
+│   └── generate_nn_configs.py  # writes the training/ and validation/ configs of the neural network
 ├── simulator/                  # git submodule: acustic-array-simulator
 ├── test_signals/               # synthetic footstep WAVs used as simulator input (git-ignored)
 │   └── make_footstep.py
 ├── tests/                      # unit tests (to be written)
-├── data/                       # generated datasets (git-ignored)
+├── training/
+│   ├── dataset.py              # converts the simulated datasets into .npz files for the neural network
+│   ├── train.py                # training of the neural network (to be written)
+│   └── data/                   # generated training data, training/ and validation/ (git-ignored)
+├── data/                       # generated datasets, general/, training/ and validation/ (git-ignored)
 ├── results/                    # CSVs, logs/, figures/ and summary/ (CSVs and figures git-ignored)
 ├── evaluate.py                 # runs a detector + localizer on one dataset
 ├── run_experiments.sh          # generates the missing datasets, evaluates every dataset in parallel, compares
@@ -44,31 +115,30 @@ Dependencies only go one way: `evaluate.py` uses `core`, `detection`, `localizat
 ## Workflow
 
 ```
-simulation/configs/*.toml ─generate_dataset.py─► data/<exp>/ ─evaluate.py─► results/<exp>_<loc>.csv ─compare_runs.py─► results/summary/
+simulation/configs/general/*.toml ─generate_dataset.py─► data/general/<exp>/ ─evaluate.py─► results/<exp>_<loc>.csv ─compare_runs.py─► results/summary/
 ```
 
-```bash
-# once
-git submodule update --init                 # if the repo was cloned without --recursive
-python -m venv venv
-venv/bin/pip install -r requirements.txt
-venv/bin/python test_signals/make_footstep.py
+Neural network:
 
-# whole campaign: missing datasets, every dataset x localizer in parallel, comparison
-./run_experiments.sh
-
-# single steps, from the project root
-venv/bin/python simulation/generate_dataset.py simulation/configs/y_7m_center_snr20.toml [--overwrite]
-venv/bin/python evaluate.py data/y_7m_center_snr20 --loc bf_gcc_ls [--det amp_thr] [--out results/x.csv] [--config configs/default.toml]
-venv/bin/python -m analysis.plot_results results/y_7m_center_snr20_bf_gcc_ls.csv data/y_7m_center_snr20
-venv/bin/python -m analysis.compare_runs
+```
+simulation/arrays/<array>.toml ─generate_nn_configs.py─► simulation/configs/{training,validation}/*.toml
+    ─generate_dataset.py─► data/{training,validation}/<name>/ ─training.dataset─► training/data/{training,validation}/<name>/*.npz
+    ─training.train─► weights ─evaluate.py --loc cnn_attention─► results/
 ```
 
-`evaluate.py --help` lists the available algorithms. Without `--out` the CSV is `results/<dataset>_<loc>.csv`.
+The commands of every step are in [Quick start](#quick-start).
+
+Without `--out` the CSV of `evaluate.py` is `results/<dataset>_<loc>.csv`.
+
+Scripts inside a subfolder (`analysis/`, `training/`) import `core`, `detection` and `localization`, so they are run
+as modules from the project root: `python -m training.dataset`, with dots and without `.py`. Run as
+`python training/dataset.py` (or with the VS Code run button), Python looks for the imports in `training/` and fails
+with `ModuleNotFoundError: No module named 'core'`. In VS Code use a `launch.json` configuration with
+`"module": "training.dataset"` and `"cwd": "${workspaceFolder}"`.
 
 ### `run_experiments.sh`
 
-1. Creates the venv if missing, then generates every dataset of `simulation/configs/` that has no `manifest.json`.
+1. Creates the venv if missing, then generates every dataset of `simulation/configs/general/` that has no `manifest.json`.
 2. Runs `evaluate.py` for every dataset and localizer, up to `nproc --all` processes at a time, with numpy limited to
    one thread per process (`OPENBLAS_NUM_THREADS=1`, `OMP_NUM_THREADS=1`). Each run writes its CSV in `results/` and
    its output in `results/logs/<dataset>_<loc>.log`; the script prints `start` / `done` / `FAILED` for every run.
@@ -80,7 +150,9 @@ The whole campaign (13 datasets x 2 localizers) takes about 15 minutes on 8 core
 
 `simulation/generate_dataset.py` calls the engine of the simulator (`simulator/selkd_simulator/engine.py`, only numpy
 and scipy) and writes, for every source position, one JSON (geometry and ground truth) and one WAV per sensor, plus
-`manifest.json` and a copy of the config. Options: `--out <folder>` (default `data/<config name>`), `--overwrite`.
+`manifest.json` and a copy of the config. Options: `--out <folder>` (default `data/<config folder>/<config name>`, e.g. `data/general/y_7m_center_snr20`),
+`--overwrite`. The configs are grouped by use: `general/` (test datasets of the campaign, used by
+`run_experiments.sh`), `training/` and `validation/` (data of the neural network, not part of the campaign).
 
 | Section | Keys |
 |---|---|
@@ -176,6 +248,23 @@ prints a line per sample and the statistics of `core/metrics.py`, then calls `an
 - `compare_runs`: reads every campaign CSV, gets the factors from the dataset name and writes in `results/summary/`
   `summary.csv` and the figures of the three groups (`layout_position.png`, `aperture.png`, `snr.png`),
   `reference_cdf.png` and `distance_by_layout.png`. "Estimates per recording" is 4 when every step is localized.
+
+### `training/dataset.py`
+
+Prepares the training data of the neural network. For every dataset of `--data` with a `manifest.json` it streams
+every recording with `Sample.read(hop)` (same band-pass filter as `evaluate.py`) and labels every sample as active or
+not with `AmpThr.compute_mask`, block by block as in streaming. In `<out>/<dataset>/` (default
+`training/data/training/<dataset>/`) it writes:
+
+- `<recording>.npz`: `signal` `(N, L)` float32, filtered; `active` `(L,)` bool, True where at least one sensor is
+  above the threshold (no pre/post margin); `source_pos` `(3,)`; `sensor_pos` `(N, 3)`; `fs`.
+  `L` is a multiple of `hop`: the last incomplete block is dropped.
+- `index.csv`: one row per recording, `file, length, active_ratio, source_x, source_y, dist`
+  (`dist` from the centroid of the sensors).
+- `params.json`: band, `hop`, `pre_margin` and `amp_thr` parameters used, so that the data can be matched with the
+  configuration used at inference.
+
+Windows and per-frame targets are built at training time, so they can change without regenerating the files.
 
 ## Configuration (`configs/default.toml`)
 

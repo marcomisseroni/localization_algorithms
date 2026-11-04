@@ -16,3 +16,6 @@ data/
 
 # Log files
 *.log
+
+# Weights of the neural network
+checkpoints/

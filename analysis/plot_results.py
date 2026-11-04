@@ -7,7 +7,7 @@ Reads the CSV of the estimates and the manifest of the dataset (for the sensor p
     <csv name>_cdf.png        cumulative distribution of the error
 
 evaluate.py calls plot_all() automatically; to redo the figures from an existing CSV, from the project root:
-    venv/bin/python -m analysis.plot_results results/y_7m_center_snr20_bf_gcc_ls.csv data/y_7m_center_snr20
+    venv/bin/python -m analysis.plot_results results/y_7m_center_snr20_bf_gcc_ls.csv data/general/y_7m_center_snr20
 """
 
 import argparse

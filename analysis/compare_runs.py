@@ -59,7 +59,7 @@ plt.rcParams.update({
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Compare the results of all the runs")
     parser.add_argument("--results", type=Path, default=Path("results"), help="folder with the CSVs of evaluate.py")
-    parser.add_argument("--data", type=Path, default=Path("data"), help="folder with the datasets")
+    parser.add_argument("--data", type=Path, default=Path("data/general"), help="folder with the datasets")
     return parser.parse_args()
 
 

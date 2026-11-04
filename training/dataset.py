@@ -9,9 +9,9 @@ from core.data import Sample
 from detection.amp_thr import AmpThr
 
 ROOT = Path(__file__).parent.parent
-DATASET_PATH_DEFAULT = ROOT / "data"
+DATASET_PATH_DEFAULT = ROOT / "data" / "training"
 CONFIG_PATH = ROOT / "configs" / "default.toml"
-OUT_DIR = ROOT / "training" / "data"
+OUT_DIR = ROOT / "training" / "data" / "training"
 
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate .npz files used to train neural networks")
