@@ -1,0 +1,24 @@
+# Parameters of the training of the neural network localizer (training/train.py)
+# All the paths are relative to the project root
+
+# Folders written by training/dataset.py: every subfolder with an index.csv is a dataset
+[data]
+train_dir = "training/data/training"
+val_dir = "training/data/validation"
+
+# Windows cut from the recordings and targets of every frame
+[window]
+input_size = 24000              # samples of every window, multiple of 2400 (one output frame every ~2400 samples): 1.5 s at 16 kHz
+window_stride = 2400            # [samples] shift between two consecutive windows of the same recording, one frame
+frame_thr = 0.5                 # a frame is active if more than this fraction of its samples is active
+dist_scale = 50.0               # [m] the distance target is d / dist_scale, so it is in [0, 1] in the 50 x 50 m room
+
+[training]
+batch_size = 128
+lr = 1e-3                       # learning rate of Adam
+max_epochs = 100
+patience = 10                   # early stopping: epochs without improvement of the validation loss
+seed = 0
+
+[output]
+checkpoint = "checkpoints/cnn_attention_y_7m_center.pt"     # best weights and metadata
