@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt  # noqa: E402
 
 BLUE = "#2a78d6"        # estimates of complete steps
 GREY = "#8f8e89"        # estimates of the first step of each recording
-MAP_VMAX = 5.0         # [m] fixed top of the error map colour scale, so maps of different runs are comparable
+MAP_VMAX = 20.0        # [m] fixed top of the error map colour scale, so maps of different runs are comparable
 INK = "#0b0b0b"
 INK2 = "#52514e"
 GRID = "#e4e3df"

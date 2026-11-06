@@ -6,6 +6,8 @@ name (<layout>_<aperture>m_<snr>db, e.g. y_7m_10db or sq_3p5m_10db, p instead of
 results/summary/:
     summary.csv                  one row per run: factors and error statistics
     layout_aperture.png          median and P90 error for every layout x aperture (SNR of REFERENCE)
+    layout_aperture_stats.png    mean, std, min and max of the error for every layout x aperture (SNR of REFERENCE),
+                                 one colour scale per statistic
     aperture_<layout>.png        error and estimates per recording vs. aperture, one file per layout (SNR of REFERENCE)
     snr.png                      error and estimates per recording vs. SNR (layout and aperture of REFERENCE),
                                  only if there are runs with more than one SNR
@@ -147,6 +149,44 @@ def plot_layout_aperture(runs: list[dict], locs: list[str], out: Path) -> None:
     plt.close(fig)
 
 
+def plot_layout_aperture_stats(runs: list[dict], locs: list[str], out: Path) -> None:
+    """
+    Layout x aperture grids as plot_layout_aperture, one row per statistic (mean, std, min, max) and one column per
+    localizer. Every row has its own colour scale, the same for all the localizers, since the statistics have very
+    different ranges (min of a few cm, max of tens of metres).
+    """
+    sel_snr = [r for r in runs if r["snr"] == REFERENCE["snr"]]
+    apertures = sorted({r["aperture"] for r in sel_snr})
+    metrics = [("mean", "Mean error"), ("std", "Std of the error"), ("min", "Min error"), ("max", "Max error")]
+    fig, axes = plt.subplots(len(metrics), len(locs), figsize=(4.6 * len(locs), 2.9 * len(metrics)),
+                             constrained_layout=True, squeeze=False)
+    for i, (metric, label) in enumerate(metrics):
+        vmax = max([r[metric] for r in sel_snr if np.isfinite(r[metric])], default=1.0)
+        for j, loc in enumerate(locs):
+            ax = axes[i, j]
+            grid = np.full((len(LAYOUTS), len(apertures)), np.nan)
+            for a, lay in enumerate(LAYOUTS):
+                for b, ap in enumerate(apertures):
+                    r = select(sel_snr, loc=loc, layout=lay, aperture=ap)
+                    if(r):
+                        grid[a, b] = r[0][metric]
+            mesh = ax.imshow(grid, cmap="Blues", vmin=0, vmax=vmax)
+            for a in range(len(LAYOUTS)):
+                for b in range(len(apertures)):
+                    v = grid[a, b]
+                    ax.text(b, a, "–" if np.isnan(v) else f"{v:.2f} m", ha="center", va="center", fontsize=10,
+                            color=BG if (not np.isnan(v) and v > 0.6 * vmax) else INK)
+            ax.set(title=f"{label} — {loc}", xticks=range(len(apertures)), yticks=range(len(LAYOUTS)),
+                   xticklabels=[f"{ap:g} m" for ap in apertures], yticklabels=[LAYOUT_LABEL[l] for l in LAYOUTS])
+            ax.grid(False)
+        cbar = fig.colorbar(mesh, ax=axes[i, :], shrink=0.9)
+        cbar.set_label(f"{label} [m]", color=INK2)
+        cbar.outline.set_visible(False)
+    fig.suptitle(f"Layout x aperture, error statistics (SNR {REFERENCE['snr']} dB)", color=INK, x=0.02, ha="left")
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+
+
 def plot_sweep(runs: list[dict], locs: list[str], factor: str, xlabel: str, fixed: dict, out: Path) -> None:
     """Median error, P90 error and estimates per recording vs. one factor, one line per localizer."""
     panels = [("median", "Median error [m]"), ("p90", "P90 error [m]"), ("est_per_rec", "Estimates per recording")]
@@ -219,6 +259,7 @@ def main() -> None:
 
     write_summary(runs, out_dir / "summary.csv")
     plot_layout_aperture(runs, locs, out_dir / "layout_aperture.png")
+    plot_layout_aperture_stats(runs, locs, out_dir / "layout_aperture_stats.png")
     for lay in LAYOUTS:
         plot_sweep(runs, locs, "aperture", "Aperture [m]", {"layout": lay, "snr": REFERENCE["snr"]},
                    out_dir / f"aperture_{lay}.png")
