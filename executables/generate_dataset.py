@@ -8,7 +8,7 @@ VAL_SPLIT = 0.15
 ROOM_DIM = [70, 70, 3]
 MARGIN = 1.0                # [m] minimum distance of the sources from the walls
 Z = 1.0                     # [m] height of sensors and sources, the same for both (the localization is 2D)
-VAL_GRID_SIDE = 10          # validation grid of VAL_GRID_SIDE x VAL_GRID_SIDE positions
+VAL_GRID_SIDE = 16         # validation grid of VAL_GRID_SIDE x VAL_GRID_SIDE positions
 TEST_GRID_SIDE = 16         # test grid of TEST_GRID_SIDE x TEST_GRID_SIDE positions, even: with an odd side
                             # a node is in the centre of the room, on the central sensor of the Y
 FS = 16000

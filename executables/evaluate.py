@@ -33,7 +33,7 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument("--loc", choices=LOCALIZERS.keys(), default="cnn_attention")
     parser.add_argument("--det", choices=DETECTORS.keys(), default="raw")
     parser.add_argument("--out", default=None, help="CSV of the results (default: results/<dataset>_<loc>.csv)")
-    parser.add_argument("--config", default=Path(__file__).parent / "configs" / "default.toml",
+    parser.add_argument("--config", default=Path(__file__).parent.parent / "configs" / "default.toml",
                         help="parameters of the algorithms (default: configs/default.toml)")
     return parser.parse_args()
 
@@ -93,18 +93,18 @@ def main() -> None:
     conf = load_config(Path(args.config))
     hop = conf["stream"]["hop"]
 
-    with open(dataset_path / "manifest.json") as f:
-        manifest = json.load(f)
+    with open(dataset_path / "dataset.json") as f:
+        data = json.load(f)
 
-    n_samples = len(manifest["samples"])
     rows = []           # one row per estimate, or one empty row if the sample has none
     all_err = []
     n_missed = 0
+    n_samples = len(data["recordings"])
 
-    for i, entry in enumerate(manifest["samples"]):
-        sample = Sample(dataset_path / entry["metadata_file"], filter_order=conf["band"]["filter_order"], 
+    for i in range(n_samples):
+        sample = Sample(dataset_path / "dataset.json", i, filter_order=conf["band"]["filter_order"], 
                         low_cutoff=conf["band"]["low_cutoff"], high_cutoff=conf["band"]["high_cutoff"])
-        name = Path(entry["metadata_file"]).stem
+        name = Path(data["recordings"][i]["file"]).stem
         true_x, true_y = sample.source_pos[:2]
         # Distance between the source and the centre of the sensor array (mean of the sensor positions)
         dist = np.linalg.norm(sample.source_pos[:2] - sample.sensors_pos[:, :2].mean(axis=0))

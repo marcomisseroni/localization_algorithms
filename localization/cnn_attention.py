@@ -102,16 +102,17 @@ class CNNAttention(Localizer):
     3 is the estimate: (dx, dy, d), in particular (dx, dy) is the direction of the source and it
     is also used as detector: if sqrt(dx**2 + dy**2) > thr an event is detected. Instead d is the distance
     between source and the center of mass of the array.
-    weights_path: checkpoint written by training/train.py, relative to the project root. It contains the weights
-    and the conditions of the training (number of sensors, fs, filter, input_size, dist_scale), that must be
-    the same used here.
+    weights_dir: folder (relative to the project root) with the checkpoints written by training/train.py, one per
+    sensor configuration. The network does not receive the sensor positions, so the checkpoint used is the one
+    trained with the same sensor positions of the data. It contains the weights and the conditions of the training
+    (number of sensors, fs, filter, input_size, dist_scale), that must be the same used here.
     """
     def __init__(self, sensor_pos: np.ndarray, fs: int, c: float | None, pre_margin: int,
-                 room_dim: list[float], low_cutoff: float, high_cutoff: float, det_thr: float, weights_path: str):
+                 room_dim: list[float], low_cutoff: float, high_cutoff: float, det_thr: float, weights_dir: str):
         super().__init__(sensor_pos, fs, c, pre_margin, room_dim, low_cutoff, high_cutoff)
         self.device = torch.accelerator.current_accelerator().type if torch.accelerator.is_available() else "cpu"
-        print(f"Using {self.device} device")
-        checkpoint = torch.load(ROOT / weights_path, map_location=self.device, weights_only=True)
+        weights_path = find_checkpoint(ROOT / weights_dir, self.sensor_pos)
+        checkpoint = torch.load(weights_path, map_location=self.device, weights_only=True)
         band = checkpoint["data_params"]["band"]
         if(checkpoint["N"] != self.N):
             raise ValueError(f"The network is trained with {checkpoint['N']} sensors, the array has {self.N}")
@@ -121,6 +122,9 @@ class CNNAttention(Localizer):
             raise ValueError(f"The network is trained with the band [{band['low_cutoff']}, {band['high_cutoff']}] Hz, "
                              f"the data is filtered in [{low_cutoff}, {high_cutoff}] Hz")
         self.input_size = checkpoint["input_size"]
+        if(checkpoint.get("input_norm") != INPUT_NORM):
+            raise ValueError(f"{weights_path} is trained with input normalization {checkpoint.get('input_norm')}, "
+                             f"CNNAttention uses {INPUT_NORM}: train the network again")
         self.dist_scale = checkpoint["dist_scale"]
         self.model = SELDNet(self.N).to(self.device)
         self.model.load_state_dict(checkpoint["model_state"])
@@ -135,6 +139,7 @@ class CNNAttention(Localizer):
         if(block.shape[0] != self.N or block.shape[1] != self.input_size):
             print(f"Error: wrong dimension of the block {block.shape}, expected ({self.N}, {self.input_size})")
             return None
+        block = normalize_input(block)                          # (N, L)  same normalization of the training
         block = torch.from_numpy(block).float().unsqueeze(0)    # (1, N, L)
         block = block.to(self.device)
         self.block = block                                      # (1, N, L)
@@ -162,6 +167,38 @@ class CNNAttention(Localizer):
         if(len(est) == 0):
             est = None
         return est
+
+INPUT_NORM = "max_abs"      # normalization of the input of the network, saved in the checkpoint by training/train.py
+
+def normalize_input(x: np.ndarray) -> np.ndarray:
+    """
+    Normalization of one input window of the network (N, L), the same in training and inference: the window is
+    divided by its maximum absolute value over all the sensors, so the ratios between the sensors are kept.
+    The physical amplitude changes by orders of magnitude with the distance of the source, and without this the
+    validation of the network is unstable. It uses only the window, so it can be applied in real time.
+    """
+    return x / max(float(np.max(np.abs(x))), 1e-12)
+
+_CHECKPOINT_SENSORS = {}    # weights_dir -> list of (checkpoint path, sensor positions), read once per folder
+
+def find_checkpoint(weights_dir: Path, sensor_pos: np.ndarray) -> Path:
+    """
+    Checkpoint of weights_dir trained with the given sensor positions (N, 3).
+    The positions of every checkpoint are read only the first time, since a localizer is built for every recording.
+    """
+    if(weights_dir not in _CHECKPOINT_SENSORS):
+        found = []
+        for path in sorted(weights_dir.glob("*.pt")):
+            if(path.name.endswith(".tmp.pt")):
+                continue                                    # interrupted training
+            checkpoint = torch.load(path, map_location="cpu", weights_only=True)
+            if("sensor_pos" in checkpoint):                 # checkpoints of old trainings have no sensor positions
+                found.append((path, np.array(checkpoint["sensor_pos"])))
+        _CHECKPOINT_SENSORS[weights_dir] = found
+    for path, pos in _CHECKPOINT_SENSORS[weights_dir]:
+        if(pos.shape == sensor_pos.shape and np.allclose(pos, sensor_pos, atol=1e-6)):
+            return path
+    raise FileNotFoundError(f"No checkpoint in {weights_dir} trained with the sensor positions {sensor_pos.tolist()}")
 
 def encode_pos(pos: np.ndarray, event_det: bool, arr_center: np.ndarray, scale: float) -> np.ndarray:
     """

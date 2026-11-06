@@ -6,36 +6,38 @@ from pathlib import Path
 from scipy import signal
 
 class Sample:
-    def __init__(self, file_path: Path, low_cutoff: float, high_cutoff: float, filter_order: int) -> None:
-        self.data_path = file_path.parent
+    """
+    One recording of a dataset: Sample(path of dataset.json, index of the recording in "recordings", band).
+    Reads the common information of the dataset (fs, sensor positions, c, room) and the source position and the
+    multichannel WAV of the recording (channel i = sensor i). The signal is read block by block with read(hop),
+    band-pass filtered keeping the filter state between blocks, as in streaming.
+    """
+    def __init__(self, dataset_json_path: Path, rec_idx: int, low_cutoff: float, high_cutoff: float, filter_order: int) -> None:
+        self.data_path = dataset_json_path.parent
         self.cursor = 0
         self.low_cutoff = low_cutoff
         self.high_cutoff = high_cutoff
         self.filter_order = filter_order
 
-        with open(file_path, "r") as file:
+        with open(dataset_json_path, "r") as file:
             data = json.load(file)
 
-        self.fs = data["sample_rate_hz"]
-        self.source_pos = np.array(data["source_xyz_m"])
-        self.N = data["microphone_count"]
-        self.wav_files = data["mono_wav_files"]
-        self.sensors_pos = np.array(data["microphones_xyz_m"])
-        self.c = data["simulation"]["speed_of_sound"]
-        self.room_dim = data["simulation"]["room_dimensions"]
+        self.fs = data["fs"]
+        self.rec_idx = rec_idx
+        self.rec = data["recordings"][self.rec_idx]
+        self.sensors_pos = np.array(data["sensor_pos"])
+        self.N = self.sensors_pos.shape[0]
+        self.c = data["simulation"]["c"]
+        self.room_dim = data["simulation"]["room"]
         self.filt_params = signal.butter(self.filter_order, [self.low_cutoff, self.high_cutoff], btype="bandpass", fs=self.fs, output="sos")
         self.zi = np.zeros((self.filt_params.shape[0], self.N, 2))
+        self.source_pos = np.array(self.rec["source_pos"])
         
-        signals = []
-        for i in range(self.N):
-            path = self.data_path / self.wav_files[i]
-            _, x = wavfile.read(str(path))
-            signals.append(x)
-        self.signals: np.ndarray = np.stack(signals).astype(float)     # (N, T)
-        if(x.dtype == np.int16):
-            self.signals /= 32768
-        else:
-            print("Error: data type is not int16")
+        path = self.data_path / self.rec["file"]
+        _, x = wavfile.read(str(path))
+        self.signals = x.T.astype(float)
+        if(self.signals.shape[0] != self.N):
+            raise ValueError(f"{path} has {self.signals.shape[0]} channels, but {dataset_json_path} has {self.N} sensors")
 
     def rewind(self) -> None:
         self.cursor = 0

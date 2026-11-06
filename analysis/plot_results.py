@@ -1,13 +1,14 @@
 """
 Plot the results written by evaluate.py.
 
-Reads the CSV of the estimates and the manifest of the dataset (for the sensor positions) and saves in results/figures/:
-    <csv name>_map.png        median error for every source position, with the sensors
+Reads the CSV of the estimates and the dataset.json of the dataset (for the sensor positions) and saves in results/figures/:
+    <csv name>_map.png        median error for every source position, with the sensors (cells if the positions are
+                              a grid, points otherwise)
     <csv name>_distance.png   error of every estimate vs. distance from the centre of the array
     <csv name>_cdf.png        cumulative distribution of the error
 
 evaluate.py calls plot_all() automatically; to redo the figures from an existing CSV, from the project root:
-    venv/bin/python -m analysis.plot_results results/y_7m_center_snr20_bf_gcc_ls.csv data/general/y_7m_center_snr20
+    venv/bin/python -m analysis.plot_results results/y_7m_10db_bf_gcc_ls.csv data/test/y_7m_10db
 """
 
 import argparse
@@ -42,7 +43,7 @@ plt.rcParams.update({
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Plot the localization results of evaluate.py")
     parser.add_argument("csv_path", type=Path, help="CSV written by evaluate.py")
-    parser.add_argument("dataset_path", type=Path, help="dataset folder (with manifest.json) used for the CSV")
+    parser.add_argument("dataset_path", type=Path, help="dataset folder (with dataset.json) used for the CSV")
     parser.add_argument("--out", type=Path, default=Path("results"), help="results folder; the PNGs are saved in its figures/ subfolder")
     return parser.parse_args()
 
@@ -71,22 +72,27 @@ def load_results(path: Path) -> list[dict]:
 
 
 def load_sensors(dataset_path: Path) -> np.ndarray:
-    with open(dataset_path / "manifest.json") as f:
-        manifest = json.load(f)
-    if("microphones_xyz_m" in manifest):
-        return np.array(manifest["microphones_xyz_m"])[:, :2]
-    # Datasets exported by the simulator GUI: geometry only in the per-sample JSON
-    with open(dataset_path / manifest["samples"][0]["metadata_file"]) as f:
-        return np.array(json.load(f)["microphones_xyz_m"])[:, :2]
+    """
+    Sensor positions (N, 2) from the dataset.json of the dataset.
+    """
+    with open(dataset_path / "dataset.json") as f:
+        data = json.load(f)
+    return np.array(data["sensor_pos"])[:, :2]
 
 
 def plot_map(rows: list[dict], sensors: np.ndarray, out: Path) -> None:
-    """Median error of every source position on the grid; positions with no estimate are crossed."""
+    """
+    Median error of every source position; positions with no estimate are crossed.
+    Cells with the values if the positions are a regular grid, coloured points otherwise (e.g. random positions).
+    """
     per_pos = {}
     for r in rows:
         per_pos.setdefault(tuple(r["true"]), []).append(r["error"])
     xs = np.unique([p[0] for p in per_pos])
     ys = np.unique([p[1] for p in per_pos])
+    if(xs.size * ys.size != len(per_pos)):
+        plot_map_points(per_pos, sensors, out)
+        return
     med = np.full((ys.size, xs.size), np.nan)
     missed = []
     for (x, y), errs in per_pos.items():
@@ -111,7 +117,7 @@ def plot_map(rows: list[dict], sensors: np.ndarray, out: Path) -> None:
         for j in range(xs.size):
             if(not np.isnan(med[i, j])):
                 dark = med[i, j] > 0.6 * vmax
-                ax.text(xs[j], ys[i], f"{med[i, j]:.2f}", ha="center", va="center", fontsize=7,
+                ax.text(xs[j], ys[i], f"{med[i, j]:.2f}", ha="center", va="center", fontsize=7 if xs.size <= 12 else 5,
                         color=BG if dark else INK)
     # Only the sensor points: joining them in list order draws a wrong shape for non-polygonal layouts (e.g. Y)
     ax.plot(sensors[:, 0], sensors[:, 1], "o", color=INK, markersize=9, markeredgecolor=BG, markeredgewidth=2)
@@ -120,6 +126,29 @@ def plot_map(rows: list[dict], sensors: np.ndarray, out: Path) -> None:
     cbar = fig.colorbar(mesh, ax=ax, shrink=0.85, extend="max")    # the arrow marks errors above vmax
     cbar.set_label(f"Median error [m] (fixed scale, darkest = {vmax:.1f} m or more)", color=INK2)
     cbar.outline.set_visible(False)
+    ax.text(0, -0.08, "● sensors   × no estimate", transform=ax.transAxes, color=INK2, fontsize=9)
+    fig.savefig(out, dpi=150)
+    plt.close(fig)
+
+
+def plot_map_points(per_pos: dict, sensors: np.ndarray, out: Path) -> None:
+    """Map of plot_map for source positions that are not a grid: one point per position, coloured by the median error."""
+    pos = np.array([p for p, errs in per_pos.items() if any(e is not None for e in errs)])
+    med = np.array([np.median([e for e in errs if e is not None]) for errs in per_pos.values()
+                    if any(e is not None for e in errs)])
+    missed = np.array([p for p, errs in per_pos.items() if all(e is None for e in errs)])
+
+    fig, ax = plt.subplots(figsize=(7.5, 6.5), constrained_layout=True)
+    if(pos.size):
+        sc = ax.scatter(pos[:, 0], pos[:, 1], c=med, cmap="Blues", vmin=0, vmax=MAP_VMAX, s=30,
+                        edgecolors=INK2, linewidths=0.3)
+        cbar = fig.colorbar(sc, ax=ax, shrink=0.85, extend="max")
+        cbar.set_label(f"Median error [m] (fixed scale, darkest = {MAP_VMAX:.1f} m or more)", color=INK2)
+        cbar.outline.set_visible(False)
+    if(missed.size):
+        ax.plot(missed[:, 0], missed[:, 1], "x", color=INK2, markersize=6, markeredgewidth=1.2)
+    ax.plot(sensors[:, 0], sensors[:, 1], "o", color=INK, markersize=9, markeredgecolor=BG, markeredgewidth=2)
+    ax.set(title="Median localization error per source position", xlabel="x [m]", ylabel="y [m]", aspect="equal")
     ax.text(0, -0.08, "● sensors   × no estimate", transform=ax.transAxes, color=INK2, fontsize=9)
     fig.savefig(out, dpi=150)
     plt.close(fig)

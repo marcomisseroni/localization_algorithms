@@ -19,7 +19,7 @@ k = 0.2
 
 [localization.cnn_attention]
 det_thr = 0.5
-weights_path = "checkpoints/cnn_attention_y_7m_center.pt"     # checkpoint written by training/train.py
+weights_dir = "checkpoints"     # folder with one checkpoint per configuration, the one of the dataset is chosen automatically
 
 # Detection
 [detection.amp_thr]
@@ -27,7 +27,7 @@ post_margin = 320
 window = 1600
 learning_rate = 0.1
 k = 1.5
-min_thr = 0.02
+min_thr = 1e-6
 
 [detection.raw]
 input_size = 24000
