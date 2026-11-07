@@ -226,9 +226,12 @@ def plot_reference_cdf(runs: list[dict], locs: list[str], out: Path) -> None:
 
 
 def plot_distance_by_layout(runs: list[dict], locs: list[str], out: Path) -> None:
-    """Median error vs. distance from the array centre, one line per layout, one panel per localizer."""
+    """
+    Median error vs. distance from the array centre, one line per layout, one panel per localizer.
+    Every panel has its own y scale, since the errors of the localizers differ by an order of magnitude.
+    """
     fixed = {"aperture": REFERENCE["aperture"], "snr": REFERENCE["snr"]}
-    fig, axes = plt.subplots(1, len(locs), figsize=(6.5 * len(locs), 4.5), constrained_layout=True, squeeze=False, sharey=True)
+    fig, axes = plt.subplots(1, len(locs), figsize=(6.5 * len(locs), 4.5), constrained_layout=True, squeeze=False)
     for ax, loc in zip(axes[0], locs):
         for k, lay in enumerate(LAYOUTS):
             sel = select(runs, loc=loc, layout=lay, **fixed)
@@ -238,9 +241,9 @@ def plot_distance_by_layout(runs: list[dict], locs: list[str], out: Path) -> Non
             st = SERIES[k % len(SERIES)]
             ax.plot(x, y, color=st["color"], marker=st["marker"], ls=st["ls"], lw=2, markersize=7,
                     markeredgecolor=BG, label=LAYOUT_LABEL[lay])
-        ax.set(title=loc, xlabel="Distance from the array centre [m]", ylim=(0, None))
+        ax.set(title=loc, xlabel="Distance from the array centre [m]", ylabel="Median error per 5 m bin [m]")
+        ax.set_ylim(bottom=0)
         ax.legend(frameon=False, loc="upper left")
-    axes[0, 0].set_ylabel("Median error per 5 m bin [m]")
     fig.suptitle(f"Error vs. distance by layout ({REFERENCE['aperture']:g} m, {REFERENCE['snr']} dB)",
                  color=INK, x=0.01, ha="left")
     fig.savefig(out, dpi=150)
