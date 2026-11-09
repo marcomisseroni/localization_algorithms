@@ -51,6 +51,19 @@ class Attention(nn.Module):
         x = self.ln(x + at)             # (B, T, att_size)
         return x
 
+def init_weights(layer: nn.Module) -> None:
+    """
+    Weight initialization of one layer, applied to every layer of the network with apply().
+    Conv1d: Kaiming normal (they are followed by a ReLU), Linear: Xavier uniform, bias to zero in both cases.
+    The other layers (BatchNorm, LayerNorm, the projections of MultiheadAttention) keep their default.
+    """
+    if(isinstance(layer, nn.Conv1d)):
+        nn.init.kaiming_normal_(layer.weight, nonlinearity="relu")
+        nn.init.zeros_(layer.bias)
+    elif(isinstance(layer, nn.Linear)):
+        nn.init.xavier_uniform_(layer.weight)
+        nn.init.zeros_(layer.bias)
+
 class SELDNet(nn.Module):
     """
     Network class used by the localizer.
@@ -82,7 +95,8 @@ class SELDNet(nn.Module):
         blocks.append(nn.ReLU())
         blocks.append(nn.Linear(128, 3))
         self.fc_block = nn.Sequential(*blocks)
-
+        self.apply(init_weights)
+    
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # x: (B, in_size, L)
         x = self.conv_blocks(x)     # (B, 128, ~L / 2400)
