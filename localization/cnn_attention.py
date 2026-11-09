@@ -93,6 +93,12 @@ class SELDNet(nn.Module):
         x2 = torch.relu(x[:, :, 2:])    # (B, T, 1)  distance
         return torch.cat([x1, x2], dim=-1)  # (B, T, 3)
 
+    def model_size(self) -> int:
+        """
+        Returns the size of the model in terms of trainable parameters.
+        """
+        return sum(p.numel() for p in self.parameters() if p.requires_grad)
+
 class CNNAttention(Localizer):
     """
     Neural network-based localization.
