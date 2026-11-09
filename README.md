@@ -30,7 +30,7 @@ The same steps one by one:
 
 ```bash
 # training of the network of one configuration (a subfolder of data/training/ and data/validation/)
-venv/bin/python -m training.train y_7m_10db [--conf configs/train.toml] [--config configs/default.toml]
+venv/bin/python -m training.train y_7m_10db [--train_conf configs/train.toml] [--def_conf configs/default.toml]
 
 # one localizer on one dataset: CSV in results/, figures in results/figures/
 venv/bin/python -m executables.evaluate data/test/y_7m_10db --loc bf_gcc_ls --det amp_thr [--out results/x.csv] [--config configs/default.toml]
