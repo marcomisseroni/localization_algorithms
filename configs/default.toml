@@ -6,7 +6,7 @@ hop = 16384
 [localization.bf_gcc_ls]
 L = "auto"                   # "auto" -> ceil(1.1 * tau_max) + 1, computed from the sensor positions; or an integer with L - 1 >= tau_max
 Nw = 4096
-cc_type = "phat"                # cc -> simple cross-correlation, roth, scot, phat are the possible windows for gcc
+cc_type = "roth"                # cc -> simple cross-correlation, roth, scot, phat are the possible windows for gcc
 
 [localization.wv_tdoa_mlt]
 n_scales = 50
@@ -15,7 +15,7 @@ v_max = 345
 v_count = 50
 h_range = 5
 h_steps = 100
-k = 0.2
+k = 0.8
 
 [localization.cnn_attention]
 det_thr = 0.5

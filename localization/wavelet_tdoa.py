@@ -35,9 +35,10 @@ class WaveletTdoaMult(Localizer):
         self.v_max = v_max
         self.v_count = v_count
         self.v_vec = np.linspace(self.v_min, self.v_max, self.v_count)
-        self.h_vec = np.linspace(-h_range, h_range, h_steps)
         self.k = k
         self.room_box = box(0, 0, self.room_dim[0], self.room_dim[1])
+        self.D = np.sqrt(room_dim[0]**2 + room_dim[1]**2)
+        self.h_steps = h_steps
 
     @override
     def load_block_from_det(self, block: np.ndarray) -> np.ndarray | None:
@@ -140,8 +141,10 @@ class WaveletTdoaMult(Localizer):
             b = np.sqrt(c**2 - a**2)
             u1 = (sensor_pos[0, :2] - sensor_pos[i + 1, :2]) / np.linalg.norm(sensor_pos[0, :2] - sensor_pos[i + 1, :2])
             u2 = np.array([-u1[1], u1[0]])
-            x = a * np.cosh(self.h_vec)
-            y = b * np.sinh(self.h_vec)
+            h_max = np.asinh(self.D / b)
+            h_vec = np.linspace(-h_max, h_max, self.h_steps)
+            x = a * np.cosh(h_vec)
+            y = b * np.sinh(h_vec)
             hyperbolas.append(m + x[:, None] * u1 + y[:, None] * u2)
 
         candidate_points = []

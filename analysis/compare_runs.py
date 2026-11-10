@@ -46,6 +46,7 @@ SERIES = [
 
 REFERENCE = {"layout": "y", "aperture": 7.0, "snr": 10}
 LAYOUTS = ["y", "sq"]
+CUT_LOCS = ["wv_tdoa_mlt"]      # localizers not used to set the y scale of distance_by_layout.png
 LAYOUT_LABEL = {"y": "Y", "sq": "Square"}
 NAME_RE = re.compile(r"^(?P<layout>[a-z]+)_(?P<aperture>[0-9p]+)m_(?P<snr>\d+)db_(?P<loc>.+)$")
 
@@ -228,22 +229,29 @@ def plot_reference_cdf(runs: list[dict], locs: list[str], out: Path) -> None:
 def plot_distance_by_layout(runs: list[dict], locs: list[str], out: Path) -> None:
     """
     Median error vs. distance from the array centre, one line per layout, one panel per localizer.
-    Every panel has its own y scale, since the errors of the localizers differ by an order of magnitude.
+    All the panels have the same y scale, set from the largest value of the localizers not in CUT_LOCS: the lines of
+    those localizers can go out of the plot, otherwise the differences between the other ones would not be visible.
     """
     fixed = {"aperture": REFERENCE["aperture"], "snr": REFERENCE["snr"]}
     fig, axes = plt.subplots(1, len(locs), figsize=(6.5 * len(locs), 4.5), constrained_layout=True, squeeze=False)
+    y_max = 0
     for ax, loc in zip(axes[0], locs):
         for k, lay in enumerate(LAYOUTS):
             sel = select(runs, loc=loc, layout=lay, **fixed)
             if(not sel or sel[0]["err"].size == 0):
                 continue
             x, y = binned_median(sel[0]["dist"], sel[0]["err"], bin_width=5.0)
+            if(loc not in CUT_LOCS):
+                y_max = max(y_max, np.max(y))
             st = SERIES[k % len(SERIES)]
             ax.plot(x, y, color=st["color"], marker=st["marker"], ls=st["ls"], lw=2, markersize=7,
                     markeredgecolor=BG, label=LAYOUT_LABEL[lay])
         ax.set(title=loc, xlabel="Distance from the array centre [m]", ylabel="Median error per 5 m bin [m]")
-        ax.set_ylim(bottom=0)
         ax.legend(frameon=False, loc="upper left")
+    for ax, loc in zip(axes[0], locs):
+        ax.set_ylim(0, 1.05 * y_max)
+        if(loc in CUT_LOCS):
+            ax.text(0.98, 0.04, "values above the axis are cut", transform=ax.transAxes, ha="right", color=INK2, fontsize=9)
     fig.suptitle(f"Error vs. distance by layout ({REFERENCE['aperture']:g} m, {REFERENCE['snr']} dB)",
                  color=INK, x=0.01, ha="left")
     fig.savefig(out, dpi=150)
