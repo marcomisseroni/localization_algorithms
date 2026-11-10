@@ -54,15 +54,18 @@ class Attention(nn.Module):
 def init_weights(layer: nn.Module) -> None:
     """
     Weight initialization of one layer, applied to every layer of the network with apply().
-    Conv1d: Kaiming normal (they are followed by a ReLU), Linear: Xavier uniform, bias to zero in both cases.
+    Conv1d and Linear: weights and bias uniform in +-1 / sqrt(fan_in), the PyTorch default.
     The other layers (BatchNorm, LayerNorm, the projections of MultiheadAttention) keep their default.
     """
     if(isinstance(layer, nn.Conv1d)):
-        nn.init.kaiming_normal_(layer.weight, nonlinearity="relu")
-        nn.init.zeros_(layer.bias)
+        fan_in = layer.in_channels * layer.kernel_size[0]
     elif(isinstance(layer, nn.Linear)):
-        nn.init.xavier_uniform_(layer.weight)
-        nn.init.zeros_(layer.bias)
+        fan_in = layer.in_features
+    else:
+        return
+    bound = 1 / math.sqrt(fan_in)
+    nn.init.uniform_(layer.weight, -bound, bound)
+    nn.init.uniform_(layer.bias, -bound, bound)
 
 class SELDNet(nn.Module):
     """
@@ -176,14 +179,17 @@ class CNNAttention(Localizer):
         with torch.no_grad():
             y = self.model(self.block)
         y = y.cpu().numpy()
-        estimates = []
+        median_estimates = []
         for b in range(y.shape[0]):
+            estimates = []
             for t in range(y.shape[1]):
                 norm = math.sqrt(y[b, t, 0]**2 + y[b, t, 1]**2)
                 if(norm > self.det_thr):
                     estimates.append(decode_pos(y[b, t, :], self.arr_center, self.dist_scale))
+            if(len(estimates) > 0):
+                median_estimates.append(np.median(estimates, axis=0))
 
-        est = np.array(estimates)
+        est = np.array(median_estimates)
         if(len(est) == 0):
             est = None
         return est
