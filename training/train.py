@@ -5,9 +5,11 @@ import torch
 import json
 import csv
 import os
+import time
 
 from pathlib import Path
 from torch.utils.data import DataLoader
+from tqdm import tqdm
 from localization.cnn_attention import SELDNet, INPUT_NORM
 from training.loader import FootstepDataset, output_frames
 from training.plots import plot_history, LOG_DIR
@@ -58,7 +60,8 @@ def train_one_epoch(model: SELDNet, training_loader: DataLoader,
     """
     model.train()
     running_loss = 0
-    for inputs, labels in training_loader:
+    bar = tqdm(training_loader, desc="Training", leave=False)
+    for inputs, labels in bar:
         inputs = inputs.to(device)              # (B, N, input_size)
         labels = labels.to(device)              # (B, T, 3)
         optimizer.zero_grad()
@@ -67,6 +70,7 @@ def train_one_epoch(model: SELDNet, training_loader: DataLoader,
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
+        bar.set_postfix(loss=f"{loss.item():.4f}")
     return running_loss / len(training_loader)
 
 def val_one_epoch(model: SELDNet, validation_loader: DataLoader, device: str) -> tuple[float, np.ndarray, np.ndarray]:
@@ -80,7 +84,7 @@ def val_one_epoch(model: SELDNet, validation_loader: DataLoader, device: str) ->
     preds = []
     targets = []
     with torch.no_grad():
-        for inputs, labels in validation_loader:
+        for inputs, labels in tqdm(validation_loader, desc="Validation", leave=False):
             inputs = inputs.to(device)          # (B, N, input_size)
             labels = labels.to(device)          # (B, T, 3)
             outputs = model(inputs)             # (B, T, 3)
@@ -148,8 +152,12 @@ def main() -> None:
     torch.manual_seed(train_conf["training"]["seed"])
     seld_net = SELDNet(N).to(device)
     optimizer = torch.optim.Adam(seld_net.parameters(), lr=train_conf["training"]["lr"])
-    epoch_number = 0
     epochs = train_conf["training"]["max_epochs"]
+    patience = train_conf["training"]["patience"]
+    print(f"Configuration {args.configuration}: {N} sensors, fs {fs} Hz, {T} frames per window")
+    print(f"Windows: {len(train_dataset)} training, {len(val_dataset)} validation")
+    print(f"Network: {seld_net.model_size():,} parameters, learning rate {train_conf['training']['lr']}, "
+          f"batch size {train_conf['training']['batch_size']}, at most {epochs} epochs, patience {patience}")
     checkpoint_path = ROOT / train_conf["output"]["checkpoint_dir"] / f"{args.configuration}.pt"
     checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = checkpoint_path.with_suffix(".tmp.pt")
@@ -158,20 +166,24 @@ def main() -> None:
     history = []
 
     best_loss = np.inf
+    best_epoch = 0
     no_improv_count = 0
+    start_time = time.perf_counter()
     for epoch in range(epochs):
+        epoch_start = time.perf_counter()
         train_loss = train_one_epoch(seld_net, train_dataloader, optimizer, device)
         val_loss, y_pred, y_true = val_one_epoch(seld_net, val_dataloader, device)
         metrics = frame_metrics(y_pred, y_true, det_thr, train_conf["window"]["dist_scale"])
         history.append({"epoch": epoch + 1, "train_loss": train_loss, "val_loss": val_loss, **metrics})
-        print(f"EPOCH {epoch_number + 1}:")
-        print(f"training loss: {train_loss}")
-        print(f"validation loss: {val_loss}")
-        print(f"validation F1: {100 * metrics['val_f1']:.1f} %, median error: {metrics['val_median_error_m']:.2f} m")
-        epoch_number += 1
-        if(val_loss < best_loss):
+        improved = val_loss < best_loss
+        no_improv_count = 0 if improved else no_improv_count + 1
+        print(f"Epoch {epoch + 1:3d}/{epochs} | train loss {train_loss:.5f} | val loss {val_loss:.5f} {'*' if improved else ' '} | "
+              f"F1 {100 * metrics['val_f1']:5.1f} % | median error {metrics['val_median_error_m']:5.2f} m | "
+              f"angle {metrics['val_median_angle_deg']:5.2f} deg | {time.perf_counter() - epoch_start:4.1f} s | "
+              f"no improvement {no_improv_count}/{patience}")
+        if(improved):
             best_loss = val_loss
-            no_improv_count = 0
+            best_epoch = epoch + 1
             torch.save({
                 "model_state": seld_net.state_dict(),
                 "N": N,
@@ -193,11 +205,15 @@ def main() -> None:
                 "val_loss": val_loss,
             }, tmp_path)
 
-        else:
-            no_improv_count += 1
-            if(no_improv_count >= train_conf["training"]["patience"]): break
+        elif(no_improv_count >= patience):
+            print(f"No improvement for {patience} epochs, stop")
+            break
 
     tmp_path.replace(checkpoint_path)
+    best = history[best_epoch - 1]
+    print(f"Best epoch {best_epoch}: val loss {best['val_loss']:.5f}, F1 {100 * best['val_f1']:.1f} %, "
+          f"median error {best['val_median_error_m']:.2f} m, angle {best['val_median_angle_deg']:.2f} deg")
+    print(f"Training time {(time.perf_counter() - start_time) / 60:.1f} min, weights in {checkpoint_path}")
 
     # Loss and validation metrics of every epoch, and their plots
     log_dir.mkdir(parents=True, exist_ok=True)

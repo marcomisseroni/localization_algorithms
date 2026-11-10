@@ -1,0 +1,38 @@
+{
+  "det_0.2": {
+    "det_thr": 0.2
+  },
+  "det_0.3": {
+    "det_thr": 0.3
+  },
+  "det_0.4": {
+    "det_thr": 0.4
+  },
+  "det_0.5": {
+    "det_thr": 0.5
+  },
+  "det_0.6": {
+    "det_thr": 0.6
+  },
+  "det_0.7": {
+    "det_thr": 0.7
+  },
+  "det_0.8": {
+    "det_thr": 0.8
+  },
+  "det_0.9": {
+    "det_thr": 0.9
+  },
+  "stride_1200": {
+    "stride": 1200
+  },
+  "stride_4800": {
+    "stride": 4800
+  },
+  "stride_12000": {
+    "stride": 12000
+  },
+  "stride_24000": {
+    "stride": 24000
+  }
+}
