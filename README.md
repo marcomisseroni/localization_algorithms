@@ -298,7 +298,11 @@ prints a line per recording and the statistics of `core/metrics.py`, then calls 
 
 - `loader.py` - `FootstepDataset(data_dir, input_size, window_stride, frame_thr, dist_scale, T, def_toml)`: `data_dir`
   is the folder of one dataset. Every recording is read with `Sample` (same filter as `evaluate`) and labeled sample by
-  sample with `AmpThr.compute_mask`, block by block. Element `k`: `x` `(N, input_size)`, the normalized window, and `y`
+  sample with `AmpThr.compute_mask`, block by block. Filtered signal (float32) and mask are computed once and saved in
+  `<data_dir>/cache/` (`recXXXX_signal.npy`, `recXXXX_mask.npy`, about 0.7 MB per recording, and `cache.json` with the
+  parameters and the lengths, written last); every window is read from disk with a memory map, so the RAM does not grow
+  with the dataset. The cache is built again if `dataset.json` (SHA-256) or band, hop, `pre_margin` or `amp_thr`
+  of `default.toml` change. Element `k`: `x` `(N, input_size)`, the normalized window, and `y`
   `(T, 3)`: the activity mask of the window is split in `T` frames, a frame is active if more than `frame_thr` of its
   samples are active, and its target is `encode_pos(source, active, centroid, dist_scale)`.
   `output_frames(N, input_size)` gives `T` with a forward pass of the network.
