@@ -1,0 +1,6 @@
+validation x0.5  median 3.27 | P90 7.17 | radial 2.83 | angle 1.90 | >=30 m 3.86
+validation x1    median 2.83 | P90 6.49 | radial 2.53 | angle 1.59 | >=30 m 3.63
+validation x3    median 1.97 | P90 4.76 | radial 1.74 | angle 1.26 | >=30 m 2.32
+test       x0.5  median 3.57 | P90 7.50 | radial 3.15 | angle 1.94 | >=30 m 3.94
+test       x1    median 3.23 | P90 7.23 | radial 2.89 | angle 1.60 | >=30 m 4.03
+test       x3    median 2.22 | P90 5.60 | radial 1.97 | angle 1.26 | >=30 m 3.01

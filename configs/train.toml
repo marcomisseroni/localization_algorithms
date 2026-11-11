@@ -19,9 +19,12 @@ dist_scale = 70.0               # [m] the distance target is d / dist_scale: in 
 [training]
 batch_size = 128
 lr = 1e-3                       # learning rate of Adam
-max_epochs = 100
-patience = 20                   # early stopping: epochs without improvement of the validation loss
+max_epochs = 200
+patience = 30                   # early stopping: epochs without improvement of the validation loss
 seed = 0
+factor = 0.1                    # factor by which the learning rate is reduced after patience_lr epochs with no improvemet
+patience_lr = 10                # number of epochs after which the learning rate is decerased
+min_lr = 0                      # lower bound for the learning rate
 
 [output]
 checkpoint_dir = "checkpoints"  # best weights and metadata of every configuration in <checkpoint_dir>/<configuration>.pt

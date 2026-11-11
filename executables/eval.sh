@@ -30,7 +30,8 @@ fi
 export OPENBLAS_NUM_THREADS=1
 export OMP_NUM_THREADS=1
 
-locs=(bf_gcc_ls wv_tdoa_mlt cnn_attention)
+#locs=(bf_gcc_ls wv_tdoa_mlt cnn_attention)
+locs=(cnn_attention)
 total=$(( ${#names[@]} * ${#locs[@]} ))
 i=0
 

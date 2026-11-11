@@ -1,0 +1,4 @@
+x1 val   median 2.83 m | P90 6.49 | max 14.6 | radial 2.53 | angle 1.59 deg | <15 m 1.28 | >=30 m 3.63
+x3 val   median 1.97 m | P90 4.76 | max 15.2 | radial 1.74 | angle 1.26 deg | <15 m 0.93 | >=30 m 2.32
+x1 test  median 3.23 m | P90 7.23 | max 14.0 | radial 2.89 | angle 1.60 deg | <15 m 1.40 | >=30 m 4.03
+x3 test  median 2.22 m | P90 5.60 | max 11.4 | radial 1.97 | angle 1.26 deg | <15 m 0.99 | >=30 m 3.01

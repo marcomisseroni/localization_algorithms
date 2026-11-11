@@ -1,0 +1,3 @@
+train n=13228 | median 1.37 m, P90 2.90 | radial 1.03 m, angle 1.27 deg | median <15 m 0.81, >=30 m 1.66
+val   n= 2183 | median 2.83 m, P90 6.49 | radial 2.53 m, angle 1.59 deg | median <15 m 1.28, >=30 m 3.63
+test  n= 2228 | median 3.23 m, P90 7.23 | radial 2.89 m, angle 1.60 deg | median <15 m 1.40, >=30 m 4.03

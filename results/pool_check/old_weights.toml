@@ -1,0 +1,44 @@
+# Parameters of the real-time stream simulation
+[stream]
+hop = 16384
+
+# Localization
+[localization.bf_gcc_ls]
+L = "auto"                   # "auto" -> ceil(1.1 * tau_max) + 1, computed from the sensor positions; or an integer with L - 1 >= tau_max
+Nw = 4096
+cc_type = "roth"                # cc -> simple cross-correlation, roth, scot, phat are the possible windows for gcc
+
+[localization.wv_tdoa_mlt]
+n_scales = 50
+v_min = 340
+v_max = 345
+v_count = 50
+h_range = 5
+h_steps = 100
+k = 0.8
+
+[localization.cnn_attention]
+det_thr = 0.5
+weights_dir = "results/before_signal_pool/checkpoints"
+
+# Detection
+[detection.amp_thr]
+post_margin = 320
+window = 1600
+learning_rate = 0.1
+k = 1.5
+min_thr = 1e-6
+
+[detection.raw]
+input_size = 24000
+stride = 2400
+
+# Event: common for detection and localization
+[event]
+pre_margin = 1500
+
+# Frequency band in which the event is contained
+[band]
+low_cutoff = 20
+high_cutoff = 500
+filter_order = 4

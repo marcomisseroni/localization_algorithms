@@ -18,6 +18,9 @@ ROOT = Path(__file__).parent.parent
 TRAIN_CONF_PATH = ROOT / "configs" / "train.toml"
 DEFAULT_CONF_PATH = ROOT / "configs" / "default.toml"
 
+NUM_WORKERS_TRAIN = 4
+NUM_WORKERS_VAL = 2
+
 def parse_arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train the neural network of the CnnAttention localizer for one sensor configuration")
     parser.add_argument("configuration", help="name of the configuration, the same subfolder of train_dir and val_dir, e.g. y_7m_10db")
@@ -147,17 +150,24 @@ def main() -> None:
     val_dataset = FootstepDataset(val_dir, train_conf["window"]["input_size"], 
                                                       train_conf["window"]["window_stride"], train_conf["window"]["frame_thr"],
                                                       train_conf["window"]["dist_scale"], T, def_conf)
-    train_dataloader = DataLoader(train_dataset, train_conf["training"]["batch_size"], True)
-    val_dataloader = DataLoader(val_dataset, train_conf["training"]["batch_size"], False)
+    train_dataloader = DataLoader(train_dataset, train_conf["training"]["batch_size"], True, 
+                                  num_workers=NUM_WORKERS_TRAIN, persistent_workers=True)
+    val_dataloader = DataLoader(val_dataset, train_conf["training"]["batch_size"], False, 
+                                num_workers=NUM_WORKERS_VAL, persistent_workers=True)
     torch.manual_seed(train_conf["training"]["seed"])
     seld_net = SELDNet(N).to(device)
     optimizer = torch.optim.Adam(seld_net.parameters(), lr=train_conf["training"]["lr"])
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, factor=train_conf["training"]["factor"],
+                                                           patience=train_conf["training"]["patience_lr"], 
+                                                           min_lr=train_conf["training"]["min_lr"])
     epochs = train_conf["training"]["max_epochs"]
     patience = train_conf["training"]["patience"]
     print(f"Configuration {args.configuration}: {N} sensors, fs {fs} Hz, {T} frames per window")
     print(f"Windows: {len(train_dataset)} training, {len(val_dataset)} validation")
     print(f"Network: {seld_net.model_size():,} parameters, learning rate {train_conf['training']['lr']}, "
           f"batch size {train_conf['training']['batch_size']}, at most {epochs} epochs, patience {patience}")
+    print(f"Scheduler ReduceLROnPlateau: learning rate x {train_conf['training']['factor']} after "
+          f"{train_conf['training']['patience_lr']} epochs without improvement, min {train_conf['training']['min_lr']}")
     checkpoint_path = ROOT / train_conf["output"]["checkpoint_dir"] / f"{args.configuration}.pt"
     checkpoint_path.parent.mkdir(parents=True, exist_ok=True)
     tmp_path = checkpoint_path.with_suffix(".tmp.pt")
@@ -174,10 +184,12 @@ def main() -> None:
         train_loss = train_one_epoch(seld_net, train_dataloader, optimizer, device)
         val_loss, y_pred, y_true = val_one_epoch(seld_net, val_dataloader, device)
         metrics = frame_metrics(y_pred, y_true, det_thr, train_conf["window"]["dist_scale"])
-        history.append({"epoch": epoch + 1, "train_loss": train_loss, "val_loss": val_loss, **metrics})
+        lr = optimizer.param_groups[0]["lr"]        # learning rate used in this epoch, read before the scheduler changes it
+        history.append({"epoch": epoch + 1, "lr": lr, "train_loss": train_loss, "val_loss": val_loss, **metrics})
+        scheduler.step(val_loss)
         improved = val_loss < best_loss
         no_improv_count = 0 if improved else no_improv_count + 1
-        print(f"Epoch {epoch + 1:3d}/{epochs} | train loss {train_loss:.5f} | val loss {val_loss:.5f} {'*' if improved else ' '} | "
+        print(f"Epoch {epoch + 1:3d}/{epochs} | lr {lr:.1e} | train loss {train_loss:.5f} | val loss {val_loss:.5f} {'*' if improved else ' '} | "
               f"F1 {100 * metrics['val_f1']:5.1f} % | median error {metrics['val_median_error_m']:5.2f} m | "
               f"angle {metrics['val_median_angle_deg']:5.2f} deg | {time.perf_counter() - epoch_start:4.1f} s | "
               f"no improvement {no_improv_count}/{patience}")

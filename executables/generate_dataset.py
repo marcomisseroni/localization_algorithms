@@ -3,7 +3,7 @@ import numpy as np
 from sim import simulate
 from pathlib import Path
 
-VAL_SPLIT = 0.15
+VAL_SPLIT = 0.01734
 
 ROOM_DIM = [70, 70, 3]
 MARGIN = 1.0                # [m] minimum distance of the sources from the walls
@@ -25,13 +25,17 @@ SIGNAL_POOL = ROOT / "sim" / "test_signals" / "pool"
 # Y: one sensor in the centre and three at 120 deg (100, 220, 340 deg) at distance aperture / sqrt(3)
 # square: vertices at 235, 325, 55, 145 deg at distance aperture / 2 (half diagonal)
 # Name: <layout>_<aperture>m_<SNR>db, with p instead of the decimal point (3p5m = 3.5 m)
+#SENSOR_POS = {
+#    "y_3p5m_10db": np.array([[35.000, 35.000, Z], [34.649, 36.990, Z], [33.452, 33.701, Z], [36.899, 34.309, Z]]),
+#    "y_7m_10db": np.array([[35.000, 35.000, Z], [34.298, 38.980, Z], [31.904, 32.402, Z], [38.798, 33.618, Z]]),
+#    "y_10m_10db": np.array([[35.000, 35.000, Z], [33.997, 40.686, Z], [30.577, 31.289, Z], [40.425, 33.025, Z]]),
+#    "sq_3p5m_10db": np.array([[33.996, 33.566, Z], [36.434, 33.996, Z], [36.004, 36.434, Z], [33.566, 36.004, Z]]),
+#    "sq_7m_10db": np.array([[32.992, 32.133, Z], [37.867, 32.992, Z], [37.008, 37.867, Z], [32.133, 37.008, Z]]),
+#    "sq_10m_10db": np.array([[32.132, 30.904, Z], [39.096, 32.132, Z], [37.868, 39.096, Z], [30.904, 37.868, Z]]),
+#}
+
 SENSOR_POS = {
-    "y_3p5m_10db": np.array([[35.000, 35.000, Z], [34.649, 36.990, Z], [33.452, 33.701, Z], [36.899, 34.309, Z]]),
     "y_7m_10db": np.array([[35.000, 35.000, Z], [34.298, 38.980, Z], [31.904, 32.402, Z], [38.798, 33.618, Z]]),
-    "y_10m_10db": np.array([[35.000, 35.000, Z], [33.997, 40.686, Z], [30.577, 31.289, Z], [40.425, 33.025, Z]]),
-    "sq_3p5m_10db": np.array([[33.996, 33.566, Z], [36.434, 33.996, Z], [36.004, 36.434, Z], [33.566, 36.004, Z]]),
-    "sq_7m_10db": np.array([[32.992, 32.133, Z], [37.867, 32.992, Z], [37.008, 37.867, Z], [32.133, 37.008, Z]]),
-    "sq_10m_10db": np.array([[32.132, 30.904, Z], [39.096, 32.132, Z], [37.868, 39.096, Z], [30.904, 37.868, Z]]),
 }
 
 def grid(n_side: int, centered: bool) -> np.ndarray:
