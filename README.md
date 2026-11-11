@@ -65,7 +65,7 @@ with `"module": "executables.evaluate"` and `"cwd": "${workspaceFolder}"`.
 ├── sim/                        # simulation, used as a black box through sim.simulate()
 │   ├── simulate.py             # API: sensors + source positions + fs + SNR -> dataset folder
 │   ├── engine.py               # propagation engine (from acustic-array-simulator, without normalization)
-│   └── test_signals/           # make_footstep.py and the footstep WAVs it generates (WAVs git-ignored)
+│   └── test_signals/           # make_footstep.py, the footstep WAVs and the pool/ of random walks (git-ignored)
 ├── core/
 │   ├── data.py                 # Sample: one recording of a dataset, band-pass filtered and streamed in blocks
 │   └── metrics.py              # error statistics shared by evaluate and the analysis scripts
@@ -117,7 +117,7 @@ data/test/<conf>/ ─executables.evaluate (every localizer)─► results/<conf>
 ```python
 from sim import simulate
 simulate(out_dir, sensor_pos, source_pos, fs, snr_db,
-         signal=..., c=343.42, model="free_field", room=(50.0, 50.0, 3.0),
+         signal=..., signal_pool=None, c=343.42, model="free_field", room=(50.0, 50.0, 3.0),
          wall_absorption=0.35, reflection_order=2, seed=0, overwrite=False)
 ```
 
@@ -126,7 +126,10 @@ simulate(out_dir, sensor_pos, source_pos, fs, snr_db,
   independent on every sensor, with the SNR referred to the power of the strongest sensor during the event; `seed`
   sets it.
 - `model`: `free_field` (direct path only) or `shoebox` (image-source reflections, `wall_absorption`,
-  `reflection_order`). `signal`: source WAV, default `sim/test_signals/footstep_walk.wav`.
+  `reflection_order`). `signal`: source WAV of every recording, default `sim/test_signals/footstep_walk.wav`.
+- `signal_pool`: folder of source WAVs; if given (instead of `signal`), every recording uses one of them chosen at
+  random, uniform with repetition. The choice depends only on `seed` and on the sorted file names, and uses a
+  generator separate from the noise, so without `signal_pool` the datasets are the same as before its introduction.
 - If `out_dir` is not empty it raises an error, unless `overwrite=True`.
 
 `sim/engine.py` is the propagation engine of
@@ -145,26 +148,30 @@ amplitude, so it can be compared between recordings and datasets, as with real m
 
 ```json
 {
-  "format_version": 1,
+  "format_version": 2,
   "origin": "simulated",
   "fs": 16000,
   "sensor_pos": [[35.0, 35.0, 1.0], ...],
   "simulation": {"c": 343.42, "model": "free_field", "room": [70, 70, 3], "wall_absorption": 0.35,
-                 "reflection_order": 2, "signal": "sim/test_signals/footstep_walk.wav", "seed": 3},
+                 "reflection_order": 2, "signal_pool": null, "seed": 3},
   "recordings": [
-    {"file": "rec0000.wav", "source_pos": [1.0, 1.0, 1.0], "snr_db": 10.0, "n_samples": 58519},
+    {"file": "rec0000.wav", "source_pos": [1.0, 1.0, 1.0], "snr_db": 10.0, "n_samples": 58519,
+     "signal": "sim/test_signals/footstep_walk.wav"},
     ...
   ]
 }
 ```
 
 A folder without `dataset.json` is an interrupted simulation. The recordings can have different lengths (`n_samples`).
+In version 1 (the datasets generated before `signal_pool`) the source WAV is `simulation.signal`, common to all the
+recordings, and the recordings have no `signal`; no code of the project reads these fields.
 Real measurements can be stored in the same format (`"origin": "measured"`, without `simulation`).
 
 ### Campaign (`executables/generate_dataset.py`)
 
-70 x 70 x 3 m room, free field, 16 kHz, `footstep_walk.wav` (4 steps), SNR 10 dB, array at the centre of the room
-(35, 35). Six sensor configurations of 4 sensors: Y and square layouts, apertures 3.5, 7 and 10 m (maximum distance
+70 x 70 x 3 m room, free field, 16 kHz, SNR 10 dB, array at the centre of the room (35, 35). Every recording uses a
+random signal of the pool `sim/test_signals/pool/` (`SIGNAL_POOL`, see Test signals), chosen with the seed of its
+group: the same position of the same group has the same signal in every configuration. Six sensor configurations of 4 sensors: Y and square layouts, apertures 3.5, 7 and 10 m (maximum distance
 between two sensors). Names: `<layout>_<aperture>m_<SNR>db`, with `p` for the decimal point (`y_3p5m_10db`).
 
 - Y: one sensor in the centre and three at 120 deg (100, 220, 340 deg) at distance aperture / √3.
@@ -236,8 +243,9 @@ the speed is not needed.
    the threshold crossing happen at the same relative point of the waveform on every sensor.
 3. **Sensor selection**: the 4 sensors reached first; the first one is the anchor.
 4. **Adaptive multilateration**: for every scale and every speed in `[v_min, v_max]` (`v_count` values) one hyperbola
-   per anchor-sensor pair (`h_range`, `h_steps` points), intersections computed with shapely and kept only inside the
-   room. A pair of hyperbolas sharing a focus can intersect twice: among the combinations with one candidate per pair,
+   per anchor-sensor pair, sampled with `h_steps` points of the parameter `h` in `[-h_max, h_max]`,
+   `h_max = asinh(D / b)` (`D` = diagonal of the room, `b` = semi-minor axis), so that the points cover the room;
+   intersections computed with shapely and kept only inside the room. A pair of hyperbolas sharing a focus can intersect twice: among the combinations with one candidate per pair,
    the one with minimum cost (sum of the distances between the 3 points) is kept. The best speed of every scale gives a
    position (mean of the intersections); the final estimate is the mean of the 8 scales with lowest cost.
 
@@ -251,8 +259,11 @@ one frame every ~2400 samples (~150 ms at 16 kHz): `(dx, dy)` with tanh and `d` 
 - **Targets** (ACCDOA-like, one class, one source): `encode_pos` gives `(dx, dy, d / scale)`, with `(dx, dy)` the unit
   vector from the centroid of the sensors to the source and `d` their distance, multiplied by the activity of the
   frame, so an inactive frame is `(0, 0, 0)`; `decode_pos` is the inverse.
-- **Detection**: a frame is a step if `‖(dx, dy)‖ > det_thr`; every such frame gives one estimate, so one block can
-  give several estimates.
+- **Detection**: a frame is a step if `‖(dx, dy)‖ > det_thr`; the estimate of a window is the median of the positions
+  decoded from its active frames (one estimate per window, `None` if no frame is active).
+- **Window alignment**: the training windows start at multiples of `window_stride` (2400 samples) from the beginning
+  of the recording, and the network works only with windows aligned in the same way (a shift of 1200 samples gives
+  errors of ~20 m).
 - **Input normalization**: `normalize_input` divides every window by its maximum absolute value over all the sensors,
   in training and in inference. The physical amplitude changes by orders of magnitude with the distance, and without
   it the validation is unstable. It uses only the current window, so it works in real time.
@@ -261,6 +272,8 @@ one frame every ~2400 samples (~150 ms at 16 kHz): `(dx, dy)` with tanh and `d` 
   checkpoints without `sensor_pos` are ignored). The constructor stops if the number of sensors, `fs`, the band or the
   input normalization differ from the training, and takes `input_size` and `dist_scale` from the checkpoint;
   `load_block_from_det` accepts only blocks of `input_size` samples.
+- **Initialization**: `init_weights` sets Conv1d and Linear layers to the PyTorch default (uniform in
+  `±1 / √fan_in`). With Xavier the ReLU of the distance output got stuck at 0 (median error 27.7 m).
 
 ### `executables/evaluate.py`
 
@@ -346,6 +359,17 @@ argument.
 weaker toe strike, each a 20–400 Hz noise burst with a 3 ms attack and an exponential decay.
 `footstep_single.wav` has one step at 0.5 s, `footstep_walk.wav` four steps every 0.55 s.
 
+It also writes a pool of `POOL_SIZE` (100) random walks in `sim/test_signals/pool/` (`step_000.wav`, ..., seed
+`POOL_SEED`), the input of `simulate(..., signal_pool=...)`:
+
+- 1 to 6 steps, first step at 0.3-1.0 s, 0.4-0.8 s between two steps, 0.3-1.0 s of silence after the last one,
+  at least 2 s in total (one window of the network is 1.5 s);
+- every step with its own amplitude (0.7-1.0), heel and toe decay, heel-toe delay (60-100 ms), toe amplitude
+  (0.4-0.8 of the heel) and band (15-30 Hz to 300-450 Hz).
+
+`pool/pool.json` lists the parameters of every signal (number of steps, onset and shape of every step). The pool is
+replaced at every run and is the same with the same seed; the two fixed WAVs do not change.
+
 ## Conventions
 
 - Blocks entering `detect` and segments entering `load_block_from_det` are chronological.
@@ -356,15 +380,22 @@ weaker toe strike, each a 20–400 Hz noise burst with a 3 ms attack and an expo
 
 ## Status and limitations
 
-- The simulations are free field, with white noise, one footstep signal and one propagation speed; reflections
-  (`shoebox`), other speeds and signals, and real data are still to be tested.
+- The simulations are free field, with white noise, one propagation speed and the synthetic signals of the pool
+  (the same pool for training, validation and test); reflections (`shoebox`), other speeds and real data are still
+  to be tested.
 - `BeamformingGccLs` needs the speed `c`; for floor vibrations it is unknown and frequency dependent (dispersion).
+  It works only within about ±10 % of the true speed.
   The speed range of `WaveletTdoaMult` in the config is narrow around the true speed of the simulator.
-- `WaveletTdoaMult` samples the hyperbolas with `h_steps` points, too few far from the array: its error grows quickly
-  with the distance of the source.
+- `WaveletTdoaMult`: the hyperbola sampling is not the limit (errors of millimetres); the limit is the integer-sample
+  arrival times, so its error grows quickly with the distance of the source.
+- TDoAs and arrival times are integer samples; sub-sample interpolation (arrival times of `WaveletTdoaMult`, then
+  GCC peak of `BeamformingGccLs`) is the next step.
 - The GCC weights whiten the spectrum over all the frequencies: limiting them to the band is still to be done.
-- TDoAs and arrival times are integer samples; sub-sample interpolation is still to be added.
 - The network needs one training per sensor configuration and is trained only in the conditions of the test sets;
   its error grows near the corners of the room, which are little covered by the training positions.
-  It returns one estimate per detected frame, so every step gives several estimates.
+  It works only with windows aligned as in training (see `CNNAttention`); planned fix: datasets simulated with the
+  signal pool (steps at different times and with different shapes in every recording) and a new training.
+- The CSVs of the campaign in `results/*.csv` and `results/summary/` predate `h_max`, the retraining of the networks
+  and the median per window: run `./executables/eval.sh` again before using them. The newer comparisons are in
+  `results/wv_k08_hmax/` and `results/cnn_median/`.
 - No unit tests yet.

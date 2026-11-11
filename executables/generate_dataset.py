@@ -18,6 +18,7 @@ ROOT = Path(__file__).parent.parent
 VALIDATION_DIR = ROOT / "data" / "validation"
 TRAINING_DIR = ROOT / "data" / "training"
 TEST_DIR = ROOT / "data" / "test"
+SIGNAL_POOL = ROOT / "sim" / "test_signals" / "pool"
 
 # Same formations of the old campaign, with the centre of the array in the centre of the room (35, 35).
 # The aperture is the maximum distance between two sensors, both formations are rotated by 10 deg:
@@ -56,7 +57,8 @@ def make_dataset(out_dir: Path, sensor_pos: np.ndarray, source_pos: np.ndarray, 
         return
     print(f"Generating {out_dir.relative_to(ROOT)}")
     # overwrite=True only replaces an interrupted simulation, a complete one is skipped above
-    simulate(out_dir, sensor_pos, source_pos, FS, snr_db, room=tuple(ROOM_DIM), seed=seed, overwrite=True)
+    simulate(out_dir, sensor_pos, source_pos, FS, snr_db, room=tuple(ROOM_DIM), seed=seed, 
+             overwrite=True, signal_pool=SIGNAL_POOL)
 
 def generate_val_datasets() -> None:
     """
