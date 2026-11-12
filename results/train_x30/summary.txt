@@ -1,0 +1,12 @@
+Run x30, y_7m_10db (12/11/2026)
+Data: 43505 training recordings (VAL_SPLIT = 0.00585 in generate_dataset.py), validation and test the same as x10 (256 each, seeds 1 and 3)
+Training: configs/train.toml -> train_x30.toml (lr 1e-3, ReduceLROnPlateau factor 0.1, patience_lr 20, patience 50, max_epochs 200)
+  110 epochs (early stopping), lr 1e-4 from epoch 53, 1e-5 from 82, 1e-6 from 103
+  checkpoint = epoch 60: val loss 0.00145, F1 99.5 %, frame median error 0.67 m, angle 0.64 deg
+  last epoch: val loss 0.00167, frame median error 0.61 m (val loss rises after epoch 60, frame median keeps falling)
+
+Test (executables.evaluate --loc cnn_attention --det raw), 2228 estimates, 5 recordings without estimate
+x10 sched  median 1.20 m | P90 2.97 | mean 1.53 | max 13.4    (results/train_x10_sched/x10_test.csv)
+x30        median 0.75 m | P90 1.63 | mean 0.90 | max 8.3     (eval/y_7m_10db_cnn_attention.csv)
+
+Test median vs training size (x0.5 to x3 and old x10 without scheduler): x0.5 3.57 | x1 3.23 | x3 2.22 | x10 1.39 (old) / 1.20 | x30 0.75
