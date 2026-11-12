@@ -18,7 +18,7 @@ ROOT = Path(__file__).parent.parent
 TRAIN_CONF_PATH = ROOT / "configs" / "train.toml"
 DEFAULT_CONF_PATH = ROOT / "configs" / "default.toml"
 
-NUM_WORKERS_TRAIN = 4
+NUM_WORKERS_TRAIN = 12
 NUM_WORKERS_VAL = 2
 
 def parse_arguments() -> argparse.Namespace:
@@ -146,14 +146,16 @@ def main() -> None:
     T = output_frames(N, train_conf["window"]["input_size"])
     train_dataset = FootstepDataset(train_dir, train_conf["window"]["input_size"], 
                                                   train_conf["window"]["window_stride"], train_conf["window"]["frame_thr"],
-                                                  train_conf["window"]["dist_scale"], T, def_conf)
+                                                  train_conf["window"]["dist_scale"], T, def_conf, random_offset=True, seed=train_conf["training"]["seed"])
     val_dataset = FootstepDataset(val_dir, train_conf["window"]["input_size"], 
-                                                      train_conf["window"]["window_stride"], train_conf["window"]["frame_thr"],
-                                                      train_conf["window"]["dist_scale"], T, def_conf)
-    train_dataloader = DataLoader(train_dataset, train_conf["training"]["batch_size"], True, 
-                                  num_workers=NUM_WORKERS_TRAIN, persistent_workers=True)
+                                                      train_conf["window"]["val_stride"], train_conf["window"]["frame_thr"],
+                                                      train_conf["window"]["dist_scale"], T, def_conf, random_offset=False, seed=train_conf["training"]["seed"])
+    # Workers not persistent in training: they are created again at every epoch with a copy of the dataset, so they
+    # see the new windows of make_windows()
+    train_dataloader = DataLoader(train_dataset, train_conf["training"]["batch_size"], True,
+                                  num_workers=NUM_WORKERS_TRAIN, persistent_workers=False)
     val_dataloader = DataLoader(val_dataset, train_conf["training"]["batch_size"], False, 
-                                num_workers=NUM_WORKERS_VAL, persistent_workers=True)
+                                num_workers=NUM_WORKERS_VAL, persistent_workers=False)
     torch.manual_seed(train_conf["training"]["seed"])
     seld_net = SELDNet(N).to(device)
     optimizer = torch.optim.Adam(seld_net.parameters(), lr=train_conf["training"]["lr"])
@@ -181,6 +183,8 @@ def main() -> None:
     start_time = time.perf_counter()
     for epoch in range(epochs):
         epoch_start = time.perf_counter()
+        if(epoch > 0):
+            train_dataset.make_windows()        # new random offsets of the training windows
         train_loss = train_one_epoch(seld_net, train_dataloader, optimizer, device)
         val_loss, y_pred, y_true = val_one_epoch(seld_net, val_dataloader, device)
         metrics = frame_metrics(y_pred, y_true, det_thr, train_conf["window"]["dist_scale"])

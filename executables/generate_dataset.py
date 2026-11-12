@@ -3,7 +3,7 @@ import numpy as np
 from sim import simulate
 from pathlib import Path
 
-VAL_SPLIT = 0.01734
+VAL_SPLIT = 0.001761
 
 ROOM_DIM = [70, 70, 3]
 MARGIN = 1.0                # [m] minimum distance of the sources from the walls

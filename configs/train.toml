@@ -11,7 +11,11 @@ val_dir = "data/validation"
 # Windows cut from the recordings and targets of every frame
 [window]
 input_size = 24000              # samples of every window, multiple of 2400 (one output frame every ~2400 samples): 1.5 s at 16 kHz
-window_stride = 2400            # [samples] shift between two consecutive windows of the same recording, one frame
+window_stride = 4800            # [samples] training: shift between two consecutive windows of the same recording, two
+                                # frames; the first window of every recording starts at a random offset in
+                                # [0, window_stride), drawn again at every epoch, so all the starting points are seen
+val_stride = 2400               # [samples] validation: shift between two consecutive windows, one frame, fixed windows
+                                # without offset, so that the validation loss is comparable between epochs and runs
 frame_thr = 0.5                 # a frame is active if more than this fraction of its samples is active
 dist_scale = 70.0               # [m] the distance target is d / dist_scale: in the 70 x 70 m room with the array in the
                                 # centre d is at most ~49.5 m, so the target is at most ~0.7
@@ -20,10 +24,11 @@ dist_scale = 70.0               # [m] the distance target is d / dist_scale: in 
 batch_size = 128
 lr = 1e-3                       # learning rate of Adam
 max_epochs = 200
-patience = 30                   # early stopping: epochs without improvement of the validation loss
+patience = 60                   # early stopping: epochs without improvement of the validation loss
 seed = 0
-factor = 0.1                    # factor by which the learning rate is reduced after patience_lr epochs with no improvemet
-patience_lr = 10                # number of epochs after which the learning rate is decerased
+factor = 0.1                    # factor by which the learning rate is reduced after patience_lr epochs with no improvement
+patience_lr = 24                # number of epochs without improvement of the validation loss after which the learning
+                                # rate is decreased
 min_lr = 0                      # lower bound for the learning rate
 
 [output]
