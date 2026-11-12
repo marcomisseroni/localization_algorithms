@@ -11,16 +11,20 @@ class Sample:
     Reads the common information of the dataset (fs, sensor positions, c, room) and the source position and the
     multichannel WAV of the recording (channel i = sensor i). The signal is read block by block with read(hop),
     band-pass filtered keeping the filter state between blocks, as in streaming.
+    data: content of dataset.json already read, to avoid reading the whole file again for every recording of a
+    large dataset; if None it is read from dataset_json_path.
     """
-    def __init__(self, dataset_json_path: Path, rec_idx: int, low_cutoff: float, high_cutoff: float, filter_order: int) -> None:
+    def __init__(self, dataset_json_path: Path, rec_idx: int, low_cutoff: float, high_cutoff: float, filter_order: int,
+                 data: dict | None = None) -> None:
         self.data_path = dataset_json_path.parent
         self.cursor = 0
         self.low_cutoff = low_cutoff
         self.high_cutoff = high_cutoff
         self.filter_order = filter_order
 
-        with open(dataset_json_path, "r") as file:
-            data = json.load(file)
+        if(data is None):
+            with open(dataset_json_path, "r") as file:
+                data = json.load(file)
 
         self.fs = data["fs"]
         self.rec_idx = rec_idx

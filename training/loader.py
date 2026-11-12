@@ -33,8 +33,13 @@ class FootstepDataset(Dataset):
     y: (T, 3) for every frame (dx, dy, d / dist_scale) if the frame is active, (0, 0, 0) otherwise.
     A frame is active if more than frame_thr of its samples are active.
     T is the number of frames of the output of the network for an input of input_size samples.
+    The windows of a recording start every window_stride samples. With random_offset the first window of every
+    recording starts at a random sample in [0, window_stride), drawn with a generator initialized with seed;
+    make_windows() draws new offsets, so that calling it at every epoch the network sees all the starting points
+    over the training with fewer windows per epoch. Without random_offset (validation) the windows are always the same.
     """
-    def __init__(self, data_dir: Path, input_size: int, window_stride: int, frame_thr: float, dist_scale: float, T: int, def_toml: dict):
+    def __init__(self, data_dir: Path, input_size: int, window_stride: int, frame_thr: float, 
+            dist_scale: float, T: int, def_toml: dict, random_offset: bool = False, seed: int = 0):
         super().__init__()
         self.input_size = input_size
         self.frame_thr = frame_thr
@@ -48,12 +53,25 @@ class FootstepDataset(Dataset):
         self.source_pos = []
         self.arr_center = []
         self.windows = []       # (recording index, first sample of the window)
+        self.rng = np.random.default_rng(seed)
+        self.random_offset = random_offset
+        self.window_stride = window_stride
 
         if(not (data_dir / "dataset.json").is_file()):
             raise FileNotFoundError(f"{data_dir} is not a dataset: dataset.json not found")
         self.load_dataset(data_dir)
-        for r in range(len(self.lengths)):
-            for start in range(0, self.lengths[r] - input_size + 1, window_stride):
+        self.make_windows()
+
+    def make_windows(self) -> None:
+        """
+        (recording index, first sample) of every window in self.windows. With random_offset the first window of every
+        recording starts at a random sample in [0, window_stride), drawn again at every call (once per epoch in
+        training), otherwise at 0.
+        """
+        self.windows = []
+        for r, L in enumerate(self.lengths):
+            offset = int(self.rng.integers(self.window_stride)) if self.random_offset else 0
+            for start in range(offset, L - self.input_size + 1, self.window_stride):
                 self.windows.append((r, start))
 
     def cache_params(self, dataset_dir: Path) -> dict:
@@ -111,7 +129,8 @@ class FootstepDataset(Dataset):
         lengths = {}
         for i, rec in enumerate(data["recordings"]):
             print(f"Caching {dataset_dir.name}: recording {i + 1}/{len(data['recordings'])}", end="\r")
-            sample = Sample(dataset_dir / "dataset.json", i, band["low_cutoff"], band["high_cutoff"], band["filter_order"])
+            sample = Sample(dataset_dir / "dataset.json", i, band["low_cutoff"], band["high_cutoff"], band["filter_order"],
+                            data=data)
             det = AmpThr(fs=sample.fs, N=sample.N, pre_margin=params["pre_margin"], **params["amp_thr"])
             signal = []
             mask = []
