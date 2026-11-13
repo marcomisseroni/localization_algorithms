@@ -3,7 +3,7 @@ import numpy as np
 from sim import simulate
 from pathlib import Path
 
-VAL_SPLIT = 0.001761
+VAL_SPLIT = 0.00585
 
 ROOM_DIM = [70, 70, 3]
 MARGIN = 1.0                # [m] minimum distance of the sources from the walls
@@ -38,19 +38,27 @@ SENSOR_POS = {
     "y_7m_10db": np.array([[35.000, 35.000, Z], [34.298, 38.980, Z], [31.904, 32.402, Z], [38.798, 33.618, Z]]),
 }
 
-def grid(n_side: int, centered: bool) -> np.ndarray:
+def grid(n_side: int, centered: bool, seed: int) -> np.ndarray:
     """
     Grid of n_side x n_side source positions (n_side**2, 3) inside the room, at least MARGIN from the walls.
     centered = False: the nodes include the borders of the area, centered = True: the nodes are the centres of
-    n_side x n_side cells. A centered and a not centered grid never have a node in common.
+    n_side x n_side cells.
+    Every node is then moved by a random offset, uniform in +-step/2 on x and y (step = side of the area / n_side),
+    drawn with a generator initialized with seed, so that it stays close to its node and the room is still covered
+    uniformly; the positions are clipped to the area at least MARGIN from the walls (the nodes on the borders of
+    the not centered grid can only move inwards).
     """
+    step = (ROOM_DIM[0] - 2 * MARGIN) / n_side
     if(centered):
-        step = (ROOM_DIM[0] - 2 * MARGIN) / n_side
         coords = MARGIN + step * (np.arange(n_side) + 0.5)
     else:
         coords = np.linspace(MARGIN, ROOM_DIM[0] - MARGIN, n_side)
     gx, gy = np.meshgrid(coords, coords, indexing="ij")
-    return np.column_stack((gx.ravel(), gy.ravel(), np.full(gx.size, Z)))
+    pos = np.column_stack((gx.ravel(), gy.ravel(), np.full(gx.size, Z)))
+    rng = np.random.default_rng(seed)
+    pos[:, :2] += rng.uniform(-step / 2, step / 2, size=(pos.shape[0], 2))
+    pos[:, :2] = np.clip(pos[:, :2], MARGIN, ROOM_DIM[0] - MARGIN)
+    return pos
 
 def make_dataset(out_dir: Path, sensor_pos: np.ndarray, source_pos: np.ndarray, snr_db: float, seed: int) -> None:
     """
@@ -68,7 +76,7 @@ def generate_val_datasets() -> None:
     """
     Fill up the validation dataset folder, using a fixed number of simulations.
     """
-    source_pos = grid(VAL_GRID_SIDE, centered=True)
+    source_pos = grid(VAL_GRID_SIDE, centered=True, seed=SEED + 1)
     for conf, sensor_pos in SENSOR_POS.items():
         snr_db = int(conf.rsplit("_", 1)[-1].split("db")[0])
         make_dataset(VALIDATION_DIR / conf, sensor_pos, source_pos, snr_db, SEED + 1)
@@ -91,7 +99,7 @@ def generate_test_datasets() -> None:
     """
     Same but for test data
     """
-    source_pos = grid(TEST_GRID_SIDE, centered=False)
+    source_pos = grid(TEST_GRID_SIDE, centered=False, seed=SEED + 3)
     for conf, sensor_pos in SENSOR_POS.items():
         snr_db = int(conf.rsplit("_", 1)[-1].split("db")[0])
         make_dataset(TEST_DIR / conf, sensor_pos, source_pos, snr_db, SEED + 3)

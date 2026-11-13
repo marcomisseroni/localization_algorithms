@@ -1,0 +1,12 @@
+Run x10, y_7m_10db, batch 128 (13/11/2026), same config of train_x30_stride4800_b128 and train_x100_stride4800_b128
+Data: 14508 training recordings (VAL_SPLIT = 0.01734), stride 4800 with random offset, val_stride 2400
+Training: 200 epochs (stopped by max_epochs), lr 1e-4 from epoch 58, 1e-5 from 167
+  checkpoint = epoch 196: val loss 0.00306, train loss 0.00358, frame median error 1.00 m, angle 0.65 deg
+
+Test median vs training size (stride 4800 + random offset, batch 128, one seed per point), old validation and test
+        median | P90  | P95  | mean | RMSE | max
+x10     1.40   | 3.65 | 4.39 | 1.74 | 2.21 | 9.8
+x30     1.29   | 3.30 | 4.10 | 1.59 | 2.02 | 8.6
+x100    1.22   | 3.14 | 3.71 | 1.53 | 1.95 | 8.9
+Validation median: x10 1.02, x100 0.79
+Note: x10 and x100 stopped at max_epochs (x10 best epoch 196), only x30 stopped by early stopping.

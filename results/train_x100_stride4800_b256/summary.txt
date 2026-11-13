@@ -1,0 +1,11 @@
+Run x100, y_7m_10db, batch 256 (12/11/2026 23:26 - 13/11 02:43), config in train.toml
+Same data and windows of train_x100_stride4800_b128 (stride 4800, random offset), differences:
+  batch_size 256 (was 128), patience 40 (was 60), patience_lr 15 (was 24); lr 1e-3 unchanged
+Training: 109 epochs (early stopping), lr 1e-4 from epoch 62, 1e-5 from 86, 1e-6 from 102, 196 min
+  checkpoint = epoch 69: val loss 0.00247, train loss 0.00255, frame median error 0.93 m, angle 0.57 deg
+
+Evaluation (executables.evaluate --loc cnn_attention --det raw), errors of the estimates [m]
+validation  median 0.96 | P90 2.79 | mean 1.28 | max 9.0
+test        median 1.36 | P90 3.29 | mean 1.62 | max 8.1
+
+Worse than batch 128, but batch and patience changed together (the lr was reduced earlier and the run stopped earlier).

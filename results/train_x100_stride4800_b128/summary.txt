@@ -1,0 +1,11 @@
+Run x100, y_7m_10db, batch 128 (12/11/2026 16:42 - 23:26), config in README.txt
+Data: 145116 training recordings, windows with stride 4800 and random offset per recording in [0, 4800) at every epoch
+Training: 200 epochs (stopped by max_epochs), lr 1e-4 from epoch 122, 1e-5 from 178
+  checkpoint = epoch 152: val loss 0.00199, train loss 0.00244, frame median error 0.75 m, angle 0.51 deg
+
+Evaluation (executables.evaluate --loc cnn_attention --det raw), errors of the estimates [m]
+validation  median 0.79 | P90 2.57 | mean 1.15 | max 9.2
+test        median 1.22 | P90 3.14 | mean 1.53 | max 8.9
+
+First result without the emission-time leak (see results/leak_check/summary.txt): the earlier results of the
+network (x0.5 ... x30, x100 with stride 2400) are not comparable.

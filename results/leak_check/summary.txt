@@ -1,0 +1,25 @@
+Emission-time leak of the network (12/11/2026)
+Model: results/train_x100_stride2400/y_7m_10db_epoch24.pt (x100, trained on windows starting at multiples of 2400)
+Data: data/validation/y_7m_10db, windows with stride 4800 starting at a fixed offset
+
+offset     loss     frame median error
+0          0.00140  0.71 m
+1, 2       0.00144  0.71 m
+10         0.00152  0.78 m
+300        0.00938  5.25 m
+1200       0.00824  2.08 m
+2399/2400  0.00134  0.71 m
+4800       0.00158  0.69 m
+random     0.0096   2.8 m
+
+offset 0:    angle 0.68 deg, distance 0.49 m
+offset 1200: angle 0.69 deg, distance 1.98 m   -> only the distance gets worse
+
+Labels (mask edges) and signal energy are uniform modulo 2400: no periodicity in the data.
+Cause: every recording starts when the walk starts, and the 100 walks of the pool have fixed step times
+(FIRST_STEP is random between walks, not between recordings). With windows aligned to the start of the recording
+the network learns the arrival time of the steps within the 2400-sample frames and, knowing the walk, the time of
+flight, so the distance. 2400 / 16000 s * 343 m/s = 51 m >= max distance in the room, so the phase modulo 2400 is enough.
+Not available in a real case (unknown emission time). The classic localizers (TDOA) are not affected.
+Fix used: random offset of the training windows (window_stride 4800, offset in [0, 4800) at every epoch).
+All the results of the network trained without it (x0.5 ... x30, x100 stride 2400) are affected, also on the test.

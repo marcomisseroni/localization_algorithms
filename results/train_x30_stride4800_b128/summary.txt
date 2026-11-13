@@ -1,0 +1,10 @@
+Run x30, y_7m_10db, batch 128 (13/11/2026), same config of train_x100_stride4800_b128 (train.toml)
+Data: 43505 training recordings (VAL_SPLIT = 0.00585), stride 4800 with random offset, val_stride 2400
+Training: 185 epochs (early stopping), lr 1e-4 from epoch 100, 1e-5 from 151, 1e-6 from 176
+  checkpoint = epoch 125: val loss 0.00240, train loss 0.00279, frame median error 0.89 m, angle 0.64 deg
+
+Test (executables.evaluate --loc cnn_attention --det raw), 2228 estimates [m]
+x30   median 1.29 | P90 3.30 | P95 4.10 | mean 1.59 | RMSE 2.02 | max 8.6 | <50 cm 20.9 %
+x100  median 1.22 | P90 3.14 | P95 3.71 | mean 1.53 | RMSE 1.95 | max 8.9 | <50 cm 21.3 %   (train_x100_stride4800_b128)
+Validation: val loss 0.00240 (x30) vs 0.00199 (x100), frame median 0.89 vs 0.75 m
+Note: the x100 run stopped at max_epochs (200), so it may be not fully converged. One seed per point.

@@ -1,0 +1,24 @@
+Samples with at least one estimate: 251/256
+========================================
+ Localization error report
+========================================
+ Estimates                   2228
+----------------------------------------
+ Mean                     1.525 m
+ Median                   1.216 m
+ RMSE                     1.952 m
+ Std                      1.218 m
+ Min                      0.022 m
+ Max                      8.937 m
+----------------------------------------
+ P25                      0.565 m
+ P75                      2.183 m
+ P90                      3.137 m
+ P95                      3.714 m
+----------------------------------------
+ Error < 5 cm               0.1 %
+ Error < 10 cm              1.2 %
+ Error < 25 cm              7.2 %
+ Error < 50 cm             21.3 %
+========================================
+Figures written to results/train_x100_stride4800_b128/eval/figures/test_{map,distance,cdf}.png

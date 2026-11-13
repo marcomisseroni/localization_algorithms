@@ -1,0 +1,35 @@
+# Parameters of the training of the neural network localizer (training/train.py)
+# All the paths are relative to the project root
+
+# Folders written by executables/generate_dataset.py: one subfolder (with dataset.json) per sensor configuration,
+# e.g. data/training/y_7m_10db. One network is trained for every configuration, with the subfolder of the same
+# configuration in train_dir and in val_dir
+[data]
+train_dir = "data_size/x1/training"
+val_dir = "data/validation"
+
+# Windows cut from the recordings and targets of every frame
+[window]
+input_size = 24000              # samples of every window, multiple of 2400 (one output frame every ~2400 samples): 1.5 s at 16 kHz
+window_stride = 4800            # [samples] training: shift between two consecutive windows of the same recording, two
+                                # frames; the first window of every recording starts at a random offset in
+                                # [0, window_stride), drawn again at every epoch, so all the starting points are seen
+val_stride = 2400               # [samples] validation: shift between two consecutive windows, one frame, fixed windows
+                                # without offset, so that the validation loss is comparable between epochs and runs
+frame_thr = 0.5                 # a frame is active if more than this fraction of its samples is active
+dist_scale = 70.0               # [m] the distance target is d / dist_scale: in the 70 x 70 m room with the array in the
+                                # centre d is at most ~49.5 m, so the target is at most ~0.7
+
+[training]
+batch_size = 128
+lr = 1e-3                       # learning rate of Adam
+max_epochs = 800
+patience = 60                   # early stopping: epochs without improvement of the validation loss
+seed = 0
+factor = 0.1                    # factor by which the learning rate is reduced after patience_lr epochs with no improvement
+patience_lr = 24                # number of epochs without improvement of the validation loss after which the learning
+                                # rate is decreased
+min_lr = 0                      # lower bound for the learning rate
+
+[output]
+checkpoint_dir = "results/train_x1_stride4800_b128/checkpoints"
