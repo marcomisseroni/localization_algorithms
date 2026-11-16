@@ -108,7 +108,7 @@ class SELDNet(nn.Module):
         x = self.fc_block(x)        # (B, T, 4)
         logit = x[:, :, 0:1]            # (B, T, 1)  detection logit, no activation: sigmoid in the loss / inference
         x1 = torch.tanh(x[:, :, 1:3])   # (B, T, 2)  direction (dx, dy), only its orientation is used
-        x2 = torch.relu(x[:, :, 3:])    # (B, T, 1)  distance
+        x2 = nn.functional.softplus(x[:, :, 3:])    # (B, T, 1)  distance
         return torch.cat([logit, x1, x2], dim=-1)  # (B, T, 4)
 
     def model_size(self) -> int:

@@ -23,8 +23,8 @@ dist_scale = 70.0               # [m] the distance target is d / dist_scale: in 
 [training]
 batch_size = 128
 lr = 1e-3                       # learning rate of Adam
-max_epochs = 200
-patience = 60                   # early stopping: epochs without improvement of the validation loss
+max_epochs = 400
+patience = 80                  # early stopping: epochs without improvement of the validation loss
 seed = 0
 factor = 0.1                    # factor by which the learning rate is reduced after patience_lr epochs with no improvement
 patience_lr = 15                # number of epochs without improvement of the validation loss after which the learning

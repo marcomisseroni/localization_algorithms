@@ -1,0 +1,16 @@
+Run x30, y_7m_10db, batch 128, lr 1e-3, patience_lr 15, frame_thr 0.5, input_size 24000, T = 10, new loss (16/11/2026)
+config in train.toml, evaluation config in eval_default.toml (detection.raw input_size 24000, stride 2400)
+Same data and settings of train_x30_b128_plr15_fthr0.75, differences: frame_thr 0.5 and the loss:
+  network output (logit, dx, dy, d), distance with softplus (with ReLU the distance died at 0 and blocked also the
+  direction, first attempt discarded); loss = 0.2 * BCE(logit, activity) + 0.8 * mean Euclidean error of the
+  position d * (dx, dy) / |(dx, dy)| on the frames with a step (was MSE on (dx, dy) of all the frames + MSE on d)
+Training: 171 epochs (early stopping), lr 1e-4 from epoch 93, 1e-5 from 128, 1e-6 from 144, 1e-7 from 160
+  checkpoint = epoch 111: val loss 0.01643, train loss 0.01798, F1 99.1 %, frame median error 0.80 m, angle 0.40 deg
+  (val loss not comparable with the old loss)
+
+Test (executables.evaluate --loc cnn_attention --det raw):
+  2228 estimates, 5 recordings without estimate
+  median 1.10 | P90 3.01 | P95 3.72 | mean 1.43 | max 8.3 | <50 cm 25.1 %
+  vs old loss (train_x30_b128_plr15_fthr0.75): median 1.27 | P90 3.25 | P95 4.11 | mean 1.59 | max 7.5 | <50 cm 19.9 %
+Median -13 %, about 3x the run-to-run spread (~4 %): best result so far, better also than T = 20 (1.215) and
+x100 data with the old loss (1.22). Frame metrics: error 1.05 -> 0.80 m, angle 0.65 -> 0.40 deg. One seed.
