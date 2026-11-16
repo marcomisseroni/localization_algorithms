@@ -30,7 +30,7 @@ class FootstepDataset(Dataset):
     The cache is computed again if dataset.json or the parameters of def_toml that change signal and mask differ.
     Every element is a window of input_size samples of one recording and its target:
     x: (N, input_size) filtered signal of the sensors,
-    y: (T, 3) for every frame (dx, dy, d / dist_scale) if the frame is active, (0, 0, 0) otherwise.
+    y: (T, 4) for every frame (1, dx, dy, d / dist_scale) if the frame is active, (0, 0, 0, 0) otherwise.
     A frame is active if more than frame_thr of its samples are active.
     T is the number of frames of the output of the network for an input of input_size samples.
     The windows of a recording start every window_stride samples. With random_offset the first window of every
@@ -164,17 +164,18 @@ class FootstepDataset(Dataset):
         x = normalize_input(signal[:, start:start + self.input_size])          # (N, input_size) same normalization of CNNAttention
         a = mask[start:start + self.T * self.frame_size]                       # (T * frame_size,)
         frame_active = a.reshape(self.T, self.frame_size).mean(axis=1) > self.frame_thr     # (T,)
-        y = np.zeros((self.T, 3))
+        y = np.zeros((self.T, 4))
         for t in range(self.T):
-            y[t, :] = encode_pos(self.source_pos[r], frame_active[t], self.arr_center[r], self.dist_scale)
-        return torch.from_numpy(x), torch.from_numpy(y).float()                # (N, input_size), (T, 3)
+            y[t, 1:] = encode_pos(self.source_pos[r], frame_active[t], self.arr_center[r], self.dist_scale)
+            y[t, 0] = frame_active[t]
+        return torch.from_numpy(x), torch.from_numpy(y).float()                # (N, input_size), (T, 4)
 
 def output_frames(N: int, input_size: int) -> int:
     """
     Number of frames T of the output of the network for an input of input_size samples.
     """
     with torch.no_grad():
-        y = SELDNet(N).eval()(torch.zeros(1, N, input_size))                   # (1, T, 3)
+        y = SELDNet(N).eval()(torch.zeros(1, N, input_size))                   # (1, T, 4)
     return y.shape[1]
 
 def main() -> None:

@@ -1,0 +1,1044 @@
+Epoch 106/200 | lr 2.0e-04 | train loss 0.00307 | val loss 0.00291   | F1  99.0 % | median error  1.05 m |
+ angle  0.62 deg | 48.0 s | no improvement 9/60
+Epoch 107/200 | lr 2.0e-04 | train loss 0.00306 | val loss 0.00282   | F1  99.0 % | median error  1.00 m |
+ angle  0.61 deg | 47.9 s | no improvement 10/60
+Epoch 108/200 | lr 2.0e-04 | train loss 0.00308 | val loss 0.00276   | F1  99.1 % | median error  1.05 m |
+ angle  0.64 deg | 48.1 s | no improvement 11/60
+Epoch 109/200 | lr 2.0e-04 | train loss 0.00307 | val loss 0.00275   | F1  99.0 % | median error  0.99 m |
+ angle  0.60 deg | 48.2 s | no improvement 12/60
+Epoch 110/200 | lr 2.0e-04 | train loss 0.00307 | val loss 0.00277   | F1  99.0 % | median error  0.99 m |
+ angle  0.62 deg | 47.8 s | no improvement 13/60
+Epoch 111/200 | lr 2.0e-04 | train loss 0.00305 | val loss 0.00286   | F1  99.0 % | median error  0.97 m |
+ angle  0.59 deg | 47.9 s | no improvement 14/60
+Epoch 112/200 | lr 2.0e-04 | train loss 0.00309 | val loss 0.00269   | F1  99.1 % | median error  1.02 m |
+ angle  0.61 deg | 47.9 s | no improvement 15/60
+Epoch 113/200 | lr 2.0e-04 | train loss 0.00308 | val loss 0.00289   | F1  99.0 % | median error  1.01 m |
+ angle  0.62 deg | 48.0 s | no improvement 16/60
+Epoch 114/200 | lr 2.0e-05 | train loss 0.00308 | val loss 0.00270   | F1  99.1 % | median error  1.00 m |
+ angle  0.61 deg | 48.0 s | no improvement 17/60
+Epoch 115/200 | lr 2.0e-05 | train loss 0.00310 | val loss 0.00279   | F1  99.0 % | median error  1.00 m |
+ angle  0.60 deg | 47.8 s | no improvement 18/60
+Epoch 116/200 | lr 2.0e-05 | train loss 0.00303 | val loss 0.00270   | F1  99.1 % | median error  1.00 m |
+ angle  0.61 deg | 48.7 s | no improvement 19/60
+Epoch 117/200 | lr 2.0e-05 | train loss 0.00307 | val loss 0.00268   | F1  99.1 % | median error  0.99 m |
+ angle  0.60 deg | 47.8 s | no improvement 20/60
+Epoch 118/200 | lr 2.0e-05 | train loss 0.00305 | val loss 0.00266   | F1  99.1 % | median error  0.98 m |
+ angle  0.60 deg | 47.6 s | no improvement 21/60
+Epoch 119/200 | lr 2.0e-05 | train loss 0.00302 | val loss 0.00277   | F1  99.1 % | median error  1.01 m |
+ angle  0.59 deg | 48.2 s | no improvement 22/60
+Epoch 120/200 | lr 2.0e-05 | train loss 0.00304 | val loss 0.00277   | F1  99.0 % | median error  0.99 m |
+ angle  0.59 deg | 48.0 s | no improvement 23/60
+Epoch 121/200 | lr 2.0e-05 | train loss 0.00300 | val loss 0.00268   | F1  99.1 % | median error  0.98 m |
+ angle  0.57 deg | 48.1 s | no improvement 24/60
+Epoch 122/200 | lr 2.0e-05 | train loss 0.00308 | val loss 0.00276   | F1  99.0 % | median error  1.00 m |
+ angle  0.60 deg | 47.9 s | no improvement 25/60
+Epoch 123/200 | lr 2.0e-05 | train loss 0.00306 | val loss 0.00272   | F1  99.0 % | median error  0.98 m |
+ angle  0.59 deg | 48.1 s | no improvement 26/60
+Epoch 124/200 | lr 2.0e-05 | train loss 0.00305 | val loss 0.00278   | F1  99.0 % | median error  0.98 m |
+ angle  0.59 deg | 47.7 s | no improvement 27/60
+Epoch 125/200 | lr 2.0e-05 | train loss 0.00299 | val loss 0.00278   | F1  99.0 % | median error  0.99 m |
+ angle  0.60 deg | 48.0 s | no improvement 28/60
+Epoch 126/200 | lr 2.0e-05 | train loss 0.00303 | val loss 0.00275   | F1  99.1 % | median error  1.00 m |
+ angle  0.60 deg | 48.0 s | no improvement 29/60
+Epoch 127/200 | lr 2.0e-05 | train loss 0.00299 | val loss 0.00277   | F1  99.1 % | median error  0.99 m |
+ angle  0.59 deg | 47.7 s | no improvement 30/60
+Epoch 128/200 | lr 2.0e-05 | train loss 0.00301 | val loss 0.00275   | F1  99.1 % | median error  1.00 m |
+ angle  0.60 deg | 47.9 s | no improvement 31/60
+Epoch 129/200 | lr 2.0e-05 | train loss 0.00296 | val loss 0.00277   | F1  99.0 % | median error  1.00 m |
+ angle  0.64 deg | 47.8 s | no improvement 32/60
+Epoch 130/200 | lr 2.0e-06 | train loss 0.00305 | val loss 0.00273   | F1  99.1 % | median error  0.98 m |
+ angle  0.60 deg | 47.9 s | no improvement 33/60
+Epoch 131/200 | lr 2.0e-06 | train loss 0.00301 | val loss 0.00275   | F1  99.1 % | median error  0.98 m |
+ angle  0.61 deg | 47.9 s | no improvement 34/60
+Epoch 132/200 | lr 2.0e-06 | train loss 0.00302 | val loss 0.00279   | F1  99.0 % | median error  0.98 m |
+ angle  0.60 deg | 47.8 s | no improvement 35/60
+Epoch 133/200 | lr 2.0e-06 | train loss 0.00306 | val loss 0.00278   | F1  99.0 % | median error  1.00 m |
+ angle  0.59 deg | 47.9 s | no improvement 36/60
+Epoch 134/200 | lr 2.0e-06 | train loss 0.00296 | val loss 0.00275   | F1  99.1 % | median error  0.98 m |
+ angle  0.60 deg | 47.8 s | no improvement 37/60
+Epoch 135/200 | lr 2.0e-06 | train loss 0.00306 | val loss 0.00272   | F1  99.1 % | median error  0.98 m |
+ angle  0.60 deg | 47.8 s | no improvement 38/60
+Epoch 136/200 | lr 2.0e-06 | train loss 0.00307 | val loss 0.00277   | F1  99.0 % | median error  0.99 m |
+ angle  0.60 deg | 47.8 s | no improvement 39/60
+Epoch 137/200 | lr 2.0e-06 | train loss 0.00305 | val loss 0.00272   | F1  99.1 % | median error  0.99 m |
+ angle  0.59 deg | 48.0 s | no improvement 40/60
+Epoch 138/200 | lr 2.0e-06 | train loss 0.00309 | val loss 0.00272   | F1  99.1 % | median error  0.97 m |
+ angle  0.60 deg | 47.9 s | no improvement 41/60
+Epoch 139/200 | lr 2.0e-06 | train loss 0.00303 | val loss 0.00273   | F1  99.1 % | median error  0.98 m |
+ angle  0.60 deg | 48.1 s | no improvement 42/60
+Epoch 140/200 | lr 2.0e-06 | train loss 0.00308 | val loss 0.00285   | F1  99.1 % | median error  1.04 m |
+ angle  0.60 deg | 48.1 s | no improvement 43/60
+Epoch 141/200 | lr 2.0e-06 | train loss 0.00305 | val loss 0.00277   | F1  99.0 % | median error  0.99 m |
+ angle  0.60 deg | 48.2 s | no improvement 44/60
+Epoch 142/200 | lr 2.0e-06 | train loss 0.00300 | val loss 0.00272   | F1  99.1 % | median error  0.99 m |
+ angle  0.61 deg | 48.5 s | no improvement 45/60
+Epoch 143/200 | lr 2.0e-06 | train loss 0.00307 | val loss 0.00270   | F1  99.1 % | median error  0.99 m |
+ angle  0.59 deg | 48.3 s | no improvement 46/60
+Epoch 144/200 | lr 2.0e-06 | train loss 0.00299 | val loss 0.00271   | F1  99.1 % | median error  0.98 m |
+ angle  0.60 deg | 47.8 s | no improvement 47/60
+Epoch 145/200 | lr 2.0e-06 | train loss 0.00301 | val loss 0.00277   | F1  99.0 % | median error  1.00 m |
+ angle  0.59 deg | 48.0 s | no improvement 48/60
+Epoch 146/200 | lr 2.0e-07 | train loss 0.00295 | val loss 0.00274   | F1  99.1 % | median error  1.00 m |
+ angle  0.60 deg | 48.4 s | no improvement 49/60
+Epoch 147/200 | lr 2.0e-07 | train loss 0.00307 | val loss 0.00270   | F1  99.1 % | median error  0.99 m |
+ angle  0.59 deg | 48.0 s | no improvement 50/60
+Epoch 148/200 | lr 2.0e-07 | train loss 0.00299 | val loss 0.00270   | F1  99.1 % | median error  0.98 m |
+ angle  0.61 deg | 48.1 s | no improvement 51/60
+Epoch 149/200 | lr 2.0e-07 | train loss 0.00304 | val loss 0.00274   | F1  99.1 % | median error  1.00 m |
+ angle  0.59 deg | 48.4 s | no improvement 52/60
+Epoch 150/200 | lr 2.0e-07 | train loss 0.00307 | val loss 0.00268   | F1  99.1 % | median error  0.98 m |
+ angle  0.60 deg | 48.4 s | no improvement 53/60
+Epoch 151/200 | lr 2.0e-07 | train loss 0.00307 | val loss 0.00276   | F1  99.1 % | median error  1.00 m |
+ angle  0.60 deg | 47.9 s | no improvement 54/60
+Epoch 152/200 | lr 2.0e-07 | train loss 0.00300 | val loss 0.00271   | F1  99.1 % | median error  0.99 m |
+ angle  0.61 deg | 48.0 s | no improvement 55/60
+Epoch 153/200 | lr 2.0e-07 | train loss 0.00301 | val loss 0.00268   | F1  99.1 % | median error  1.00 m |
+ angle  0.60 deg | 47.9 s | no improvement 56/60
+Epoch 154/200 | lr 2.0e-07 | train loss 0.00300 | val loss 0.00276   | F1  99.1 % | median error  0.99 m |
+ angle  0.59 deg | 47.7 s | no improvement 57/60
+Epoch 155/200 | lr 2.0e-07 | train loss 0.00298 | val loss 0.00272   | F1  99.1 % | median error  0.99 m |
+ angle  0.60 deg | 47.9 s | no improvement 58/60
+Epoch 156/200 | lr 2.0e-07 | train loss 0.00307 | val loss 0.00268   | F1  99.1 % | median error  0.98 m |
+ angle  0.59 deg | 47.9 s | no improvement 59/60
+Epoch 157/200 | lr 2.0e-07 | train loss 0.00303 | val loss 0.00271   | F1  99.0 % | median error  0.99 m |
+ angle  0.59 deg | 48.1 s | no improvement 60/60
+No improvement for 60 epochs, stop
+Best epoch 97: val loss 0.00265, F1 99.1 %, median error 0.99 m, angle 0.62 deg
+Training time 125.4 min, weights in /home/mmisseroni/localization_algorithms/checkpoints/y_7m_10db.pt
+Plots of the training written to /home/mmisseroni/localization_algorithms/training/log/y_7m_10db/{loss,val
+_metrics}.png
+Plots of the training written to /home/mmisseroni/localization_algorithms/training/log/y_7m_10db/{loss,val
+_metrics}.png
+Summary of the trainings written to /home/mmisseroni/localization_algorithms/training/log/summary.{png,csv
+}
+mmisseroni@Frigg:~/localization_algorithms$ ./executables/eval.sh
+[18:12:42] 1 evaluations, up to 32 in parallel
+[18:12:42] start  1/1: y_7m_10db cnn_attention
+[18:12:50] done   1/1: y_7m_10db cnn_attention
+[18:12:50] finished: 1/1 result CSVs present
+
+dataset                  localizer    est/rec  median     P90  <50cm
+y_7m_10db                cnn_attention    8.70   1.348    3.31    19%
+
+Summary and figures written to results/summary
+mmisseroni@Frigg:~/localization_algorithms$ clear
+
+mmisseroni@Frigg:~/localization_algorithms$ rm install.sh
+mmisseroni@Frigg:~/localization_algorithms$ rm get-pip.py
+mmisseroni@Frigg:~/localization_algorithms$ clear
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mmisseroni@Frigg:~/localization_algorithms$ rm -rf checkpoints1/
+mmisseroni@Frigg:~/localization_algorithms$ clear
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mmisseroni@Frigg:~/localization_algorithms$ CUDA_VISIBLE_DEVICES=1 ./executables/train.sh
+Using cuda device
+Loading y_7m_10db: cache in /home/mmisseroni/localization_algorithms/data/training/y_7m_10db/cache
+Loading y_7m_10db: cache in /home/mmisseroni/localization_algorithms/data/validation/y_7m_10db/cache
+Configuration y_7m_10db: 4 sensors, fs 16000 Hz, 10 frames per window
+Windows: 187699 training, 2179 validation
+Network: 455,147 parameters, learning rate 0.001, batch size 128, at most 200 epochs, patience 60
+Scheduler ReduceLROnPlateau: learning rate x 0.1 after 15 epochs without improvement, min 0
+Epoch   1/200 | lr 1.0e-03 | train loss 0.01569 | val loss 0.00724 * | F1  97.7 % | median error  2.61 m |
+ angle  2.50 deg | 47.6 s | no improvement 0/60
+Epoch   2/200 | lr 1.0e-03 | train loss 0.00755 | val loss 0.00688 * | F1  97.6 % | median error  2.51 m |
+ angle  1.77 deg | 46.9 s | no improvement 0/60
+Epoch   3/200 | lr 1.0e-03 | train loss 0.00682 | val loss 0.00511 * | F1  98.5 % | median error  2.02 m |
+ angle  1.76 deg | 47.3 s | no improvement 0/60
+Epoch   4/200 | lr 1.0e-03 | train loss 0.00658 | val loss 0.00698   | F1  98.2 % | median error  2.69 m |
+ angle  1.94 deg | 47.7 s | no improvement 1/60
+Epoch   5/200 | lr 1.0e-03 | train loss 0.00610 | val loss 0.00460 * | F1  98.4 % | median error  1.87 m |
+ angle  1.35 deg | 47.5 s | no improvement 0/60
+Epoch   6/200 | lr 1.0e-03 | train loss 0.00596 | val loss 0.00485   | F1  98.3 % | median error  2.19 m |
+ angle  2.36 deg | 47.8 s | no improvement 1/60
+Epoch   7/200 | lr 1.0e-03 | train loss 0.00569 | val loss 0.00576   | F1  98.2 % | median error  2.57 m |
+ angle  1.39 deg | 47.7 s | no improvement 2/60
+Epoch   8/200 | lr 1.0e-03 | train loss 0.00553 | val loss 0.00593   | F1  98.3 % | median error  2.52 m |
+ angle  1.42 deg | 47.6 s | no improvement 3/60
+Epoch   9/200 | lr 1.0e-03 | train loss 0.00537 | val loss 0.00432 * | F1  98.1 % | median error  1.65 m |
+ angle  1.21 deg | 47.6 s | no improvement 0/60
+Epoch  10/200 | lr 1.0e-03 | train loss 0.00526 | val loss 0.00453   | F1  98.3 % | median error  1.87 m |
+ angle  1.46 deg | 47.4 s | no improvement 1/60
+Epoch  11/200 | lr 1.0e-03 | train loss 0.00505 | val loss 0.00456   | F1  98.3 % | median error  2.00 m |
+ angle  1.28 deg | 47.7 s | no improvement 2/60
+Epoch  12/200 | lr 1.0e-03 | train loss 0.00500 | val loss 0.00389 * | F1  98.5 % | median error  1.52 m |
+ angle  1.18 deg | 48.1 s | no improvement 0/60
+Epoch  13/200 | lr 1.0e-03 | train loss 0.00488 | val loss 0.00416   | F1  98.7 % | median error  1.70 m |
+ angle  1.15 deg | 47.6 s | no improvement 1/60
+Epoch  14/200 | lr 1.0e-03 | train loss 0.00477 | val loss 0.00335 * | F1  98.7 % | median error  1.54 m |
+ angle  1.34 deg | 47.7 s | no improvement 0/60
+Epoch  15/200 | lr 1.0e-03 | train loss 0.00471 | val loss 0.00384   | F1  98.5 % | median error  1.55 m |
+ angle  1.05 deg | 48.2 s | no improvement 1/60
+Epoch  16/200 | lr 1.0e-03 | train loss 0.00455 | val loss 0.00434   | F1  98.6 % | median error  2.02 m |
+ angle  1.23 deg | 47.8 s | no improvement 2/60
+Epoch  17/200 | lr 1.0e-03 | train loss 0.00454 | val loss 0.00398   | F1  98.6 % | median error  1.91 m |
+ angle  1.61 deg | 47.9 s | no improvement 3/60
+Epoch  18/200 | lr 1.0e-03 | train loss 0.00450 | val loss 0.00381   | F1  98.6 % | median error  1.66 m |
+ angle  1.28 deg | 47.8 s | no improvement 4/60
+Epoch  19/200 | lr 1.0e-03 | train loss 0.00453 | val loss 0.00479   | F1  98.4 % | median error  2.06 m |
+ angle  1.07 deg | 48.1 s | no improvement 5/60
+Epoch  20/200 | lr 1.0e-03 | train loss 0.00442 | val loss 0.00340   | F1  98.5 % | median error  1.27 m |
+ angle  1.02 deg | 48.3 s | no improvement 6/60
+Epoch  21/200 | lr 1.0e-03 | train loss 0.00437 | val loss 0.00479   | F1  98.2 % | median error  1.93 m |
+ angle  1.04 deg | 48.4 s | no improvement 7/60
+Epoch  22/200 | lr 1.0e-03 | train loss 0.00431 | val loss 0.00354   | F1  98.4 % | median error  1.42 m |
+ angle  1.05 deg | 48.0 s | no improvement 8/60
+Epoch  23/200 | lr 1.0e-03 | train loss 0.00428 | val loss 0.00365   | F1  98.3 % | median error  1.49 m |
+ angle  1.22 deg | 47.8 s | no improvement 9/60
+Epoch  24/200 | lr 1.0e-03 | train loss 0.00428 | val loss 0.00365   | F1  98.4 % | median error  1.41 m |
+ angle  1.02 deg | 47.6 s | no improvement 10/60
+Epoch  25/200 | lr 1.0e-03 | train loss 0.00423 | val loss 0.00380   | F1  98.8 % | median error  1.99 m |
+ angle  0.95 deg | 47.7 s | no improvement 11/60
+Epoch  26/200 | lr 1.0e-03 | train loss 0.00420 | val loss 0.00342   | F1  98.3 % | median error  1.46 m |
+ angle  1.17 deg | 48.0 s | no improvement 12/60
+Epoch  27/200 | lr 1.0e-03 | train loss 0.00411 | val loss 0.00344   | F1  98.5 % | median error  1.49 m |
+ angle  1.02 deg | 48.0 s | no improvement 13/60
+Epoch  28/200 | lr 1.0e-03 | train loss 0.00414 | val loss 0.00332 * | F1  98.6 % | median error  1.53 m |
+ angle  1.13 deg | 47.9 s | no improvement 0/60
+Epoch  29/200 | lr 1.0e-03 | train loss 0.00401 | val loss 0.00401   | F1  98.5 % | median error  1.74 m |
+ angle  1.08 deg | 47.7 s | no improvement 1/60
+Epoch  30/200 | lr 1.0e-03 | train loss 0.00405 | val loss 0.00347   | F1  98.2 % | median error  1.27 m |
+ angle  1.10 deg | 47.8 s | no improvement 2/60
+Epoch  31/200 | lr 1.0e-03 | train loss 0.00394 | val loss 0.00343   | F1  98.5 % | median error  1.65 m |
+ angle  0.94 deg | 48.2 s | no improvement 3/60
+Epoch  32/200 | lr 1.0e-03 | train loss 0.00392 | val loss 0.00396   | F1  98.2 % | median error  1.53 m |
+ angle  0.98 deg | 47.8 s | no improvement 4/60
+Epoch  33/200 | lr 1.0e-03 | train loss 0.00394 | val loss 0.00365   | F1  98.6 % | median error  1.41 m |
+ angle  0.91 deg | 47.8 s | no improvement 5/60
+Epoch  34/200 | lr 1.0e-03 | train loss 0.00389 | val loss 0.00393   | F1  98.4 % | median error  1.71 m |
+ angle  1.16 deg | 47.8 s | no improvement 6/60
+Epoch  35/200 | lr 1.0e-03 | train loss 0.00389 | val loss 0.00394   | F1  98.4 % | median error  1.32 m |
+ angle  1.07 deg | 47.8 s | no improvement 7/60
+Epoch  36/200 | lr 1.0e-03 | train loss 0.00385 | val loss 0.00345   | F1  98.7 % | median error  1.63 m |
+ angle  0.92 deg | 48.1 s | no improvement 8/60
+Epoch  37/200 | lr 1.0e-03 | train loss 0.00383 | val loss 0.00349   | F1  98.4 % | median error  1.37 m |
+ angle  1.01 deg | 47.9 s | no improvement 9/60
+Epoch  38/200 | lr 1.0e-03 | train loss 0.00379 | val loss 0.00354   | F1  98.5 % | median error  1.46 m |
+ angle  1.05 deg | 48.3 s | no improvement 10/60
+Epoch  39/200 | lr 1.0e-03 | train loss 0.00375 | val loss 0.00385   | F1  98.8 % | median error  1.93 m |
+ angle  1.18 deg | 48.2 s | no improvement 11/60
+Epoch  40/200 | lr 1.0e-03 | train loss 0.00372 | val loss 0.00321 * | F1  98.8 % | median error  1.27 m |
+ angle  1.08 deg | 48.0 s | no improvement 0/60
+Epoch  41/200 | lr 1.0e-03 | train loss 0.00374 | val loss 0.00358   | F1  98.6 % | median error  1.49 m |
+ angle  1.23 deg | 47.6 s | no improvement 1/60
+Epoch  42/200 | lr 1.0e-03 | train loss 0.00371 | val loss 0.00363   | F1  98.5 % | median error  1.53 m |
+ angle  0.95 deg | 47.9 s | no improvement 2/60
+Epoch  43/200 | lr 1.0e-03 | train loss 0.00371 | val loss 0.00333   | F1  98.7 % | median error  1.33 m |
+ angle  1.00 deg | 47.9 s | no improvement 3/60
+Epoch  44/200 | lr 1.0e-03 | train loss 0.00372 | val loss 0.00332   | F1  98.5 % | median error  1.31 m |
+ angle  1.03 deg | 47.9 s | no improvement 4/60
+Epoch  45/200 | lr 1.0e-03 | train loss 0.00366 | val loss 0.00392   | F1  98.6 % | median error  1.41 m |
+ angle  1.06 deg | 47.8 s | no improvement 5/60
+Epoch  46/200 | lr 1.0e-03 | train loss 0.00365 | val loss 0.00341   | F1  98.6 % | median error  1.28 m |
+ angle  1.05 deg | 48.0 s | no improvement 6/60
+Epoch  47/200 | lr 1.0e-03 | train loss 0.00365 | val loss 0.00337   | F1  98.6 % | median error  1.34 m |
+ angle  0.97 deg | 48.0 s | no improvement 7/60
+Epoch  48/200 | lr 1.0e-03 | train loss 0.00359 | val loss 0.00306 * | F1  98.8 % | median error  1.31 m |
+ angle  0.89 deg | 47.9 s | no improvement 0/60
+Epoch  49/200 | lr 1.0e-03 | train loss 0.00358 | val loss 0.00384   | F1  98.3 % | median error  1.58 m |
+ angle  0.99 deg | 48.1 s | no improvement 1/60
+Epoch  50/200 | lr 1.0e-03 | train loss 0.00351 | val loss 0.00315   | F1  98.8 % | median error  1.26 m |
+ angle  0.92 deg | 47.6 s | no improvement 2/60
+Epoch  51/200 | lr 1.0e-03 | train loss 0.00350 | val loss 0.00325   | F1  98.6 % | median error  1.40 m |
+ angle  1.04 deg | 47.9 s | no improvement 3/60
+Epoch  52/200 | lr 1.0e-03 | train loss 0.00356 | val loss 0.00385   | F1  98.3 % | median error  1.46 m |
+ angle  0.94 deg | 47.7 s | no improvement 4/60
+Epoch  53/200 | lr 1.0e-03 | train loss 0.00346 | val loss 0.00350   | F1  98.8 % | median error  1.55 m |
+ angle  0.88 deg | 47.5 s | no improvement 5/60
+Epoch  54/200 | lr 1.0e-03 | train loss 0.00360 | val loss 0.00353   | F1  98.5 % | median error  1.66 m |
+ angle  1.02 deg | 47.5 s | no improvement 6/60
+Epoch  55/200 | lr 1.0e-03 | train loss 0.00350 | val loss 0.00333   | F1  98.7 % | median error  1.51 m |
+ angle  0.91 deg | 47.8 s | no improvement 7/60
+Epoch  56/200 | lr 1.0e-03 | train loss 0.00345 | val loss 0.00337   | F1  98.7 % | median error  1.55 m |
+ angle  0.94 deg | 48.2 s | no improvement 8/60
+Epoch  57/200 | lr 1.0e-03 | train loss 0.00347 | val loss 0.00278 * | F1  98.9 % | median error  1.42 m |
+ angle  0.94 deg | 47.6 s | no improvement 0/60
+Epoch  58/200 | lr 1.0e-03 | train loss 0.00351 | val loss 0.00317   | F1  98.8 % | median error  1.50 m |
+ angle  0.95 deg | 48.3 s | no improvement 1/60
+Epoch  59/200 | lr 1.0e-03 | train loss 0.00342 | val loss 0.00279   | F1  98.7 % | median error  1.24 m |
+ angle  1.07 deg | 47.9 s | no improvement 2/60
+Epoch  60/200 | lr 1.0e-03 | train loss 0.00339 | val loss 0.00292   | F1  98.8 % | median error  1.40 m |
+ angle  0.91 deg | 48.1 s | no improvement 3/60
+Epoch  61/200 | lr 1.0e-03 | train loss 0.00341 | val loss 0.00311   | F1  98.9 % | median error  1.39 m |
+ angle  1.05 deg | 47.5 s | no improvement 4/60
+Epoch  62/200 | lr 1.0e-03 | train loss 0.00338 | val loss 0.00315   | F1  98.4 % | median error  1.29 m |
+ angle  1.04 deg | 47.6 s | no improvement 5/60
+Epoch  63/200 | lr 1.0e-03 | train loss 0.00341 | val loss 0.00304   | F1  98.8 % | median error  1.34 m |
+ angle  0.85 deg | 47.8 s | no improvement 6/60
+Epoch  64/200 | lr 1.0e-03 | train loss 0.00338 | val loss 0.00313   | F1  98.6 % | median error  1.39 m |
+ angle  0.98 deg | 47.8 s | no improvement 7/60
+Epoch  65/200 | lr 1.0e-03 | train loss 0.00335 | val loss 0.00317   | F1  98.6 % | median error  1.26 m |
+ angle  0.88 deg | 47.8 s | no improvement 8/60
+Epoch  66/200 | lr 1.0e-03 | train loss 0.00330 | val loss 0.00301   | F1  98.6 % | median error  1.30 m |
+ angle  0.93 deg | 47.8 s | no improvement 9/60
+Epoch  67/200 | lr 1.0e-03 | train loss 0.00336 | val loss 0.00356   | F1  98.7 % | median error  1.64 m |
+ angle  0.90 deg | 48.0 s | no improvement 10/60
+Epoch  68/200 | lr 1.0e-03 | train loss 0.00330 | val loss 0.00287   | F1  98.7 % | median error  1.33 m |
+ angle  1.14 deg | 48.0 s | no improvement 11/60
+Epoch  69/200 | lr 1.0e-03 | train loss 0.00327 | val loss 0.00325   | F1  98.5 % | median error  1.35 m |
+ angle  0.89 deg | 48.0 s | no improvement 12/60
+Epoch  70/200 | lr 1.0e-03 | train loss 0.00326 | val loss 0.00359   | F1  98.4 % | median error  1.38 m |
+ angle  0.93 deg | 47.9 s | no improvement 13/60
+Epoch  71/200 | lr 1.0e-03 | train loss 0.00328 | val loss 0.00344   | F1  98.4 % | median error  1.28 m |
+ angle  0.84 deg | 47.8 s | no improvement 14/60
+Epoch  72/200 | lr 1.0e-03 | train loss 0.00332 | val loss 0.00289   | F1  98.8 % | median error  1.17 m |
+ angle  0.91 deg | 48.0 s | no improvement 15/60
+Epoch  73/200 | lr 1.0e-03 | train loss 0.00328 | val loss 0.00502   | F1  98.4 % | median error  2.00 m |
+ angle  0.81 deg | 48.1 s | no improvement 16/60
+Epoch  74/200 | lr 1.0e-04 | train loss 0.00307 | val loss 0.00278   | F1  98.6 % | median error  1.05 m |
+ angle  0.72 deg | 47.9 s | no improvement 17/60
+Epoch  75/200 | lr 1.0e-04 | train loss 0.00306 | val loss 0.00280   | F1  98.7 % | median error  1.11 m |
+ angle  0.75 deg | 48.1 s | no improvement 18/60
+Epoch  76/200 | lr 1.0e-04 | train loss 0.00299 | val loss 0.00268 * | F1  98.7 % | median error  1.09 m |
+ angle  0.72 deg | 47.5 s | no improvement 0/60
+Epoch  77/200 | lr 1.0e-04 | train loss 0.00300 | val loss 0.00278   | F1  98.6 % | median error  1.05 m |
+ angle  0.72 deg | 47.7 s | no improvement 1/60
+Epoch  78/200 | lr 1.0e-04 | train loss 0.00299 | val loss 0.00280   | F1  98.7 % | median error  1.06 m |
+ angle  0.71 deg | 47.8 s | no improvement 2/60
+Epoch  79/200 | lr 1.0e-04 | train loss 0.00298 | val loss 0.00275   | F1  98.7 % | median error  1.06 m |
+ angle  0.72 deg | 48.0 s | no improvement 3/60
+Epoch  80/200 | lr 1.0e-04 | train loss 0.00300 | val loss 0.00263 * | F1  98.8 % | median error  1.07 m |
+ angle  0.75 deg | 47.8 s | no improvement 0/60
+Epoch  81/200 | lr 1.0e-04 | train loss 0.00299 | val loss 0.00261 * | F1  98.8 % | median error  1.08 m |
+ angle  0.72 deg | 48.0 s | no improvement 0/60
+Epoch  82/200 | lr 1.0e-04 | train loss 0.00294 | val loss 0.00251 * | F1  98.9 % | median error  1.05 m |
+ angle  0.73 deg | 47.4 s | no improvement 0/60
+Epoch  83/200 | lr 1.0e-04 | train loss 0.00298 | val loss 0.00258   | F1  98.8 % | median error  1.08 m |
+ angle  0.69 deg | 47.7 s | no improvement 1/60
+Epoch  84/200 | lr 1.0e-04 | train loss 0.00293 | val loss 0.00260   | F1  98.8 % | median error  1.04 m |
+ angle  0.73 deg | 47.7 s | no improvement 2/60
+Epoch  85/200 | lr 1.0e-04 | train loss 0.00292 | val loss 0.00275   | F1  98.7 % | median error  1.06 m |
+ angle  0.69 deg | 47.9 s | no improvement 3/60
+Epoch  86/200 | lr 1.0e-04 | train loss 0.00291 | val loss 0.00269   | F1  98.8 % | median error  1.04 m |
+ angle  0.70 deg | 48.0 s | no improvement 4/60
+Epoch  87/200 | lr 1.0e-04 | train loss 0.00287 | val loss 0.00277   | F1  98.7 % | median error  1.04 m |
+ angle  0.71 deg | 48.0 s | no improvement 5/60
+Epoch  88/200 | lr 1.0e-04 | train loss 0.00294 | val loss 0.00248 * | F1  98.9 % | median error  1.05 m |
+ angle  0.70 deg | 48.6 s | no improvement 0/60
+Epoch  89/200 | lr 1.0e-04 | train loss 0.00289 | val loss 0.00249   | F1  98.8 % | median error  1.02 m |
+ angle  0.69 deg | 48.1 s | no improvement 1/60
+Epoch  90/200 | lr 1.0e-04 | train loss 0.00297 | val loss 0.00255   | F1  98.8 % | median error  1.01 m |
+ angle  0.68 deg | 48.0 s | no improvement 2/60
+Epoch  91/200 | lr 1.0e-04 | train loss 0.00286 | val loss 0.00285   | F1  98.7 % | median error  1.08 m |
+ angle  0.67 deg | 47.9 s | no improvement 3/60
+Epoch  92/200 | lr 1.0e-04 | train loss 0.00288 | val loss 0.00254   | F1  98.9 % | median error  1.03 m |
+ angle  0.67 deg | 48.2 s | no improvement 4/60
+Epoch  93/200 | lr 1.0e-04 | train loss 0.00285 | val loss 0.00273   | F1  98.8 % | median error  1.08 m |
+ angle  0.68 deg | 48.0 s | no improvement 5/60
+Epoch  94/200 | lr 1.0e-04 | train loss 0.00289 | val loss 0.00253   | F1  98.9 % | median error  1.04 m |
+ angle  0.69 deg | 47.8 s | no improvement 6/60
+Epoch  95/200 | lr 1.0e-04 | train loss 0.00283 | val loss 0.00255   | F1  98.8 % | median error  1.02 m |
+ angle  0.71 deg | 47.9 s | no improvement 7/60
+Epoch  96/200 | lr 1.0e-04 | train loss 0.00289 | val loss 0.00246 * | F1  98.9 % | median error  1.06 m |
+ angle  0.68 deg | 47.8 s | no improvement 0/60
+Epoch  97/200 | lr 1.0e-04 | train loss 0.00291 | val loss 0.00258   | F1  98.8 % | median error  1.05 m |
+ angle  0.69 deg | 47.6 s | no improvement 1/60
+Epoch  98/200 | lr 1.0e-04 | train loss 0.00286 | val loss 0.00278   | F1  98.7 % | median error  1.07 m |
+ angle  0.68 deg | 47.8 s | no improvement 2/60
+Epoch  99/200 | lr 1.0e-04 | train loss 0.00289 | val loss 0.00262   | F1  98.8 % | median error  1.02 m |
+ angle  0.68 deg | 48.0 s | no improvement 3/60
+Epoch 100/200 | lr 1.0e-04 | train loss 0.00285 | val loss 0.00248   | F1  98.9 % | median error  1.07 m |
+ angle  0.69 deg | 47.9 s | no improvement 4/60
+Epoch 101/200 | lr 1.0e-04 | train loss 0.00285 | val loss 0.00266   | F1  98.8 % | median error  1.05 m |
+ angle  0.66 deg | 48.1 s | no improvement 5/60
+Epoch 102/200 | lr 1.0e-04 | train loss 0.00289 | val loss 0.00253   | F1  98.9 % | median error  1.05 m |
+ angle  0.68 deg | 48.3 s | no improvement 6/60
+Epoch 103/200 | lr 1.0e-04 | train loss 0.00287 | val loss 0.00262   | F1  98.7 % | median error  1.03 m |
+ angle  0.68 deg | 48.2 s | no improvement 7/60
+Epoch 104/200 | lr 1.0e-04 | train loss 0.00286 | val loss 0.00260   | F1  98.8 % | median error  1.09 m |
+ angle  0.69 deg | 48.0 s | no improvement 8/60
+Epoch 105/200 | lr 1.0e-04 | train loss 0.00286 | val loss 0.00249   | F1  98.8 % | median error  1.04 m |
+ angle  0.70 deg | 48.4 s | no improvement 9/60
+Epoch 106/200 | lr 1.0e-04 | train loss 0.00287 | val loss 0.00259   | F1  98.7 % | median error  1.07 m |
+ angle  0.70 deg | 47.9 s | no improvement 10/60
+Epoch 107/200 | lr 1.0e-04 | train loss 0.00287 | val loss 0.00262   | F1  98.8 % | median error  1.07 m |
+ angle  0.67 deg | 47.8 s | no improvement 11/60
+Epoch 108/200 | lr 1.0e-04 | train loss 0.00284 | val loss 0.00254   | F1  98.8 % | median error  1.02 m |
+ angle  0.67 deg | 47.8 s | no improvement 12/60
+Epoch 109/200 | lr 1.0e-04 | train loss 0.00279 | val loss 0.00251   | F1  98.8 % | median error  1.05 m |
+ angle  0.69 deg | 47.8 s | no improvement 13/60
+Epoch 110/200 | lr 1.0e-04 | train loss 0.00282 | val loss 0.00256   | F1  98.7 % | median error  1.02 m |
+ angle  0.67 deg | 47.9 s | no improvement 14/60
+Epoch 111/200 | lr 1.0e-04 | train loss 0.00284 | val loss 0.00278   | F1  98.6 % | median error  1.08 m |
+ angle  0.69 deg | 48.1 s | no improvement 15/60
+Epoch 112/200 | lr 1.0e-04 | train loss 0.00281 | val loss 0.00246   | F1  98.8 % | median error  1.05 m |
+ angle  0.69 deg | 47.8 s | no improvement 16/60
+Epoch 113/200 | lr 1.0e-05 | train loss 0.00283 | val loss 0.00259   | F1  98.7 % | median error  1.07 m |
+ angle  0.68 deg | 47.6 s | no improvement 17/60
+Epoch 114/200 | lr 1.0e-05 | train loss 0.00283 | val loss 0.00260   | F1  98.7 % | median error  1.07 m |
+ angle  0.67 deg | 47.8 s | no improvement 18/60
+Epoch 115/200 | lr 1.0e-05 | train loss 0.00278 | val loss 0.00257   | F1  98.7 % | median error  1.04 m |
+ angle  0.66 deg | 48.2 s | no improvement 19/60
+Epoch 116/200 | lr 1.0e-05 | train loss 0.00282 | val loss 0.00257   | F1  98.7 % | median error  1.04 m |
+ angle  0.67 deg | 48.5 s | no improvement 20/60
+Epoch 117/200 | lr 1.0e-05 | train loss 0.00279 | val loss 0.00251   | F1  98.8 % | median error  1.02 m |
+ angle  0.65 deg | 48.0 s | no improvement 21/60
+Epoch 118/200 | lr 1.0e-05 | train loss 0.00279 | val loss 0.00250   | F1  98.8 % | median error  1.01 m |
+ angle  0.65 deg | 48.2 s | no improvement 22/60
+Epoch 119/200 | lr 1.0e-05 | train loss 0.00286 | val loss 0.00256   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 47.9 s | no improvement 23/60
+Epoch 120/200 | lr 1.0e-05 | train loss 0.00282 | val loss 0.00254   | F1  98.7 % | median error  1.03 m |
+ angle  0.65 deg | 48.6 s | no improvement 24/60
+Epoch 121/200 | lr 1.0e-05 | train loss 0.00285 | val loss 0.00258   | F1  98.7 % | median error  1.03 m |
+ angle  0.65 deg | 48.0 s | no improvement 25/60
+Epoch 122/200 | lr 1.0e-05 | train loss 0.00285 | val loss 0.00252   | F1  98.7 % | median error  1.03 m |
+ angle  0.64 deg | 48.1 s | no improvement 26/60
+Epoch 123/200 | lr 1.0e-05 | train loss 0.00282 | val loss 0.00248   | F1  98.8 % | median error  1.02 m |
+ angle  0.66 deg | 47.9 s | no improvement 27/60
+Epoch 124/200 | lr 1.0e-05 | train loss 0.00286 | val loss 0.00252   | F1  98.7 % | median error  1.03 m |
+ angle  0.66 deg | 48.2 s | no improvement 28/60
+Epoch 125/200 | lr 1.0e-05 | train loss 0.00285 | val loss 0.00255   | F1  98.7 % | median error  1.03 m |
+ angle  0.66 deg | 48.1 s | no improvement 29/60
+Epoch 126/200 | lr 1.0e-05 | train loss 0.00280 | val loss 0.00257   | F1  98.7 % | median error  1.04 m |
+ angle  0.64 deg | 48.1 s | no improvement 30/60
+Epoch 127/200 | lr 1.0e-05 | train loss 0.00281 | val loss 0.00252   | F1  98.7 % | median error  1.04 m |
+ angle  0.65 deg | 48.1 s | no improvement 31/60
+Epoch 128/200 | lr 1.0e-05 | train loss 0.00283 | val loss 0.00248   | F1  98.7 % | median error  1.05 m |
+ angle  0.66 deg | 47.9 s | no improvement 32/60
+Epoch 129/200 | lr 1.0e-06 | train loss 0.00283 | val loss 0.00257   | F1  98.7 % | median error  1.04 m |
+ angle  0.67 deg | 47.9 s | no improvement 33/60
+Epoch 130/200 | lr 1.0e-06 | train loss 0.00286 | val loss 0.00248   | F1  98.7 % | median error  1.03 m |
+ angle  0.65 deg | 48.1 s | no improvement 34/60
+Epoch 131/200 | lr 1.0e-06 | train loss 0.00284 | val loss 0.00252   | F1  98.7 % | median error  1.04 m |
+ angle  0.66 deg | 48.4 s | no improvement 35/60
+Epoch 132/200 | lr 1.0e-06 | train loss 0.00286 | val loss 0.00254   | F1  98.7 % | median error  1.01 m |
+ angle  0.65 deg | 48.1 s | no improvement 36/60
+Epoch 133/200 | lr 1.0e-06 | train loss 0.00282 | val loss 0.00252   | F1  98.7 % | median error  1.03 m |
+ angle  0.64 deg | 48.3 s | no improvement 37/60
+Epoch 134/200 | lr 1.0e-06 | train loss 0.00285 | val loss 0.00256   | F1  98.7 % | median error  1.04 m |
+ angle  0.65 deg | 47.8 s | no improvement 38/60
+Epoch 135/200 | lr 1.0e-06 | train loss 0.00278 | val loss 0.00254   | F1  98.8 % | median error  1.06 m |
+ angle  0.66 deg | 47.8 s | no improvement 39/60
+Epoch 136/200 | lr 1.0e-06 | train loss 0.00282 | val loss 0.00257   | F1  98.7 % | median error  1.04 m |
+ angle  0.66 deg | 48.0 s | no improvement 40/60
+Epoch 137/200 | lr 1.0e-06 | train loss 0.00284 | val loss 0.00248   | F1  98.8 % | median error  1.05 m |
+ angle  0.65 deg | 48.0 s | no improvement 41/60
+Epoch 138/200 | lr 1.0e-06 | train loss 0.00281 | val loss 0.00247   | F1  98.8 % | median error  1.03 m |
+ angle  0.63 deg | 47.9 s | no improvement 42/60
+Epoch 139/200 | lr 1.0e-06 | train loss 0.00281 | val loss 0.00250   | F1  98.7 % | median error  1.03 m |
+ angle  0.65 deg | 48.3 s | no improvement 43/60
+Epoch 140/200 | lr 1.0e-06 | train loss 0.00280 | val loss 0.00270   | F1  98.7 % | median error  1.13 m |
+ angle  0.71 deg | 47.9 s | no improvement 44/60
+Epoch 141/200 | lr 1.0e-06 | train loss 0.00278 | val loss 0.00252   | F1  98.7 % | median error  1.04 m |
+ angle  0.65 deg | 47.8 s | no improvement 45/60
+Epoch 142/200 | lr 1.0e-06 | train loss 0.00282 | val loss 0.00241 * | F1  98.8 % | median error  1.06 m |
+ angle  0.68 deg | 48.1 s | no improvement 0/60
+Epoch 143/200 | lr 1.0e-06 | train loss 0.00289 | val loss 0.00245   | F1  98.8 % | median error  1.03 m |
+ angle  0.65 deg | 48.1 s | no improvement 1/60
+Epoch 144/200 | lr 1.0e-06 | train loss 0.00281 | val loss 0.00250   | F1  98.7 % | median error  1.04 m |
+ angle  0.65 deg | 48.5 s | no improvement 2/60
+Epoch 145/200 | lr 1.0e-06 | train loss 0.00288 | val loss 0.00253   | F1  98.7 % | median error  1.03 m |
+ angle  0.64 deg | 48.1 s | no improvement 3/60
+Epoch 146/200 | lr 1.0e-06 | train loss 0.00282 | val loss 0.00248   | F1  98.7 % | median error  1.03 m |
+ angle  0.64 deg | 48.1 s | no improvement 4/60
+Epoch 147/200 | lr 1.0e-06 | train loss 0.00282 | val loss 0.00253   | F1  98.7 % | median error  1.03 m |
+ angle  0.65 deg | 47.8 s | no improvement 5/60
+Epoch 148/200 | lr 1.0e-06 | train loss 0.00281 | val loss 0.00250   | F1  98.8 % | median error  1.05 m |
+ angle  0.65 deg | 47.7 s | no improvement 6/60
+Epoch 149/200 | lr 1.0e-06 | train loss 0.00282 | val loss 0.00249   | F1  98.7 % | median error  1.02 m |
+ angle  0.67 deg | 48.2 s | no improvement 7/60
+Epoch 150/200 | lr 1.0e-06 | train loss 0.00284 | val loss 0.00243   | F1  98.8 % | median error  1.02 m |
+ angle  0.64 deg | 48.6 s | no improvement 8/60
+Epoch 151/200 | lr 1.0e-06 | train loss 0.00279 | val loss 0.00251   | F1  98.7 % | median error  1.03 m |
+ angle  0.66 deg | 48.3 s | no improvement 9/60
+Epoch 152/200 | lr 1.0e-06 | train loss 0.00283 | val loss 0.00245   | F1  98.7 % | median error  1.01 m |
+ angle  0.65 deg | 47.9 s | no improvement 10/60
+Epoch 153/200 | lr 1.0e-06 | train loss 0.00277 | val loss 0.00242   | F1  98.8 % | median error  1.04 m |
+ angle  0.64 deg | 48.1 s | no improvement 11/60
+Epoch 154/200 | lr 1.0e-06 | train loss 0.00285 | val loss 0.00253   | F1  98.7 % | median error  1.04 m |
+ angle  0.64 deg | 47.9 s | no improvement 12/60
+Epoch 155/200 | lr 1.0e-06 | train loss 0.00289 | val loss 0.00245   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 47.8 s | no improvement 13/60
+Epoch 156/200 | lr 1.0e-06 | train loss 0.00280 | val loss 0.00247   | F1  98.8 % | median error  1.04 m |
+ angle  0.64 deg | 48.3 s | no improvement 14/60
+Epoch 157/200 | lr 1.0e-06 | train loss 0.00283 | val loss 0.00247   | F1  98.7 % | median error  1.03 m |
+ angle  0.65 deg | 48.2 s | no improvement 15/60
+Epoch 158/200 | lr 1.0e-06 | train loss 0.00287 | val loss 0.00249   | F1  98.7 % | median error  1.01 m |
+ angle  0.64 deg | 48.0 s | no improvement 16/60
+Epoch 159/200 | lr 1.0e-07 | train loss 0.00285 | val loss 0.00241   | F1  98.8 % | median error  1.02 m |
+ angle  0.64 deg | 48.6 s | no improvement 17/60
+Epoch 160/200 | lr 1.0e-07 | train loss 0.00282 | val loss 0.00251   | F1  98.7 % | median error  1.03 m |
+ angle  0.65 deg | 48.1 s | no improvement 18/60
+Epoch 161/200 | lr 1.0e-07 | train loss 0.00285 | val loss 0.00249   | F1  98.7 % | median error  1.04 m |
+ angle  0.65 deg | 48.4 s | no improvement 19/60
+Epoch 162/200 | lr 1.0e-07 | train loss 0.00281 | val loss 0.00255   | F1  98.7 % | median error  1.03 m |
+ angle  0.66 deg | 48.6 s | no improvement 20/60
+Epoch 163/200 | lr 1.0e-07 | train loss 0.00280 | val loss 0.00251   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 47.9 s | no improvement 21/60
+Epoch 164/200 | lr 1.0e-07 | train loss 0.00280 | val loss 0.00254   | F1  98.7 % | median error  1.03 m |
+ angle  0.66 deg | 48.0 s | no improvement 22/60
+Epoch 165/200 | lr 1.0e-07 | train loss 0.00282 | val loss 0.00247   | F1  98.8 % | median error  1.03 m |
+ angle  0.65 deg | 48.0 s | no improvement 23/60
+Epoch 166/200 | lr 1.0e-07 | train loss 0.00284 | val loss 0.00249   | F1  98.8 % | median error  1.18 m |
+ angle  0.70 deg | 48.2 s | no improvement 24/60
+Epoch 167/200 | lr 1.0e-07 | train loss 0.00282 | val loss 0.00253   | F1  98.7 % | median error  1.03 m |
+ angle  0.66 deg | 47.7 s | no improvement 25/60
+Epoch 168/200 | lr 1.0e-07 | train loss 0.00284 | val loss 0.00252   | F1  98.7 % | median error  1.03 m |
+ angle  0.66 deg | 48.3 s | no improvement 26/60
+Epoch 169/200 | lr 1.0e-07 | train loss 0.00283 | val loss 0.00268   | F1  98.6 % | median error  1.05 m |
+ angle  0.66 deg | 48.1 s | no improvement 27/60
+Epoch 170/200 | lr 1.0e-07 | train loss 0.00285 | val loss 0.00252   | F1  98.7 % | median error  1.03 m |
+ angle  0.64 deg | 48.1 s | no improvement 28/60
+Epoch 171/200 | lr 1.0e-07 | train loss 0.00283 | val loss 0.00252   | F1  98.7 % | median error  1.03 m |
+ angle  0.65 deg | 48.4 s | no improvement 29/60
+Epoch 172/200 | lr 1.0e-07 | train loss 0.00276 | val loss 0.00248   | F1  98.7 % | median error  1.02 m |
+ angle  0.66 deg | 47.9 s | no improvement 30/60
+Epoch 173/200 | lr 1.0e-07 | train loss 0.00273 | val loss 0.00247   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 47.5 s | no improvement 31/60
+Epoch 174/200 | lr 1.0e-07 | train loss 0.00278 | val loss 0.00253   | F1  98.7 % | median error  1.05 m |
+ angle  0.65 deg | 47.6 s | no improvement 32/60
+Epoch 175/200 | lr 1.0e-08 | train loss 0.00284 | val loss 0.00252   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 48.2 s | no improvement 33/60
+Epoch 176/200 | lr 1.0e-08 | train loss 0.00279 | val loss 0.00247   | F1  98.7 % | median error  1.02 m |
+ angle  0.66 deg | 48.4 s | no improvement 34/60
+Epoch 177/200 | lr 1.0e-08 | train loss 0.00284 | val loss 0.00245   | F1  98.8 % | median error  1.02 m |
+ angle  0.65 deg | 48.4 s | no improvement 35/60
+Epoch 178/200 | lr 1.0e-08 | train loss 0.00280 | val loss 0.00255   | F1  98.7 % | median error  1.04 m |
+ angle  0.66 deg | 48.0 s | no improvement 36/60
+Epoch 179/200 | lr 1.0e-08 | train loss 0.00277 | val loss 0.00253   | F1  98.7 % | median error  1.04 m |
+ angle  0.66 deg | 48.0 s | no improvement 37/60
+Epoch 180/200 | lr 1.0e-08 | train loss 0.00282 | val loss 0.00287   | F1  98.7 % | median error  1.19 m |
+ angle  0.68 deg | 47.8 s | no improvement 38/60
+Epoch 181/200 | lr 1.0e-08 | train loss 0.00284 | val loss 0.00247   | F1  98.8 % | median error  1.04 m |
+ angle  0.64 deg | 47.9 s | no improvement 39/60
+Epoch 182/200 | lr 1.0e-08 | train loss 0.00277 | val loss 0.00252   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 47.9 s | no improvement 40/60
+Epoch 183/200 | lr 1.0e-08 | train loss 0.00283 | val loss 0.00248   | F1  98.7 % | median error  1.02 m |
+ angle  0.66 deg | 47.9 s | no improvement 41/60
+Epoch 184/200 | lr 1.0e-08 | train loss 0.00281 | val loss 0.00251   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 47.8 s | no improvement 42/60
+Epoch 185/200 | lr 1.0e-08 | train loss 0.00283 | val loss 0.00254   | F1  98.7 % | median error  1.02 m |
+ angle  0.65 deg | 47.8 s | no improvement 43/60
+Epoch 186/200 | lr 1.0e-08 | train loss 0.00279 | val loss 0.00243   | F1  98.8 % | median error  1.02 m |
+ angle  0.65 deg | 48.0 s | no improvement 44/60
+Epoch 187/200 | lr 1.0e-08 | train loss 0.00283 | val loss 0.00253   | F1  98.7 % | median error  1.03 m |
+ angle  0.64 deg | 48.3 s | no improvement 45/60
+Epoch 188/200 | lr 1.0e-08 | train loss 0.00280 | val loss 0.00254   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 47.8 s | no improvement 46/60
+Epoch 189/200 | lr 1.0e-08 | train loss 0.00282 | val loss 0.00248   | F1  98.7 % | median error  1.02 m |
+ angle  0.65 deg | 48.1 s | no improvement 47/60
+Epoch 190/200 | lr 1.0e-08 | train loss 0.00278 | val loss 0.00244   | F1  98.8 % | median error  1.03 m |
+ angle  0.65 deg | 48.2 s | no improvement 48/60
+Epoch 191/200 | lr 1.0e-08 | train loss 0.00278 | val loss 0.00248   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 48.2 s | no improvement 49/60
+Epoch 192/200 | lr 1.0e-08 | train loss 0.00282 | val loss 0.00244   | F1  98.8 % | median error  1.04 m |
+ angle  0.65 deg | 48.1 s | no improvement 50/60
+Epoch 193/200 | lr 1.0e-08 | train loss 0.00287 | val loss 0.00240 * | F1  98.8 % | median error  1.03 m |
+ angle  0.65 deg | 48.0 s | no improvement 0/60
+Epoch 194/200 | lr 1.0e-08 | train loss 0.00284 | val loss 0.00249   | F1  98.7 % | median error  1.02 m |
+ angle  0.65 deg | 48.0 s | no improvement 1/60
+Epoch 195/200 | lr 1.0e-08 | train loss 0.00284 | val loss 0.00248   | F1  98.8 % | median error  1.02 m |
+ angle  0.64 deg | 48.1 s | no improvement 2/60
+Epoch 196/200 | lr 1.0e-08 | train loss 0.00283 | val loss 0.00245   | F1  98.8 % | median error  1.03 m |
+ angle  0.65 deg | 48.0 s | no improvement 3/60
+Epoch 197/200 | lr 1.0e-08 | train loss 0.00287 | val loss 0.00255   | F1  98.7 % | median error  1.06 m |
+ angle  0.68 deg | 48.0 s | no improvement 4/60
+Epoch 198/200 | lr 1.0e-08 | train loss 0.00278 | val loss 0.00254   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 48.3 s | no improvement 5/60
+Epoch 199/200 | lr 1.0e-08 | train loss 0.00280 | val loss 0.00237 * | F1  98.8 % | median error  1.05 m |
+ angle  0.65 deg | 48.0 s | no improvement 0/60
+Epoch 200/200 | lr 1.0e-08 | train loss 0.00277 | val loss 0.00249   | F1  98.7 % | median error  1.02 m |
+ angle  0.64 deg | 48.0 s | no improvement 1/60
+Best epoch 199: val loss 0.00237, F1 98.8 %, median error 1.05 m, angle 0.65 deg
+Training time 159.9 min, weights in /home/mmisseroni/localization_algorithms/checkpoints/y_7m_10db.pt
+Plots of the training written to /home/mmisseroni/localization_algorithms/training/log/y_7m_10db/{loss,val
+_metrics}.png
+Plots of the training written to /home/mmisseroni/localization_algorithms/training/log/y_7m_10db/{loss,val
+_metrics}.png
+Summary of the trainings written to /home/mmisseroni/localization_algorithms/training/log/summary.{png,csv
+}
+mmisseroni@Frigg:~/localization_algorithms$ ./executables/eval.sh
+[10:55:09] 1 evaluations, up to 32 in parallel
+[10:55:09] start  1/1: y_7m_10db cnn_attention
+[10:55:17] done   1/1: y_7m_10db cnn_attention
+[10:55:17] finished: 1/1 result CSVs present
+
+dataset                  localizer    est/rec  median     P90  <50cm
+y_7m_10db                cnn_attention    8.60   1.268    3.25    20%
+
+Summary and figures written to results/summary
+mmisseroni@Frigg:~/localization_algorithms$ clear
+
+mmisseroni@Frigg:~/localization_algorithms$ ls
+README.md  checkpoints  core  detection    localization      results  training
+analysis   configs      data  executables  requirements.txt  sim      venv
+mmisseroni@Frigg:~/localization_algorithms$ clear
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mmisseroni@Frigg:~/localization_algorithms$ ./executables/train.sh
+Using cuda device
+Loading y_7m_10db: cache in /home/mmisseroni/localization_algorithms/data/training/y_7m_10db/cache
+Loading y_7m_10db: cache in /home/mmisseroni/localization_algorithms/data/validation/y_7m_10db/cache
+Configuration y_7m_10db: 4 sensors, fs 16000 Hz, 5 frames per window
+Windows: 295077 training, 3438 validation
+Network: 455,147 parameters, learning rate 0.001, batch size 128, at most 200 epochs, patience 60
+Scheduler ReduceLROnPlateau: learning rate x 0.1 after 15 epochs without improvement, min 0
+Epoch   1/200 | lr 1.0e-03 | train loss 0.01603 | val loss 0.00951 * | F1  98.1 % | median error  3.36 m |
+ angle  2.25 deg | 48.5 s | no improvement 0/60
+Epoch   2/200 | lr 1.0e-03 | train loss 0.00899 | val loss 0.00572 * | F1  98.6 % | median error  2.27 m |
+ angle  1.57 deg | 47.1 s | no improvement 0/60
+Epoch   3/200 | lr 1.0e-03 | train loss 0.00815 | val loss 0.00602   | F1  98.8 % | median error  2.52 m |
+ angle  2.26 deg | 47.8 s | no improvement 1/60
+Epoch   4/200 | lr 1.0e-03 | train loss 0.00761 | val loss 0.00567 * | F1  98.6 % | median error  2.10 m |
+ angle  1.43 deg | 47.9 s | no improvement 0/60
+Epoch   5/200 | lr 1.0e-03 | train loss 0.00708 | val loss 0.00605   | F1  98.6 % | median error  2.27 m |
+ angle  1.45 deg | 47.1 s | no improvement 1/60
+Epoch   6/200 | lr 1.0e-03 | train loss 0.00672 | val loss 0.00550 * | F1  98.8 % | median error  2.14 m |
+ angle  1.59 deg | 47.7 s | no improvement 0/60
+Epoch   7/200 | lr 1.0e-03 | train loss 0.00646 | val loss 0.00570   | F1  98.5 % | median error  2.09 m |
+ angle  1.70 deg | 48.7 s | no improvement 1/60
+Epoch   8/200 | lr 1.0e-03 | train loss 0.00637 | val loss 0.00465 * | F1  98.9 % | median error  1.87 m |
+ angle  1.27 deg | 48.1 s | no improvement 0/60
+Epoch   9/200 | lr 1.0e-03 | train loss 0.00610 | val loss 0.00488   | F1  98.9 % | median error  1.91 m |
+ angle  1.28 deg | 48.4 s | no improvement 1/60
+Epoch  10/200 | lr 1.0e-03 | train loss 0.00601 | val loss 0.00441 * | F1  98.8 % | median error  1.78 m |
+ angle  1.30 deg | 48.3 s | no improvement 0/60
+Epoch  11/200 | lr 1.0e-03 | train loss 0.00595 | val loss 0.00551   | F1  98.6 % | median error  2.14 m |
+ angle  1.33 deg | 48.4 s | no improvement 1/60
+Epoch  12/200 | lr 1.0e-03 | train loss 0.00586 | val loss 0.00470   | F1  98.8 % | median error  1.87 m |
+ angle  1.26 deg | 48.1 s | no improvement 2/60
+Epoch  13/200 | lr 1.0e-03 | train loss 0.00569 | val loss 0.00500   | F1  98.8 % | median error  2.09 m |
+ angle  1.45 deg | 48.4 s | no improvement 3/60
+Epoch  14/200 | lr 1.0e-03 | train loss 0.00565 | val loss 0.00506   | F1  98.9 % | median error  2.01 m |
+ angle  1.12 deg | 48.1 s | no improvement 4/60
+Epoch  15/200 | lr 1.0e-03 | train loss 0.00553 | val loss 0.00481   | F1  98.9 % | median error  1.93 m |
+ angle  1.15 deg | 47.9 s | no improvement 5/60
+Epoch  16/200 | lr 1.0e-03 | train loss 0.00542 | val loss 0.00513   | F1  98.9 % | median error  1.98 m |
+ angle  1.18 deg | 48.4 s | no improvement 6/60
+Epoch  17/200 | lr 1.0e-03 | train loss 0.00541 | val loss 0.00514   | F1  98.8 % | median error  2.15 m |
+ angle  1.49 deg | 48.0 s | no improvement 7/60
+Epoch  18/200 | lr 1.0e-03 | train loss 0.00550 | val loss 0.00442   | F1  99.0 % | median error  1.76 m |
+ angle  1.07 deg | 47.8 s | no improvement 8/60
+Epoch  19/200 | lr 1.0e-03 | train loss 0.00532 | val loss 0.00444   | F1  98.9 % | median error  1.84 m |
+ angle  1.17 deg | 48.4 s | no improvement 9/60
+Epoch  20/200 | lr 1.0e-03 | train loss 0.00528 | val loss 0.00408 * | F1  98.9 % | median error  1.60 m |
+ angle  1.02 deg | 48.8 s | no improvement 0/60
+Epoch  21/200 | lr 1.0e-03 | train loss 0.00526 | val loss 0.00418   | F1  98.9 % | median error  1.58 m |
+ angle  1.09 deg | 48.8 s | no improvement 1/60
+Epoch  22/200 | lr 1.0e-03 | train loss 0.00525 | val loss 0.00423   | F1  98.9 % | median error  1.65 m |
+ angle  1.13 deg | 48.1 s | no improvement 2/60
+Epoch  23/200 | lr 1.0e-03 | train loss 0.00521 | val loss 0.00453   | F1  98.9 % | median error  1.85 m |
+ angle  1.11 deg | 47.8 s | no improvement 3/60
+Epoch  24/200 | lr 1.0e-03 | train loss 0.00518 | val loss 0.00442   | F1  99.0 % | median error  1.70 m |
+ angle  0.99 deg | 47.7 s | no improvement 4/60
+Epoch  25/200 | lr 1.0e-03 | train loss 0.00514 | val loss 0.00444   | F1  98.8 % | median error  1.65 m |
+ angle  1.06 deg | 47.9 s | no improvement 5/60
+Epoch  26/200 | lr 1.0e-03 | train loss 0.00508 | val loss 0.00429   | F1  98.8 % | median error  1.58 m |
+ angle  1.04 deg | 48.1 s | no improvement 6/60
+Epoch  27/200 | lr 1.0e-03 | train loss 0.00507 | val loss 0.00433   | F1  98.9 % | median error  1.62 m |
+ angle  1.00 deg | 48.5 s | no improvement 7/60
+Epoch  28/200 | lr 1.0e-03 | train loss 0.00504 | val loss 0.00424   | F1  98.9 % | median error  1.70 m |
+ angle  0.98 deg | 48.7 s | no improvement 8/60
+Epoch  29/200 | lr 1.0e-03 | train loss 0.00504 | val loss 0.00465   | F1  98.7 % | median error  1.63 m |
+ angle  1.08 deg | 48.0 s | no improvement 9/60
+Epoch  30/200 | lr 1.0e-03 | train loss 0.00501 | val loss 0.00434   | F1  98.8 % | median error  1.67 m |
+ angle  1.04 deg | 48.3 s | no improvement 10/60
+Epoch  31/200 | lr 1.0e-03 | train loss 0.00500 | val loss 0.00405 * | F1  98.9 % | median error  1.63 m |
+ angle  1.23 deg | 47.9 s | no improvement 0/60
+Epoch  32/200 | lr 1.0e-03 | train loss 0.00497 | val loss 0.00419   | F1  98.9 % | median error  1.59 m |
+ angle  0.93 deg | 48.2 s | no improvement 1/60
+Epoch  33/200 | lr 1.0e-03 | train loss 0.00498 | val loss 0.00441   | F1  98.8 % | median error  1.66 m |
+ angle  0.98 deg | 47.8 s | no improvement 2/60
+Epoch  34/200 | lr 1.0e-03 | train loss 0.00494 | val loss 0.00458   | F1  98.7 % | median error  1.87 m |
+ angle  1.17 deg | 48.6 s | no improvement 3/60
+Epoch  35/200 | lr 1.0e-03 | train loss 0.00498 | val loss 0.00396 * | F1  99.0 % | median error  1.56 m |
+ angle  0.87 deg | 48.1 s | no improvement 0/60
+Epoch  36/200 | lr 1.0e-03 | train loss 0.00495 | val loss 0.00424   | F1  98.9 % | median error  1.63 m |
+ angle  0.88 deg | 48.1 s | no improvement 1/60
+Epoch  37/200 | lr 1.0e-03 | train loss 0.00488 | val loss 0.00390 * | F1  99.0 % | median error  1.51 m |
+ angle  0.99 deg | 48.2 s | no improvement 0/60
+Epoch  38/200 | lr 1.0e-03 | train loss 0.00490 | val loss 0.00427   | F1  98.8 % | median error  1.62 m |
+ angle  1.12 deg | 48.1 s | no improvement 1/60
+Epoch  39/200 | lr 1.0e-03 | train loss 0.00487 | val loss 0.00420   | F1  98.9 % | median error  1.55 m |
+ angle  1.00 deg | 48.2 s | no improvement 2/60
+Epoch  40/200 | lr 1.0e-03 | train loss 0.00487 | val loss 0.00394   | F1  99.0 % | median error  1.46 m |
+ angle  0.92 deg | 48.5 s | no improvement 3/60
+Epoch  41/200 | lr 1.0e-03 | train loss 0.00479 | val loss 0.00380 * | F1  99.0 % | median error  1.52 m |
+ angle  0.93 deg | 48.0 s | no improvement 0/60
+Epoch  42/200 | lr 1.0e-03 | train loss 0.00478 | val loss 0.00396   | F1  99.0 % | median error  1.49 m |
+ angle  1.13 deg | 48.6 s | no improvement 1/60
+Epoch  43/200 | lr 1.0e-03 | train loss 0.00473 | val loss 0.00395   | F1  98.9 % | median error  1.45 m |
+ angle  0.88 deg | 48.5 s | no improvement 2/60
+Epoch  44/200 | lr 1.0e-03 | train loss 0.00477 | val loss 0.00425   | F1  98.8 % | median error  1.56 m |
+ angle  1.08 deg | 48.3 s | no improvement 3/60
+Epoch  45/200 | lr 1.0e-03 | train loss 0.00478 | val loss 0.00396   | F1  99.0 % | median error  1.52 m |
+ angle  0.92 deg | 48.3 s | no improvement 4/60
+Epoch  46/200 | lr 1.0e-03 | train loss 0.00476 | val loss 0.00387   | F1  99.0 % | median error  1.43 m |
+ angle  0.91 deg | 48.5 s | no improvement 5/60
+Epoch  47/200 | lr 1.0e-03 | train loss 0.00477 | val loss 0.00432   | F1  98.9 % | median error  1.63 m |
+ angle  0.88 deg | 48.2 s | no improvement 6/60
+Epoch  48/200 | lr 1.0e-03 | train loss 0.00473 | val loss 0.00395   | F1  99.0 % | median error  1.44 m |
+ angle  1.00 deg | 48.3 s | no improvement 7/60
+Epoch  49/200 | lr 1.0e-03 | train loss 0.00473 | val loss 0.00524   | F1  98.9 % | median error  2.24 m |
+ angle  1.16 deg | 48.4 s | no improvement 8/60
+Epoch  50/200 | lr 1.0e-03 | train loss 0.00471 | val loss 0.00415   | F1  99.1 % | median error  1.68 m |
+ angle  0.92 deg | 47.7 s | no improvement 9/60
+Epoch  51/200 | lr 1.0e-03 | train loss 0.00469 | val loss 0.00408   | F1  99.0 % | median error  1.62 m |
+ angle  0.86 deg | 48.4 s | no improvement 10/60
+Epoch  52/200 | lr 1.0e-03 | train loss 0.00471 | val loss 0.00406   | F1  98.9 % | median error  1.59 m |
+ angle  0.99 deg | 48.4 s | no improvement 11/60
+Epoch  53/200 | lr 1.0e-03 | train loss 0.00460 | val loss 0.00419   | F1  98.9 % | median error  1.51 m |
+ angle  0.92 deg | 48.2 s | no improvement 12/60
+Epoch  54/200 | lr 1.0e-03 | train loss 0.00462 | val loss 0.00403   | F1  99.0 % | median error  1.60 m |
+ angle  0.98 deg | 48.4 s | no improvement 13/60
+Epoch  55/200 | lr 1.0e-03 | train loss 0.00464 | val loss 0.00392   | F1  99.1 % | median error  1.58 m |
+ angle  0.86 deg | 47.7 s | no improvement 14/60
+Epoch  56/200 | lr 1.0e-03 | train loss 0.00465 | val loss 0.00370 * | F1  98.9 % | median error  1.42 m |
+ angle  0.96 deg | 47.6 s | no improvement 0/60
+Epoch  57/200 | lr 1.0e-03 | train loss 0.00457 | val loss 0.00471   | F1  98.9 % | median error  1.84 m |
+ angle  0.93 deg | 48.1 s | no improvement 1/60
+Epoch  58/200 | lr 1.0e-03 | train loss 0.00462 | val loss 0.00384   | F1  99.0 % | median error  1.49 m |
+ angle  0.83 deg | 48.7 s | no improvement 2/60
+Epoch  59/200 | lr 1.0e-03 | train loss 0.00459 | val loss 0.00394   | F1  99.0 % | median error  1.54 m |
+ angle  1.06 deg | 48.6 s | no improvement 3/60
+Epoch  60/200 | lr 1.0e-03 | train loss 0.00467 | val loss 0.00407   | F1  98.9 % | median error  1.47 m |
+ angle  0.97 deg | 47.8 s | no improvement 4/60
+Epoch  61/200 | lr 1.0e-03 | train loss 0.00457 | val loss 0.00359 * | F1  99.1 % | median error  1.45 m |
+ angle  0.91 deg | 48.4 s | no improvement 0/60
+Epoch  62/200 | lr 1.0e-03 | train loss 0.00463 | val loss 0.00396   | F1  99.0 % | median error  1.53 m |
+ angle  1.00 deg | 48.0 s | no improvement 1/60
+Epoch  63/200 | lr 1.0e-03 | train loss 0.00462 | val loss 0.00477   | F1  99.1 % | median error  1.98 m |
+ angle  0.96 deg | 48.3 s | no improvement 2/60
+Epoch  64/200 | lr 1.0e-03 | train loss 0.00458 | val loss 0.00372   | F1  99.0 % | median error  1.50 m |
+ angle  0.95 deg | 48.1 s | no improvement 3/60
+Epoch  65/200 | lr 1.0e-03 | train loss 0.00452 | val loss 0.00389   | F1  98.9 % | median error  1.48 m |
+ angle  0.86 deg | 48.0 s | no improvement 4/60
+Epoch  66/200 | lr 1.0e-03 | train loss 0.00452 | val loss 0.00383   | F1  99.0 % | median error  1.51 m |
+ angle  0.93 deg | 48.7 s | no improvement 5/60
+Epoch  67/200 | lr 1.0e-03 | train loss 0.00453 | val loss 0.00419   | F1  98.9 % | median error  1.60 m |
+ angle  0.94 deg | 48.6 s | no improvement 6/60
+Epoch  68/200 | lr 1.0e-03 | train loss 0.00456 | val loss 0.00393   | F1  99.0 % | median error  1.53 m |
+ angle  0.87 deg | 48.5 s | no improvement 7/60
+Epoch  69/200 | lr 1.0e-03 | train loss 0.00446 | val loss 0.00411   | F1  99.0 % | median error  1.67 m |
+ angle  0.95 deg | 48.0 s | no improvement 8/60
+Epoch  70/200 | lr 1.0e-03 | train loss 0.00456 | val loss 0.00425   | F1  98.8 % | median error  1.59 m |
+ angle  1.01 deg | 48.6 s | no improvement 9/60
+Epoch  71/200 | lr 1.0e-03 | train loss 0.00454 | val loss 0.00385   | F1  99.0 % | median error  1.52 m |
+ angle  0.95 deg | 48.2 s | no improvement 10/60
+Epoch  72/200 | lr 1.0e-03 | train loss 0.00452 | val loss 0.00369   | F1  99.0 % | median error  1.46 m |
+ angle  0.90 deg | 47.9 s | no improvement 11/60
+Epoch  73/200 | lr 1.0e-03 | train loss 0.00449 | val loss 0.00392   | F1  98.9 % | median error  1.50 m |
+ angle  0.93 deg | 48.3 s | no improvement 12/60
+Epoch  74/200 | lr 1.0e-03 | train loss 0.00451 | val loss 0.00403   | F1  99.0 % | median error  1.44 m |
+ angle  0.88 deg | 48.3 s | no improvement 13/60
+Epoch  75/200 | lr 1.0e-03 | train loss 0.00445 | val loss 0.00408   | F1  99.1 % | median error  1.77 m |
+ angle  1.06 deg | 48.1 s | no improvement 14/60
+Epoch  76/200 | lr 1.0e-03 | train loss 0.00443 | val loss 0.00375   | F1  99.0 % | median error  1.54 m |
+ angle  0.82 deg | 48.1 s | no improvement 15/60
+Epoch  77/200 | lr 1.0e-03 | train loss 0.00445 | val loss 0.00373   | F1  98.9 % | median error  1.46 m |
+ angle  0.91 deg | 48.4 s | no improvement 16/60
+Epoch  78/200 | lr 1.0e-04 | train loss 0.00425 | val loss 0.00342 * | F1  99.0 % | median error  1.30 m |
+ angle  0.78 deg | 48.1 s | no improvement 0/60
+Epoch  79/200 | lr 1.0e-04 | train loss 0.00411 | val loss 0.00345   | F1  99.1 % | median error  1.29 m |
+ angle  0.77 deg | 48.7 s | no improvement 1/60
+Epoch  80/200 | lr 1.0e-04 | train loss 0.00410 | val loss 0.00338 * | F1  99.0 % | median error  1.24 m |
+ angle  0.77 deg | 48.7 s | no improvement 0/60
+Epoch  81/200 | lr 1.0e-04 | train loss 0.00415 | val loss 0.00345   | F1  99.0 % | median error  1.30 m |
+ angle  0.76 deg | 48.3 s | no improvement 1/60
+Epoch  82/200 | lr 1.0e-04 | train loss 0.00414 | val loss 0.00352   | F1  99.1 % | median error  1.35 m |
+ angle  0.76 deg | 48.5 s | no improvement 2/60
+Epoch  83/200 | lr 1.0e-04 | train loss 0.00401 | val loss 0.00340   | F1  99.0 % | median error  1.22 m |
+ angle  0.78 deg | 48.1 s | no improvement 3/60
+Epoch  84/200 | lr 1.0e-04 | train loss 0.00408 | val loss 0.00349   | F1  99.0 % | median error  1.31 m |
+ angle  0.76 deg | 48.1 s | no improvement 4/60
+Epoch  85/200 | lr 1.0e-04 | train loss 0.00405 | val loss 0.00337 * | F1  99.0 % | median error  1.24 m |
+ angle  0.77 deg | 48.0 s | no improvement 0/60
+Epoch  86/200 | lr 1.0e-04 | train loss 0.00406 | val loss 0.00343   | F1  99.0 % | median error  1.29 m |
+ angle  0.76 deg | 48.3 s | no improvement 1/60
+Epoch  87/200 | lr 1.0e-04 | train loss 0.00407 | val loss 0.00334 * | F1  99.1 % | median error  1.26 m |
+ angle  0.72 deg | 48.6 s | no improvement 0/60
+Epoch  88/200 | lr 1.0e-04 | train loss 0.00404 | val loss 0.00348   | F1  99.0 % | median error  1.31 m |
+ angle  0.75 deg | 48.1 s | no improvement 1/60
+Epoch  89/200 | lr 1.0e-04 | train loss 0.00400 | val loss 0.00337   | F1  99.0 % | median error  1.25 m |
+ angle  0.76 deg | 48.3 s | no improvement 2/60
+Epoch  90/200 | lr 1.0e-04 | train loss 0.00403 | val loss 0.00339   | F1  99.0 % | median error  1.28 m |
+ angle  0.76 deg | 48.2 s | no improvement 3/60
+Epoch  91/200 | lr 1.0e-04 | train loss 0.00403 | val loss 0.00336   | F1  99.0 % | median error  1.21 m |
+ angle  0.74 deg | 48.8 s | no improvement 4/60
+Epoch  92/200 | lr 1.0e-04 | train loss 0.00398 | val loss 0.00336   | F1  99.0 % | median error  1.24 m |
+ angle  0.75 deg | 48.5 s | no improvement 5/60
+Epoch  93/200 | lr 1.0e-04 | train loss 0.00407 | val loss 0.00343   | F1  99.0 % | median error  1.22 m |
+ angle  0.77 deg | 47.8 s | no improvement 6/60
+Epoch  94/200 | lr 1.0e-04 | train loss 0.00401 | val loss 0.00339   | F1  98.9 % | median error  1.22 m |
+ angle  0.74 deg | 48.2 s | no improvement 7/60
+Epoch  95/200 | lr 1.0e-04 | train loss 0.00400 | val loss 0.00336   | F1  99.0 % | median error  1.22 m |
+ angle  0.73 deg | 48.5 s | no improvement 8/60
+Epoch  96/200 | lr 1.0e-04 | train loss 0.00399 | val loss 0.00327 * | F1  99.1 % | median error  1.22 m |
+ angle  0.72 deg | 48.7 s | no improvement 0/60
+Epoch  97/200 | lr 1.0e-04 | train loss 0.00401 | val loss 0.00333   | F1  99.0 % | median error  1.27 m |
+ angle  0.75 deg | 48.7 s | no improvement 1/60
+Epoch  98/200 | lr 1.0e-04 | train loss 0.00397 | val loss 0.00331   | F1  99.0 % | median error  1.23 m |
+ angle  0.72 deg | 48.9 s | no improvement 2/60
+Epoch  99/200 | lr 1.0e-04 | train loss 0.00410 | val loss 0.00331   | F1  99.1 % | median error  1.24 m |
+ angle  0.73 deg | 48.3 s | no improvement 3/60
+Epoch 100/200 | lr 1.0e-04 | train loss 0.00397 | val loss 0.00332   | F1  99.0 % | median error  1.26 m |
+ angle  0.75 deg | 47.5 s | no improvement 4/60
+Epoch 101/200 | lr 1.0e-04 | train loss 0.00397 | val loss 0.00346   | F1  99.0 % | median error  1.26 m |
+ angle  0.76 deg | 48.7 s | no improvement 5/60
+Epoch 102/200 | lr 1.0e-04 | train loss 0.00399 | val loss 0.00341   | F1  99.0 % | median error  1.25 m |
+ angle  0.73 deg | 48.5 s | no improvement 6/60
+Epoch 103/200 | lr 1.0e-04 | train loss 0.00398 | val loss 0.00347   | F1  99.0 % | median error  1.24 m |
+ angle  0.75 deg | 48.8 s | no improvement 7/60
+Epoch 104/200 | lr 1.0e-04 | train loss 0.00397 | val loss 0.00334   | F1  99.0 % | median error  1.22 m |
+ angle  0.72 deg | 48.6 s | no improvement 8/60
+Epoch 105/200 | lr 1.0e-04 | train loss 0.00397 | val loss 0.00345   | F1  99.0 % | median error  1.30 m |
+ angle  0.75 deg | 48.1 s | no improvement 9/60
+Epoch 106/200 | lr 1.0e-04 | train loss 0.00400 | val loss 0.00327 * | F1  99.0 % | median error  1.23 m |
+ angle  0.73 deg | 48.5 s | no improvement 0/60
+Epoch 107/200 | lr 1.0e-04 | train loss 0.00398 | val loss 0.00329   | F1  99.0 % | median error  1.25 m |
+ angle  0.73 deg | 48.8 s | no improvement 1/60
+Epoch 108/200 | lr 1.0e-04 | train loss 0.00395 | val loss 0.00330   | F1  99.1 % | median error  1.20 m |
+ angle  0.72 deg | 47.8 s | no improvement 2/60
+Epoch 109/200 | lr 1.0e-04 | train loss 0.00394 | val loss 0.00343   | F1  99.0 % | median error  1.26 m |
+ angle  0.77 deg | 48.4 s | no improvement 3/60
+Epoch 110/200 | lr 1.0e-04 | train loss 0.00397 | val loss 0.00335   | F1  99.0 % | median error  1.22 m |
+ angle  0.76 deg | 48.8 s | no improvement 4/60
+Epoch 111/200 | lr 1.0e-04 | train loss 0.00398 | val loss 0.00340   | F1  99.0 % | median error  1.29 m |
+ angle  0.74 deg | 48.5 s | no improvement 5/60
+Epoch 112/200 | lr 1.0e-04 | train loss 0.00401 | val loss 0.00336   | F1  99.0 % | median error  1.24 m |
+ angle  0.73 deg | 48.0 s | no improvement 6/60
+Epoch 113/200 | lr 1.0e-04 | train loss 0.00399 | val loss 0.00334   | F1  99.0 % | median error  1.22 m |
+ angle  0.75 deg | 47.7 s | no improvement 7/60
+Epoch 114/200 | lr 1.0e-04 | train loss 0.00396 | val loss 0.00332   | F1  99.0 % | median error  1.24 m |
+ angle  0.73 deg | 48.8 s | no improvement 8/60
+Epoch 115/200 | lr 1.0e-04 | train loss 0.00403 | val loss 0.00337   | F1  99.0 % | median error  1.21 m |
+ angle  0.72 deg | 48.8 s | no improvement 9/60
+Epoch 116/200 | lr 1.0e-04 | train loss 0.00399 | val loss 0.00328   | F1  99.0 % | median error  1.23 m |
+ angle  0.74 deg | 48.0 s | no improvement 10/60
+Epoch 117/200 | lr 1.0e-04 | train loss 0.00401 | val loss 0.00342   | F1  99.0 % | median error  1.21 m |
+ angle  0.74 deg | 47.9 s | no improvement 11/60
+Epoch 118/200 | lr 1.0e-04 | train loss 0.00395 | val loss 0.00332   | F1  99.0 % | median error  1.25 m |
+ angle  0.74 deg | 48.3 s | no improvement 12/60
+Epoch 119/200 | lr 1.0e-04 | train loss 0.00395 | val loss 0.00334   | F1  99.0 % | median error  1.29 m |
+ angle  0.72 deg | 48.5 s | no improvement 13/60
+Epoch 120/200 | lr 1.0e-04 | train loss 0.00398 | val loss 0.00336   | F1  98.9 % | median error  1.22 m |
+ angle  0.72 deg | 47.8 s | no improvement 14/60
+Epoch 121/200 | lr 1.0e-04 | train loss 0.00393 | val loss 0.00329   | F1  99.0 % | median error  1.23 m |
+ angle  0.73 deg | 49.0 s | no improvement 15/60
+Epoch 122/200 | lr 1.0e-04 | train loss 0.00398 | val loss 0.00332   | F1  99.0 % | median error  1.24 m |
+ angle  0.72 deg | 48.8 s | no improvement 16/60
+Epoch 123/200 | lr 1.0e-05 | train loss 0.00396 | val loss 0.00328   | F1  99.0 % | median error  1.20 m |
+ angle  0.72 deg | 48.2 s | no improvement 17/60
+Epoch 124/200 | lr 1.0e-05 | train loss 0.00396 | val loss 0.00327   | F1  99.0 % | median error  1.21 m |
+ angle  0.71 deg | 48.3 s | no improvement 18/60
+Epoch 125/200 | lr 1.0e-05 | train loss 0.00388 | val loss 0.00325 * | F1  99.0 % | median error  1.20 m |
+ angle  0.71 deg | 48.7 s | no improvement 0/60
+Epoch 126/200 | lr 1.0e-05 | train loss 0.00389 | val loss 0.00325   | F1  99.0 % | median error  1.18 m |
+ angle  0.72 deg | 48.3 s | no improvement 1/60
+Epoch 127/200 | lr 1.0e-05 | train loss 0.00385 | val loss 0.00326   | F1  99.1 % | median error  1.21 m |
+ angle  0.72 deg | 48.6 s | no improvement 2/60
+Epoch 128/200 | lr 1.0e-05 | train loss 0.00391 | val loss 0.00329   | F1  99.0 % | median error  1.21 m |
+ angle  0.73 deg | 48.8 s | no improvement 3/60
+Epoch 129/200 | lr 1.0e-05 | train loss 0.00386 | val loss 0.00338   | F1  99.1 % | median error  1.23 m |
+ angle  0.72 deg | 48.3 s | no improvement 4/60
+Epoch 130/200 | lr 1.0e-05 | train loss 0.00392 | val loss 0.00334   | F1  99.1 % | median error  1.22 m |
+ angle  0.72 deg | 48.1 s | no improvement 5/60
+Epoch 131/200 | lr 1.0e-05 | train loss 0.00388 | val loss 0.00330   | F1  99.1 % | median error  1.21 m |
+ angle  0.71 deg | 47.9 s | no improvement 6/60
+Epoch 132/200 | lr 1.0e-05 | train loss 0.00393 | val loss 0.00328   | F1  99.1 % | median error  1.21 m |
+ angle  0.72 deg | 48.7 s | no improvement 7/60
+Epoch 133/200 | lr 1.0e-05 | train loss 0.00392 | val loss 0.00339   | F1  99.0 % | median error  1.22 m |
+ angle  0.74 deg | 48.9 s | no improvement 8/60
+Epoch 134/200 | lr 1.0e-05 | train loss 0.00380 | val loss 0.00326   | F1  99.0 % | median error  1.22 m |
+ angle  0.73 deg | 48.6 s | no improvement 9/60
+Epoch 135/200 | lr 1.0e-05 | train loss 0.00394 | val loss 0.00324 * | F1  99.0 % | median error  1.20 m |
+ angle  0.72 deg | 48.5 s | no improvement 0/60
+Epoch 136/200 | lr 1.0e-05 | train loss 0.00393 | val loss 0.00330   | F1  99.0 % | median error  1.20 m |
+ angle  0.70 deg | 48.0 s | no improvement 1/60
+Epoch 137/200 | lr 1.0e-05 | train loss 0.00395 | val loss 0.00327   | F1  99.0 % | median error  1.21 m |
+ angle  0.72 deg | 47.8 s | no improvement 2/60
+Epoch 138/200 | lr 1.0e-05 | train loss 0.00397 | val loss 0.00323 * | F1  99.0 % | median error  1.21 m |
+ angle  0.70 deg | 48.2 s | no improvement 0/60
+Epoch 139/200 | lr 1.0e-05 | train loss 0.00387 | val loss 0.00325   | F1  99.0 % | median error  1.19 m |
+ angle  0.71 deg | 48.5 s | no improvement 1/60
+Epoch 140/200 | lr 1.0e-05 | train loss 0.00395 | val loss 0.00328   | F1  99.0 % | median error  1.21 m |
+ angle  0.73 deg | 48.2 s | no improvement 2/60
+Epoch 141/200 | lr 1.0e-05 | train loss 0.00395 | val loss 0.00326   | F1  99.1 % | median error  1.19 m |
+ angle  0.71 deg | 48.5 s | no improvement 3/60
+Epoch 142/200 | lr 1.0e-05 | train loss 0.00389 | val loss 0.00327   | F1  99.0 % | median error  1.21 m |
+ angle  0.71 deg | 48.6 s | no improvement 4/60
+Epoch 143/200 | lr 1.0e-05 | train loss 0.00393 | val loss 0.00322 * | F1  99.0 % | median error  1.19 m |
+ angle  0.72 deg | 48.4 s | no improvement 0/60
+Epoch 144/200 | lr 1.0e-05 | train loss 0.00385 | val loss 0.00331   | F1  99.1 % | median error  1.24 m |
+ angle  0.72 deg | 48.6 s | no improvement 1/60
+Epoch 145/200 | lr 1.0e-05 | train loss 0.00389 | val loss 0.00323   | F1  99.0 % | median error  1.21 m |
+ angle  0.72 deg | 48.9 s | no improvement 2/60
+Epoch 146/200 | lr 1.0e-05 | train loss 0.00384 | val loss 0.00325   | F1  99.0 % | median error  1.20 m |
+ angle  0.71 deg | 48.7 s | no improvement 3/60
+Epoch 147/200 | lr 1.0e-05 | train loss 0.00391 | val loss 0.00322   | F1  99.0 % | median error  1.19 m |
+ angle  0.72 deg | 48.4 s | no improvement 4/60
+Epoch 148/200 | lr 1.0e-05 | train loss 0.00387 | val loss 0.00329   | F1  99.0 % | median error  1.21 m |
+ angle  0.74 deg | 48.3 s | no improvement 5/60
+Epoch 149/200 | lr 1.0e-05 | train loss 0.00388 | val loss 0.00333   | F1  99.0 % | median error  1.20 m |
+ angle  0.72 deg | 48.6 s | no improvement 6/60
+Epoch 150/200 | lr 1.0e-05 | train loss 0.00390 | val loss 0.00329   | F1  99.1 % | median error  1.23 m |
+ angle  0.71 deg | 48.5 s | no improvement 7/60
+Epoch 151/200 | lr 1.0e-05 | train loss 0.00389 | val loss 0.00322   | F1  99.1 % | median error  1.22 m |
+ angle  0.71 deg | 48.5 s | no improvement 8/60
+Epoch 152/200 | lr 1.0e-05 | train loss 0.00388 | val loss 0.00325   | F1  99.0 % | median error  1.21 m |
+ angle  0.72 deg | 48.9 s | no improvement 9/60
+Epoch 153/200 | lr 1.0e-05 | train loss 0.00387 | val loss 0.00325   | F1  99.1 % | median error  1.21 m |
+ angle  0.71 deg | 47.8 s | no improvement 10/60
+Epoch 154/200 | lr 1.0e-05 | train loss 0.00387 | val loss 0.00328   | F1  99.1 % | median error  1.20 m |
+ angle  0.72 deg | 48.4 s | no improvement 11/60
+Epoch 155/200 | lr 1.0e-05 | train loss 0.00386 | val loss 0.00326   | F1  99.1 % | median error  1.23 m |
+ angle  0.72 deg | 48.2 s | no improvement 12/60
+Epoch 156/200 | lr 1.0e-05 | train loss 0.00393 | val loss 0.00328   | F1  99.1 % | median error  1.21 m |
+ angle  0.72 deg | 48.7 s | no improvement 13/60
+Epoch 157/200 | lr 1.0e-05 | train loss 0.00393 | val loss 0.00347   | F1  99.0 % | median error  1.27 m |
+ angle  0.71 deg | 49.3 s | no improvement 14/60
+Epoch 158/200 | lr 1.0e-05 | train loss 0.00388 | val loss 0.00328   | F1  99.0 % | median error  1.23 m |
+ angle  0.71 deg | 48.6 s | no improvement 15/60
+Epoch 159/200 | lr 1.0e-05 | train loss 0.00384 | val loss 0.00324   | F1  99.0 % | median error  1.20 m |
+ angle  0.73 deg | 48.1 s | no improvement 16/60
+Epoch 160/200 | lr 1.0e-06 | train loss 0.00395 | val loss 0.00320 * | F1  99.0 % | median error  1.19 m |
+ angle  0.71 deg | 48.5 s | no improvement 0/60
+Epoch 161/200 | lr 1.0e-06 | train loss 0.00384 | val loss 0.00329   | F1  99.0 % | median error  1.21 m |
+ angle  0.72 deg | 48.5 s | no improvement 1/60
+Epoch 162/200 | lr 1.0e-06 | train loss 0.00389 | val loss 0.00323   | F1  99.0 % | median error  1.21 m |
+ angle  0.71 deg | 48.2 s | no improvement 2/60
+Epoch 163/200 | lr 1.0e-06 | train loss 0.00388 | val loss 0.00326   | F1  99.0 % | median error  1.20 m |
+ angle  0.72 deg | 49.0 s | no improvement 3/60
+Epoch 164/200 | lr 1.0e-06 | train loss 0.00388 | val loss 0.00326   | F1  99.1 % | median error  1.22 m |
+ angle  0.73 deg | 48.3 s | no improvement 4/60
+Epoch 165/200 | lr 1.0e-06 | train loss 0.00388 | val loss 0.00324   | F1  99.1 % | median error  1.21 m |
+ angle  0.72 deg | 48.2 s | no improvement 5/60
+Epoch 166/200 | lr 1.0e-06 | train loss 0.00388 | val loss 0.00325   | F1  99.0 % | median error  1.20 m |
+ angle  0.72 deg | 48.6 s | no improvement 6/60
+Epoch 167/200 | lr 1.0e-06 | train loss 0.00388 | val loss 0.00325   | F1  99.0 % | median error  1.21 m |
+ angle  0.72 deg | 48.1 s | no improvement 7/60
+Epoch 168/200 | lr 1.0e-06 | train loss 0.00391 | val loss 0.00326   | F1  99.1 % | median error  1.22 m |
+ angle  0.71 deg | 48.8 s | no improvement 8/60
+Epoch 169/200 | lr 1.0e-06 | train loss 0.00387 | val loss 0.00324   | F1  99.0 % | median error  1.22 m |
+ angle  0.73 deg | 48.5 s | no improvement 9/60
+Epoch 170/200 | lr 1.0e-06 | train loss 0.00381 | val loss 0.00328   | F1  99.1 % | median error  1.20 m |
+ angle  0.71 deg | 47.9 s | no improvement 10/60
+Epoch 171/200 | lr 1.0e-06 | train loss 0.00388 | val loss 0.00334   | F1  99.0 % | median error  1.22 m |
+ angle  0.71 deg | 48.3 s | no improvement 11/60
+Epoch 172/200 | lr 1.0e-06 | train loss 0.00391 | val loss 0.00323   | F1  99.0 % | median error  1.21 m |
+ angle  0.70 deg | 48.0 s | no improvement 12/60
+Epoch 173/200 | lr 1.0e-06 | train loss 0.00390 | val loss 0.00328   | F1  99.0 % | median error  1.23 m |
+ angle  0.71 deg | 48.4 s | no improvement 13/60
+Epoch 174/200 | lr 1.0e-06 | train loss 0.00394 | val loss 0.00320 * | F1  99.0 % | median error  1.19 m |
+ angle  0.71 deg | 47.9 s | no improvement 0/60
+Epoch 175/200 | lr 1.0e-06 | train loss 0.00397 | val loss 0.00325   | F1  99.1 % | median error  1.20 m |
+ angle  0.71 deg | 48.3 s | no improvement 1/60
+Epoch 176/200 | lr 1.0e-06 | train loss 0.00389 | val loss 0.00321   | F1  99.0 % | median error  1.19 m |
+ angle  0.70 deg | 48.6 s | no improvement 2/60
+Epoch 177/200 | lr 1.0e-06 | train loss 0.00390 | val loss 0.00329   | F1  99.0 % | median error  1.21 m |
+ angle  0.71 deg | 48.9 s | no improvement 3/60
+Epoch 178/200 | lr 1.0e-06 | train loss 0.00389 | val loss 0.00327   | F1  99.0 % | median error  1.19 m |
+ angle  0.71 deg | 48.8 s | no improvement 4/60
+Epoch 179/200 | lr 1.0e-06 | train loss 0.00392 | val loss 0.00328   | F1  99.1 % | median error  1.21 m |
+ angle  0.71 deg | 48.1 s | no improvement 5/60
+Epoch 180/200 | lr 1.0e-06 | train loss 0.00389 | val loss 0.00328   | F1  99.1 % | median error  1.21 m |
+ angle  0.71 deg | 48.3 s | no improvement 6/60
+Epoch 181/200 | lr 1.0e-06 | train loss 0.00388 | val loss 0.00328   | F1  99.0 % | median error  1.23 m |
+ angle  0.72 deg | 47.9 s | no improvement 7/60
+Epoch 182/200 | lr 1.0e-06 | train loss 0.00381 | val loss 0.00326   | F1  99.1 % | median error  1.22 m |
+ angle  0.72 deg | 48.5 s | no improvement 8/60
+Epoch 183/200 | lr 1.0e-06 | train loss 0.00391 | val loss 0.00324   | F1  99.0 % | median error  1.20 m |
+ angle  0.70 deg | 48.1 s | no improvement 9/60
+Epoch 184/200 | lr 1.0e-06 | train loss 0.00383 | val loss 0.00324   | F1  99.1 % | median error  1.21 m |
+ angle  0.72 deg | 48.3 s | no improvement 10/60
+Epoch 185/200 | lr 1.0e-06 | train loss 0.00387 | val loss 0.00322   | F1  99.0 % | median error  1.19 m |
+ angle  0.71 deg | 48.2 s | no improvement 11/60
+Epoch 186/200 | lr 1.0e-06 | train loss 0.00387 | val loss 0.00325   | F1  99.0 % | median error  1.20 m |
+ angle  0.73 deg | 48.4 s | no improvement 12/60
+Epoch 187/200 | lr 1.0e-06 | train loss 0.00391 | val loss 0.00328   | F1  99.1 % | median error  1.21 m |
+ angle  0.72 deg | 48.3 s | no improvement 13/60
+Epoch 188/200 | lr 1.0e-06 | train loss 0.00387 | val loss 0.00323   | F1  99.1 % | median error  1.19 m |
+ angle  0.72 deg | 49.1 s | no improvement 14/60
+Epoch 189/200 | lr 1.0e-06 | train loss 0.00381 | val loss 0.00323   | F1  99.1 % | median error  1.22 m |
+ angle  0.72 deg | 48.8 s | no improvement 15/60
+Epoch 190/200 | lr 1.0e-06 | train loss 0.00392 | val loss 0.00330   | F1  99.0 % | median error  1.22 m |
+ angle  0.70 deg | 48.5 s | no improvement 16/60
+Epoch 191/200 | lr 1.0e-07 | train loss 0.00388 | val loss 0.00324   | F1  99.0 % | median error  1.19 m |
+ angle  0.71 deg | 48.1 s | no improvement 17/60
+Epoch 192/200 | lr 1.0e-07 | train loss 0.00388 | val loss 0.00323   | F1  99.0 % | median error  1.21 m |
+ angle  0.71 deg | 48.1 s | no improvement 18/60
+Epoch 193/200 | lr 1.0e-07 | train loss 0.00391 | val loss 0.00321   | F1  99.0 % | median error  1.19 m |
+ angle  0.70 deg | 48.8 s | no improvement 19/60
+Epoch 194/200 | lr 1.0e-07 | train loss 0.00388 | val loss 0.00328   | F1  99.1 % | median error  1.21 m |
+ angle  0.70 deg | 48.3 s | no improvement 20/60
+Epoch 195/200 | lr 1.0e-07 | train loss 0.00390 | val loss 0.00324   | F1  99.0 % | median error  1.21 m |
+ angle  0.71 deg | 48.5 s | no improvement 21/60
+Epoch 196/200 | lr 1.0e-07 | train loss 0.00393 | val loss 0.00322   | F1  99.0 % | median error  1.20 m |
+ angle  0.72 deg | 48.5 s | no improvement 22/60
+Epoch 197/200 | lr 1.0e-07 | train loss 0.00386 | val loss 0.00324   | F1  99.1 % | median error  1.22 m |
+ angle  0.72 deg | 48.3 s | no improvement 23/60
+Epoch 198/200 | lr 1.0e-07 | train loss 0.00391 | val loss 0.00325   | F1  99.0 % | median error  1.21 m |
+ angle  0.71 deg | 48.3 s | no improvement 24/60
+Epoch 199/200 | lr 1.0e-07 | train loss 0.00388 | val loss 0.00327   | F1  99.1 % | median error  1.21 m |
+ angle  0.72 deg | 48.5 s | no improvement 25/60
+Epoch 200/200 | lr 1.0e-07 | train loss 0.00389 | val loss 0.00325   | F1  99.1 % | median error  1.22 m |
+ angle  0.72 deg | 48.6 s | no improvement 26/60
+Best epoch 174: val loss 0.00320, F1 99.0 %, median error 1.19 m, angle 0.71 deg
+Training time 161.1 min, weights in /home/mmisseroni/localization_algorithms/checkpoints/y_7m_10db.pt
+Plots of the training written to /home/mmisseroni/localization_algorithms/training/log/y_7m_10db/{loss,val
+_metrics}.png
+Plots of the training written to /home/mmisseroni/localization_algorithms/training/log/y_7m_10db/{loss,val
+_metrics}.png
+Summary of the trainings written to /home/mmisseroni/localization_algorithms/training/log/summary.{png,csv
+}
+mmisseroni@Frigg:~/localization_algorithms$

@@ -1,0 +1,12 @@
+Run x30, y_7m_10db, batch 128, lr 1e-3, patience_lr 15, frame_thr 0.75 (14/11/2026), config in train.toml
+Same data and windows of train_x30_b128_plr24 (input_size 24000, stride 4800, random offset), differences:
+  frame_thr 0.75 (was 0.5), patience_lr 15 (was 24)
+Training: best epoch 199 of 200 (stopped by max_epochs, still improving)
+Test (executables.evaluate --loc cnn_attention --det raw, detection.raw input_size 24000 stride 2400):
+  2202 estimates, 7 recordings without estimate
+  median 1.27 | P90 3.25 | P95 4.11 | mean 1.59 | max 7.5 | <50 cm 19.9 %
+  vs frame_thr 0.5 (train_x30_stride4800_b128): median 1.29 | P90 3.30 | P95 4.10 | mean 1.59 | max 8.6 | <50 cm 20.9 %
+Same as frame_thr 0.5 within the noise: every frame sees the whole window (CNN receptive field ~4700 samples plus
+squeeze-excitation and attention over all the frames) and the estimate of a window is the median of its detected
+frames, so removing the partial frames from the targets does not change the estimates.
+Validation loss not comparable with frame_thr 0.5 runs (different targets).

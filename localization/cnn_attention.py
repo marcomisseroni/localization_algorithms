@@ -96,7 +96,7 @@ class SELDNet(nn.Module):
         blocks = []
         blocks.append(nn.Linear(128, 128))
         blocks.append(nn.ReLU())
-        blocks.append(nn.Linear(128, 3))
+        blocks.append(nn.Linear(128, 4))
         self.fc_block = nn.Sequential(*blocks)
         self.apply(init_weights)
     
@@ -105,10 +105,11 @@ class SELDNet(nn.Module):
         x = self.conv_blocks(x)     # (B, 128, ~L / 2400)
         x = x.transpose(1, 2)       # (B, T, 128)  T = ~L / 2400
         x = self.att_blocks(x)      # (B, T, 128)
-        x = self.fc_block(x)        # (B, T, 3)
-        x1 = torch.tanh(x[:, :, 0:2])   # (B, T, 2)  activity-coupled direction (dx, dy), norm = activity
-        x2 = torch.relu(x[:, :, 2:])    # (B, T, 1)  distance
-        return torch.cat([x1, x2], dim=-1)  # (B, T, 3)
+        x = self.fc_block(x)        # (B, T, 4)
+        logit = x[:, :, 0:1]            # (B, T, 1)  detection logit, no activation: sigmoid in the loss / inference
+        x1 = torch.tanh(x[:, :, 1:3])   # (B, T, 2)  direction (dx, dy), only its orientation is used
+        x2 = torch.relu(x[:, :, 3:])    # (B, T, 1)  distance
+        return torch.cat([logit, x1, x2], dim=-1)  # (B, T, 4)
 
     def model_size(self) -> int:
         """
@@ -119,12 +120,12 @@ class SELDNet(nn.Module):
 class CNNAttention(Localizer):
     """
     Neural network-based localization.
-    The dimension of the output is (B, T, 3) where:
+    The dimension of the output is (B, T, 4) where:
     B is the batch,
     T is the number of temporal frames, each one covering ~2400 input samples (~150 ms at 16 kHz),
-    3 is the estimate: (dx, dy, d), in particular (dx, dy) is the direction of the source and it
-    is also used as detector: if sqrt(dx**2 + dy**2) > thr an event is detected. Instead d is the distance
-    between source and the center of mass of the array.
+    4 is the estimate: (logit, dx, dy, d), the logit is the detector: if sigmoid(logit) > det_thr an event is
+    detected; (dx, dy) is the direction of the source (normalized before use) and d is the distance between
+    source and the center of mass of the array.
     weights_dir: folder (relative to the project root) with the checkpoints written by training/train.py, one per
     sensor configuration. The network does not receive the sensor positions, so the checkpoint used is the one
     trained with the same sensor positions of the data. It contains the weights and the conditions of the training
@@ -183,9 +184,9 @@ class CNNAttention(Localizer):
         for b in range(y.shape[0]):
             estimates = []
             for t in range(y.shape[1]):
-                norm = math.sqrt(y[b, t, 0]**2 + y[b, t, 1]**2)
-                if(norm > self.det_thr):
-                    estimates.append(decode_pos(y[b, t, :], self.arr_center, self.dist_scale))
+                p = 1 / (1 + math.exp(-y[b, t, 0]))
+                if(p > self.det_thr):
+                    estimates.append(decode_pos(y[b, t, 1:], self.arr_center, self.dist_scale))
             if(len(estimates) > 0):
                 median_estimates.append(np.median(estimates, axis=0))
 

@@ -42,21 +42,25 @@ def dataset_info(data_dir: Path) -> tuple[int, int, list]:
         data = json.load(f)
     return len(data["sensor_pos"]), data["fs"], data["sensor_pos"]
 
-def loss_fn(y_pred: torch.Tensor, y_true: torch.Tensor) -> torch.Tensor:
+def loss_fn(y_pred: torch.Tensor, y_true: torch.Tensor, bce_weight: float, mse_weight: float) -> torch.Tensor:
     """
-    MSE loss, y_pred and y_true are (B, T, 3).
-    The error on (dx, dy) is computed on all the frames, so that the network learns also the detection.
-    The error on d is computed only on the frames with a step in the target (norm of the target (dx, dy) is 1,
-    otherwise it is 0), since the distance of a frame without a step has no meaning.
+    Weighted sum of a detection loss and a position loss, y_pred and y_true are (B, T, 4) = (logit, dx, dy, d).
+    - detection: binary cross entropy between the logit and the activity of the frame (1 step, 0 no step), mean
+      over all the frames of the batch;
+    - position: Euclidean error between the estimated position d * (dx, dy) / |(dx, dy)| (the direction is
+      normalized as in decode_pos) and the true one, both relative to the array centre and divided by dist_scale,
+      mean over the frames with a step only, since the position of a frame without a step has no meaning.
     """
-    loss = torch.mean((y_pred[:, :, 0:2] - y_true[:, :, 0:2])**2)
-    mask = torch.linalg.norm(y_true[:, :, 0:2], dim=-1) > 0.5       # (B, T) frames with a step
-    if(mask.any()):
-        loss = loss + torch.mean((y_pred[:, :, 2][mask] - y_true[:, :, 2][mask])**2)
-    return loss
+    bce = torch.nn.functional.binary_cross_entropy_with_logits(y_pred[:, :, 0], y_true[:, :, 0])
+    mask = y_true[:, :, 0] > 0.5
+    u = y_pred[:, :, 1:3] / (torch.linalg.norm(y_pred[:, :, 1:3], dim=-1, keepdim=True) + 1e-8)
+    est_pos = (u * y_pred[:, :, 3:4])[mask]
+    true_pos = (y_true[:, :, 1:3] * y_true[:, :, 3:4])[mask]
+    mse = torch.mean(torch.linalg.norm(est_pos - true_pos, dim=-1)) if mask.any() else 0
+    return bce_weight * bce + mse_weight * mse
 
-def train_one_epoch(model: SELDNet, training_loader: DataLoader, 
-                    optimizer: torch.optim.Optimizer, device: str) -> float:
+def train_one_epoch(model: SELDNet, training_loader: DataLoader, optimizer: torch.optim.Optimizer,
+                    device: str, bce_weight: float, mse_weight: float) -> float:
     """
     One pass over the training set, the weights are updated after every batch.
     Returns the mean loss of the batches.
@@ -66,20 +70,21 @@ def train_one_epoch(model: SELDNet, training_loader: DataLoader,
     bar = tqdm(training_loader, desc="Training", leave=False)
     for inputs, labels in bar:
         inputs = inputs.to(device)              # (B, N, input_size)
-        labels = labels.to(device)              # (B, T, 3)
+        labels = labels.to(device)              # (B, T, 4)
         optimizer.zero_grad()
-        outputs = model(inputs)                 # (B, T, 3)
-        loss = loss_fn(outputs, labels)
+        outputs = model(inputs)                 # (B, T, 4)
+        loss = loss_fn(outputs, labels, bce_weight, mse_weight)
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
         bar.set_postfix(loss=f"{loss.item():.4f}")
     return running_loss / len(training_loader)
 
-def val_one_epoch(model: SELDNet, validation_loader: DataLoader, device: str) -> tuple[float, np.ndarray, np.ndarray]:
+def val_one_epoch(model: SELDNet, validation_loader: DataLoader, device: str,
+                  bce_weight: float, mse_weight: float) -> tuple[float, np.ndarray, np.ndarray]:
     """
     One pass over the validation set, without updating the weights.
-    Returns the mean loss of the batches and the outputs and targets of every frame, (n_windows, T, 3),
+    Returns the mean loss of the batches and the outputs and targets of every frame, (n_windows, T, 4),
     used to compute the metrics.
     """
     model.eval()
@@ -89,9 +94,9 @@ def val_one_epoch(model: SELDNet, validation_loader: DataLoader, device: str) ->
     with torch.no_grad():
         for inputs, labels in tqdm(validation_loader, desc="Validation", leave=False):
             inputs = inputs.to(device)          # (B, N, input_size)
-            labels = labels.to(device)          # (B, T, 3)
-            outputs = model(inputs)             # (B, T, 3)
-            loss = loss_fn(outputs, labels)
+            labels = labels.to(device)          # (B, T, 4)
+            outputs = model(inputs)             # (B, T, 4)
+            loss = loss_fn(outputs, labels, bce_weight, mse_weight)
             running_loss += loss.item()
             preds.append(outputs.cpu().numpy())
             targets.append(labels.cpu().numpy())
@@ -100,28 +105,28 @@ def val_one_epoch(model: SELDNet, validation_loader: DataLoader, device: str) ->
 def frame_metrics(y_pred: np.ndarray, y_true: np.ndarray, det_thr: float, dist_scale: float) -> dict[str, float]:
     """
     Metrics of the frames, computed as the network is used by CNNAttention:
-    - detection: a frame is detected if the norm of (dx, dy) is above det_thr, it has a step if its target is not 0;
+    - detection: a frame is detected if sigmoid(logit) is above det_thr, it has a step if its target activity is 1;
       precision, recall and F1 of the detected frames;
     - localization of the frames with a step that are detected: median distance [m] between the estimated and the
       true position (relative to the array centre) and median error of the direction [deg].
     """
-    # y_pred, y_true: (n_windows, T, 3)
-    pred = y_pred.reshape(-1, 3)
-    true = y_true.reshape(-1, 3)
-    norm_pred = np.linalg.norm(pred[:, 0:2], axis=1)
-    detected = norm_pred > det_thr
-    active = np.linalg.norm(true[:, 0:2], axis=1) > 0.5
+    # y_pred, y_true: (n_windows, T, 4)
+    pred = y_pred.reshape(-1, 4)
+    true = y_true.reshape(-1, 4)
+    norm_pred = np.linalg.norm(pred[:, 1:3], axis=1)
+    detected = 1 / (1 + np.exp(-pred[:, 0])) > det_thr
+    active = true[:, 0] > 0.5
     tp = np.sum(detected & active)
     precision = tp / max(np.sum(detected), 1)
     recall = tp / max(np.sum(active), 1)
     f1 = 2 * precision * recall / max(precision + recall, 1e-12)
     both = detected & active
     if(both.any()):
-        u_pred = pred[both, 0:2] / norm_pred[both, None]            # (n, 2) unit vectors
-        pos_pred = u_pred * pred[both, 2:3] * dist_scale            # (n, 2) [m] from the array centre
-        pos_true = true[both, 0:2] * true[both, 2:3] * dist_scale   # (n, 2) [m] from the array centre
+        u_pred = pred[both, 1:3] / norm_pred[both, None]            # (n, 2) unit vectors
+        pos_pred = u_pred * pred[both, 3:4] * dist_scale            # (n, 2) [m] from the array centre
+        pos_true = true[both, 1:3] * true[both, 3:4] * dist_scale   # (n, 2) [m] from the array centre
         error = np.median(np.linalg.norm(pos_pred - pos_true, axis=1))
-        cos = np.clip(np.sum(u_pred * true[both, 0:2], axis=1), -1, 1)
+        cos = np.clip(np.sum(u_pred * true[both, 1:3], axis=1), -1, 1)
         angle = np.median(np.degrees(np.arccos(cos)))
     else:
         error = np.nan
@@ -185,8 +190,8 @@ def main() -> None:
         epoch_start = time.perf_counter()
         if(epoch > 0):
             train_dataset.make_windows()        # new random offsets of the training windows
-        train_loss = train_one_epoch(seld_net, train_dataloader, optimizer, device)
-        val_loss, y_pred, y_true = val_one_epoch(seld_net, val_dataloader, device)
+        train_loss = train_one_epoch(seld_net, train_dataloader, optimizer, device, train_conf["training"]["bce_weight"], train_conf["training"]["mse_weight"])
+        val_loss, y_pred, y_true = val_one_epoch(seld_net, val_dataloader, device, train_conf["training"]["bce_weight"], train_conf["training"]["mse_weight"])
         metrics = frame_metrics(y_pred, y_true, det_thr, train_conf["window"]["dist_scale"])
         lr = optimizer.param_groups[0]["lr"]        # learning rate used in this epoch, read before the scheduler changes it
         history.append({"epoch": epoch + 1, "lr": lr, "train_loss": train_loss, "val_loss": val_loss, **metrics})

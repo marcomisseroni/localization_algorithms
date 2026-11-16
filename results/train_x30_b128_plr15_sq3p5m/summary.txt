@@ -1,0 +1,10 @@
+Run x30, sq_3p5m_10db, batch 128, lr 1e-3, patience_lr 15, frame_thr 0.5, input_size 24000, T = 10 (15-16/11/2026)
+config in train.toml, evaluation config in eval_default.toml (detection.raw input_size 24000, stride 2400)
+Same training settings of train_x30_b128_plr15_sq7m, differences: aperture 3.5 m (half diagonal 1.75 m)
+Training: 133 epochs (early stopping), best epoch 73: val loss 0.00318, F1 99.3 %, frame median error 1.63 m, angle 0.76 deg
+
+Test (executables.evaluate --loc cnn_attention --det raw):
+  2210 estimates, 6 recordings without estimate
+  median 1.85 | P90 5.55 | P95 7.15 | mean 2.49 | max 12.5 | <50 cm 12.6 %
+  vs sq_7m: median 1.26 | P90 3.51 | P95 4.28 | mean 1.65 | max 9.5 | <50 cm 21.1 %
+Half the aperture: median +45 %, P95 ~x1.7; the angle gets a little worse, most of the increase is on the distance.

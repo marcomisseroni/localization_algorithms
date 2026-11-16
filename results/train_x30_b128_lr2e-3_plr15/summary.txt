@@ -1,0 +1,13 @@
+Run x30, y_7m_10db, batch 128, lr 2e-3 (13/11/2026 21:00 - 23:06), config in train.toml
+Same data and windows of train_x30_b128_plr24 (stride 4800, random offset), differences:
+  lr 2e-3 (was 1e-3), patience_lr 15 (was 24); patience 60, factor 0.1, max_epochs 200 unchanged
+Training: 157 epochs (early stopping), lr 2e-4 from epoch 68, 2e-5 from 114, 2e-6 from 130, 2e-7 from 146, 125 min
+  checkpoint = epoch 97: val loss 0.00265, train loss 0.00312, F1 99.1 %, frame median error 0.99 m, angle 0.62 deg
+
+Comparison (x30, batch 128, same day):
+  lr 1e-3 patience_lr 24 (train_x30_b128_plr24)   best epoch 100  val loss 0.00252  frame median 1.01 m  angle 0.59 deg
+  lr 1e-3 patience_lr 15 (checkpoints1)            best epoch 114  val loss 0.00255  frame median 1.03 m  angle 0.61 deg
+  lr 2e-3 patience_lr 15 (this run)                best epoch  97  val loss 0.00265  frame median 0.99 m  angle 0.62 deg
+Slightly worse (~4-5 %, close to the run-to-run spread: 0.00240 vs 0.00252 with the same config), train loss also
+higher, so a larger lr does not help. Noisy phase at lr 2e-3 (val loss 0.0048 at epoch 10, 0.0050 at epoch 30).
+Not evaluated on the test set.

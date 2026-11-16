@@ -1,0 +1,16 @@
+Run x30, y_7m_10db, batch 128, lr 1e-3, patience_lr 15, frame_thr 0.5, input_size 12000 (15/11/2026)
+config in train.toml, evaluation config in eval_default.toml (detection.raw input_size 12000, stride 2400)
+Same data of train_x30_b128_plr24 (stride 4800, random offset), differences:
+  input_size 12000 = 0.75 s, T = 5 frames (was 24000 = 1.5 s, T = 10), patience_lr 15 (was 24)
+Windows: 295077 training, 3438 validation
+Training: 200 epochs (stopped by max_epochs, lr already 1e-6/1e-7), lr 1e-4 from epoch 78, 1e-5 from 123,
+  1e-6 from 160, 1e-7 from 191, 161 min
+  checkpoint = epoch 174: val loss 0.00320, train loss 0.00394, F1 99.0 %, frame median error 1.19 m, angle 0.71 deg
+  (val loss not comparable with input_size 24000: different windows)
+
+Test (executables.evaluate --loc cnn_attention --det raw):
+  input 12000  3131 estimates (12.2 / rec), 1 rec without estimate | median 1.65 | P90 4.17 | P95 5.22 | mean 2.05 | max 13.2 | <50 cm 14.6 %
+  input 24000  2202 estimates ( 8.6 / rec), 7 rec without estimate | median 1.27 | P90 3.25 | P95 4.11 | mean 1.59 | max  7.5 | <50 cm 19.9 %
+               (train_x30_b128_plr15_fthr0.75; frame_thr 0.5 gives the same: median 1.29)
+~30 % worse: a 0.75 s window has 1-2 steps instead of 2-4. In the test every recording has a fixed source, so the
+24000 result is optimistic (several steps from the same position); with a walking person the steps are ~0.7 m apart.
